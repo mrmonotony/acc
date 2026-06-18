@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACC Library Database Finder</title>
+  <style>
+    :root{
+      --navy:#123f6b;
+      --blue:#1f6fb2;
+      --sky:#eaf4ff;
+      --teal:#0e9aa7;
+      --gold:#f4b942;
+      --ink:#183049;
+      --muted:#5b6b7b;
+      --card:#ffffff;
+      --line:#d8e4f1;
+      --shadow:0 18px 40px rgba(18,63,107,.12);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(31,111,178,.14), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(14,154,167,.12), transparent 28%),
+        linear-gradient(180deg,#f8fbff 0%, #eef5fc 100%);
+      min-height:100vh;
+    }
+    .app{
+      max-width:1180px;
+      margin:0 auto;
+      padding:24px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+      color:white;
+      border-radius:24px;
+      padding:22px 24px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .brand::after{
+      content:"";
+      position:absolute;
+      inset:auto -60px -80px auto;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
+    }
+    .logo{
+      width:74px;height:74px;border-radius:18px;
+      background:rgba(255,255,255,.14);
+      display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,.22);
+      flex:none;
+      font-weight:800;
+      letter-spacing:.08em;
+    }
+    .brand h1{margin:0;font-size:1.5rem}
+    .brand p{margin:6px 0 0;color:rgba(255,255,255,.88);max-width:800px}
+    .grid{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:20px;
+    }
+    .panel, .results{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    .question{
+      font-size:1.2rem;
+      font-weight:750;
+      margin:0 0 14px;
+    }
+    .sub{
+      color:var(--muted);
+      margin:0 0 18px;
+    }
+    .choices{
+      display:grid;
+      gap:12px;
+    }
+    .choice{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px 16px;
+      background:#fff;
+      cursor:pointer;
+      transition:.2s ease;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .choice:hover{transform:translateY(-1px);border-color:#b8d0ea;box-shadow:0 8px 20px rgba(31,111,178,.08)}
+    .choice input{margin-top:4px}
+    .choice strong{display:block;margin-bottom:4px}
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .pill{
+      font-size:.82rem;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--sky);
+      border:1px solid #cfe2f6;
+      color:var(--navy);
+    }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:16px 0 8px;
+    }
+    button{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .primary{background:var(--navy);color:#fff}
+    .secondary{background:#e9f2fb;color:var(--navy)}
+    .ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+    .progress{
+      height:12px;
+      border-radius:999px;
+      background:#e6eef7;
+      overflow:hidden;
+      margin:10px 0 18px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--teal),var(--blue));
+      transition:width .3s ease;
+    }
+    .hidden{display:none}
+    .results h2,.results h3{margin-top:0}
+    .card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:15px;
+      margin-top:12px;
+      background:linear-gradient(180deg,#fff,#f9fcff);
+    }
+    .score{
+      font-size:.85rem;
+      color:var(--muted);
+      margin-top:4px;
+    }
+    .tag{
+      display:inline-block;
+      margin:6px 6px 0 0;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#f1f7fd;
+      border:1px solid #d9e7f6;
+      font-size:.8rem;
+    }
+    .filters{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin:14px 0 0;
+    }
+    select, .level-btn{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      font:inherit;
+      background:#fff;
+      color:var(--ink);
+    }
+    .level-group{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .level-btn.active{
+      background:var(--navy);
+      color:#fff;
+      border-color:var(--navy);
+    }
+    .footer-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+      .filters,.level-group{grid-template-columns:1fr}
+      .brand{align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="brand">
+      <div class="logo">ACC</div>
+      <div>
+        <h1>ACC Library Database Finder</h1>
+        <p>Find the best database for your research by choosing your source type, media format, subject focus, and reading level.</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="panel" id="wizard">
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <p class="question">What kind of information are you looking for?</p>
+        <p class="sub">Start broad, then narrow your choices with the prompts below.</p>
+
+        <div id="step1">
+          <div class="choices">
+            <label class="choice"><input type="radio" name="kind" value="scholarly"> <div><strong>Scholarly research</strong><span>Journal articles, studies, and academic sources.</span></div></label>
+            <label class="choice"><input type="radio" name="kind" value="primary"> <div><strong>Primary sources</strong><span>Original historical documents, archives, newspapers, and firsthand material.</span></div></label>
+            <label class="choice"><input type="radio" name="kind" value="media"> <div><strong>Media</strong><span>Streaming video, films, documentaries, or audio.</span></div></label>
+            <label class="choice"><input type="radio" name="kind" value="reference"> <div><strong>Reference / background</strong><span>Encyclopedias, dictionaries, overviews, and facts.</span></div></label>
+            <label class="choice"><input type="radio" name="kind" value="practical"> <div><strong>Practical / how-to</strong><span>Career help, repair guides, legal forms, or step-by-step guidance.</span></div></label>
+          </div>
+
+          <div class="filters">
+            <select id="subject">
+              <option value="">Any subject</option>
+              <option value="business">Business</option>
+              <option value="education">Education</option>
+              <option value="health">Health / Nursing / Medicine</option>
+              <option value="history">History / Social studies</option>
+              <option value="science">Science / Technology</option>
+              <option value="literature">Literature / Writing</option>
+              <option value="law">Law / Government</option>
+              <option value="general">General research</option>
+            </select>
+            <select id="media">
+              <option value="">Any media type</option>
+              <option value="articles">Articles / journals</option>
+              <option value="books">Books / eBooks</option>
+              <option value="video">Streaming video</option>
+              <option value="newspapers">Newspapers / news</option>
+              <option value="primary">Primary documents / archives</option>
+              <option value="data">Statistics / data / company info</option>
+            </select>
+          </div>
+
+          <div style="margin-top:14px;">
+            <div class="question" style="font-size:1rem;margin-bottom:10px;">Preferred reading level</div>
+            <div class="level-group">
+              <button class="level-btn" data-level="advanced">Advanced</button>
+              <button class="level-btn" data-level="college">College / academic</button>
+              <button class="level-btn" data-level="general">General / easy to read</button>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="primary" id="recommend">Recommend 3 databases</button>
+            <button class="secondary" id="reset">Reset</button>
+          </div>
+
+          <p class="footer-note">Tip: Choose more than one clue in your head, but the tool will still rank the best three matches.</p>
+        </div>
+      </section>
+
+      <aside class="results" id="results">
+        <h2>Your recommendations</h2>
+        <p class="sub">The list updates after you choose preferences.</p>
+        <div id="output">
+          <div class="card">
+            <strong>Start by selecting your needs.</strong>
+            <div class="score">Results will appear here.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const dbs = [
+      {name:"Academic Search Complete", kind:"scholarly", subject:["general","education","science","history","literature","business","health","law"], media:["articles"], level:["college","advanced"], desc:"Multi-subject scholarly and research articles.", why:"Best broad starting point for academic research."},
+      {name:"Academic OneFile (Gale)", kind:"scholarly", subject:["general","business","education","science","history","literature","health","law"], media:["articles","video"], level:["college","advanced"], desc:"Millions of articles from scholarly journals and authoritative sources, plus podcasts and videos.", why:"Strong multidisciplinary research source."},
+      {name:"JSTOR", kind:"scholarly", subject:["history","literature","science","general"], media:["articles","primary"], level:["college","advanced"], desc:"Academic journals and primary sources.", why:"Excellent for deep scholarly and historical research."},
+      {name:"Gale in Context: Opposing Viewpoints", kind:"scholarly", subject:["general","history","law","science"], media:["articles","primary"], level:["general","college"], desc:"Pro/con viewpoints from reference works, magazines, journals, newspapers, primary sources, and statistics.", why:"Useful for controversial topics and class debates."},
+      {name:"ERIC / Education Source", kind:"scholarly", subject:["education"], media:["articles","books"], level:["college","advanced"], desc:"Education journals, papers, and research materials.", why:"Best fit for teaching, learning, and pedagogy."},
+      {name:"PubMed", kind:"scholarly", subject:["health","science"], media:["articles"], level:["college","advanced"], desc:"Biomedical literature citations and links to full text where available.", why:"Ideal for medicine and life sciences."},
+      {name:"Fold3 Library Edition", kind:"primary", subject:["history","general"], media:["primary"], level:["college","advanced"], desc:"Military records, photos, and personal documents.", why:"Excellent for historical primary source research."},
+      {name:"NewsBank", kind:"primary", subject:["history","general","law"], media:["newspapers"], level:["general","college","advanced"], desc:"News sources and newspapers, including Texas titles.", why:"Great for newspapers and current or historical news."},
+      {name:"Newspapers.com (Texas Edition)", kind:"primary", subject:["history","general"], media:["newspapers"], level:["general","college","advanced"], desc:"Texas newspaper archive from 1842 to 2024.", why:"Strong choice for Texas history and genealogy."},
+      {name:"Gale in Context: World History", kind:"primary", subject:["history"], media:["primary","articles"], level:["general","college"], desc:"Articles, essays, and primary documents about world history.", why:"Good for history assignments needing primary documents."},
+      {name:"Academic Video Online", kind:"media", subject:["general","history","science","business","health","education","literature"], media:["video"], level:["college","advanced"], desc:"Large streaming video collection across many subjects.", why:"Great if the user wants documentaries and academic video."},
+      {name:"Kanopy", kind:"media", subject:["general","history","literature","science"], media:["video"], level:["general","college"], desc:"Feature films and documentaries with clipping tools.", why:"Best for high-quality film and documentary viewing."},
+      {name:"Films on Demand", kind:"media", subject:["general","education","science","history","business","health"], media:["video"], level:["general","college"], desc:"Educational streaming videos for most subjects.", why:"Flexible choice for classroom-ready video."},
+      {name:"Credo Reference", kind:"reference", subject:["general","history","science","business","literature","health","law"], media:["books"], level:["general","college"], desc:"General and subject-specific reference works.", why:"Strong background and overview source."},
+      {name:"Oxford Reference", kind:"reference", subject:["general","history","science","literature"], media:["books"], level:["general","college","advanced"], desc:"Dictionaries, encyclopedias, maps, timelines, and illustrations.", why:"Good for definitions and quick factual context."},
+      {name:"Gale eBooks", kind:"reference", subject:["general","education","science","history","business","health","literature","law"], media:["books"], level:["college","general"], desc:"General and subject-specific encyclopedias and eBooks.", why:"Useful for background reading and overviews."},
+      {name:"Gale Books & Authors", kind:"practical", subject:["literature","general"], media:["books"], level:["general"], desc:"Read-alikes, reviews, award winners, and themed book lists.", why:"Ideal for reader’s advisory and finding what to read next."},
+      {name:"Gale Business: Insights", kind:"practical", subject:["business"], media:["data"], level:["college","advanced"], desc:"Company profiles, financials, stock data, and industry analysis.", why:"Best for company and market research."},
+      {name:"Gale LegalForms", kind:"practical", subject:["law"], media:["documents"], level:["general","college"], desc:"Texas legal documents, forms, and explanations.", why:"Useful for legal form preparation."},
+      {name:"Learning Express Library Plus", kind:"practical", subject:["general","education"], media:["books","documents"], level:["general","college"], desc:"Job prep, career advancement, college readiness, and practice tests.", why:"Great for skills building and test prep."},
+      {name:"Statista", kind:"practical", subject:["business","science","general"], media:["data"], level:["college","advanced"], desc:"Statistical data on thousands of topics from many sources.", why:"Best when the user needs numbers and charts."}
+    ];
+
+    const state = {level:""};
+    const levelButtons = [...document.querySelectorAll(".level-btn")];
+    const output = document.getElementById("output");
+    const bar = document.getElementById("bar");
+
+    levelButtons.forEach(btn => btn.addEventListener("click", () => {
+      levelButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.level = btn.dataset.level;
+    }));
+
+    document.getElementById("recommend").addEventListener("click", () => {
+      const kind = document.querySelector('input[name="kind"]:checked')?.value || "";
+      const subject = document.getElementById("subject").value;
+      const media = document.getElementById("media").value;
+      const level = state.level;
+
+      const scored = dbs.map(db => {
+        let score = 0;
+        if (!kind || db.kind === kind) score += 4;
+        if (subject && db.subject.includes(subject)) score += 3;
+        if (media && db.media.includes(media)) score += 3;
+        if (level && db.level.includes(level)) score += 2;
+        if (!subject) score += 1;
+        if (!media) score += 1;
+        return {...db, score};
+      }).sort((a,b) => b.score - a.score).slice(0,3);
+
+      const pct = [kind, subject, media, level].filter(Boolean).length / 4 * 100;
+      bar.style.width = pct + "%";
+
+      output.innerHTML = scored.map((db, i) => `
+        <div class="card">
+          <h3>${i+1}. ${db.name}</h3>
+          <div class="score">Match score: ${db.score}</div>
+          <p>${db.desc}</p>
+          <p><strong>Why this fits:</strong> ${db.why}</p>
+          <div>
+            <span class="tag">${db.kind}</span>
+            ${db.subject.slice(0,3).map(s => `<span class="tag">${s}</span>`).join("")}
+          </div>
+        </div>
+      `).join("");
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      document.querySelectorAll('input[name="kind"]').forEach(r => r.checked = false);
+      document.getElementById("subject").value = "";
+      document.getElementById("media").value = "";
+      levelButtons.forEach(b => b.classList.remove("active"));
+      state.level = "";
+      bar.style.width = "0%";
+      output.innerHTML = `
+        <div class="card">
+          <strong>Start by selecting your needs.</strong>
+          <div class="score">Results will appear here.</div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
