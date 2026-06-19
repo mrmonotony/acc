@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jonathan Thorn, EdD | Librarian</title>
+  <style>
+    :root{
+      --navy:#123f6b;
+      --blue:#1f6fb2;
+      --sky:#eef6ff;
+      --teal:#0e9aa7;
+      --gold:#f4b942;
+      --ink:#17324a;
+      --muted:#5d6b7a;
+      --card:#ffffff;
+      --line:#d9e5f2;
+      --shadow:0 20px 50px rgba(18,63,107,.12);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(31,111,178,.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(14,154,167,.12), transparent 26%),
+        linear-gradient(180deg,#f8fbff 0%, #eef5fc 100%);
+      min-height:100%;
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1180px;margin:0 auto;padding:24px}
+    header{
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+      color:#fff;
+      border-radius:28px;
+      padding:28px 28px 24px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    header::after{
+      content:"";
+      position:absolute;
+      right:-70px;
+      top:-70px;
+      width:240px;
+      height:240px;
+      border-radius:50%;
+      background:rgba(255,255,255,.11);
+    }
+    .top{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      position:relative;
+      z-index:1;
+    }
+    .logo{
+      width:84px;
+      height:84px;
+      border-radius:20px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.2);
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      letter-spacing:.08em;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(2rem,3vw,3rem);
+      line-height:1.05;
+    }
+    .subtitle{
+      margin:10px 0 0;
+      color:rgba(255,255,255,.9);
+      font-size:1.05rem;
+      max-width:60ch;
+    }
+    .pillrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .pill{
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
+      color:#fff;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.92rem;
+    }
+    main{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:22px;
+      margin-top:22px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+    .section-title{
+      margin:0 0 12px;
+      font-size:1.1rem;
+      color:var(--navy);
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+    .lead{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+    .stat{
+      background:linear-gradient(180deg,#fff,#f8fbff);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+    }
+    .stat b{
+      display:block;
+      font-size:1rem;
+      margin-bottom:6px;
+    }
+    .stat span{
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .list{
+      display:grid;
+      gap:12px;
+      margin-top:12px;
+    }
+    .item{
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+    }
+    .item strong{
+      display:block;
+      margin-bottom:4px;
+    }
+    .item small{color:var(--muted)}
+    .cta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:700;
+      border:0;
+      cursor:pointer;
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.primary{
+      background:var(--navy);
+      color:#fff;
+      box-shadow:0 10px 24px rgba(18,63,107,.18);
+    }
+    .btn.secondary{
+      background:#eaf3fb;
+      color:var(--navy);
+      border:1px solid #d5e3f2;
+    }
+    .contact{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .contact a{
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+    footer{
+      margin:18px 4px 8px;
+      color:var(--muted);
+      font-size:.92rem;
+      text-align:center;
+    }
+    @media (max-width:900px){
+      main{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+      .top{align-items:flex-start}
+      .logo{width:70px;height:70px}
+    }
+    @media print{
+      body{background:#fff}
+      header,.card{box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="top">
+        <div class="logo">JT</div>
+        <div>
+          <h1>Jonathan Thorn, EdD</h1>
+          <div class="subtitle">Librarian at Austin Community College focused on Artificial Intelligence, Research Instruction, and Writing &amp; Editing.</div>
+        </div>
+      </div>
+      <div class="pillrow" aria-label="Expertise highlights">
+        <span class="pill">Artificial Intelligence</span>
+        <span class="pill">Research Instruction</span>
+        <span class="pill">Writing &amp; Editing</span>
+        <span class="pill">Austin Community College</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2 class="section-title">About</h2>
+        <p class="lead">I design learning experiences, support academic research, and help students and faculty use information ethically and effectively. My work blends library service, AI literacy, and clear writing.</p>
+
+        <div class="grid" role="list" aria-label="Profile highlights">
+          <div class="stat" role="listitem"><b>Position</b><span>Librarian</span></div>
+          <div class="stat" role="listitem"><b>Institution</b><span>Austin Community College</span></div>
+          <div class="stat" role="listitem"><b>Focus</b><span>AI, research, and editing</span></div>
+        </div>
+
+        <div class="cta">
+          <a class="btn primary" href="accdbfinder.html">Open ACC Database Finder</a>
+          <button class="btn secondary" id="copyBtn" type="button">Copy Name</button>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2 class="section-title">Services</h2>
+        <div class="list">
+          <div class="item"><strong>Research Instruction</strong><small>Guidance on databases, search strategies, and source evaluation.</small></div>
+          <div class="item"><strong>Writing &amp; Editing</strong><small>Support for clarity, structure, tone, and academic style.</small></div>
+          <div class="item"><strong>Artificial Intelligence</strong><small>Practical AI use, literacy, and responsible integration into learning.</small></div>
+        </div>
+
+        <div class="contact" aria-label="Quick contact actions">
+          <a href="#" onclick="alert('Replace this with your email link or contact form.'); return false;">Email / Contact</a>
+          <a href="#" onclick="alert('Replace this with your scheduling link.'); return false;">Schedule a Consultation</a>
+        </div>
+      </aside>
+    </main>
+
+    <footer>Jonathan Thorn, EdD • Austin Community College</footer>
+  </div>
+
+  <script>
+    const btn = document.getElementById('copyBtn');
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText('Jonathan Thorn, EdD');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy Name', 1400);
+      } catch (e) {
+        alert('Copying is not supported in this browser.');
+      }
+    });
+  </script>
+</body>
+</html>
