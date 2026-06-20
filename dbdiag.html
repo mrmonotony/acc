@@ -1,368 +1,1617 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ACC Library Database Finder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACC Library · Database Finder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --navy:#123f6b;
-      --blue:#1f6fb2;
-      --sky:#eaf4ff;
-      --teal:#0e9aa7;
-      --gold:#f4b942;
-      --ink:#183049;
-      --muted:#5b6b7b;
-      --card:#ffffff;
-      --line:#d8e4f1;
-      --shadow:0 18px 40px rgba(18,63,107,.12);
-      --radius:18px;
+    /* ─── TOKENS ─────────────────────────────────── */
+    :root {
+      --purple:       #5C2D91;
+      --purple-dk:    #3A1760;
+      --purple-md:    #7C4DB0;
+      --purple-lt:    #EDE7F6;
+      --purple-xlt:   #F5F0FC;
+      --gold:         #F5A800;
+      --gold-dk:      #C98800;
+      --gold-lt:      #FFF8E1;
+      --white:        #FFFFFF;
+      --bg:           #F3EEF9;
+      --border:       #D8CCF0;
+      --text:         #1A1A2E;
+      --text-md:      #4A4A6A;
+      --text-lt:      #9090AA;
+      --green:        #2D8C4A;
+      --r-sm:  8px;
+      --r-md: 14px;
+      --r-lg: 22px;
+      --r-xl: 32px;
+      --r-full: 9999px;
+      --sh-sm: 0 2px 8px rgba(92,45,145,.08);
+      --sh-md: 0 8px 28px rgba(92,45,145,.14);
+      --sh-lg: 0 20px 56px rgba(92,45,145,.18);
     }
-    *{box-sizing:border-box}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
     body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(31,111,178,.14), transparent 32%),
-        radial-gradient(circle at bottom right, rgba(14,154,167,.12), transparent 28%),
-        linear-gradient(180deg,#f8fbff 0%, #eef5fc 100%);
-      min-height:100vh;
+      font-family:'Open Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:radial-gradient(ellipse at 20% 0%,#e9dff5 0%,#f3eef9 55%,#edf0f9 100%);
+      min-height:100vh;color:var(--text);
     }
-    .app{
-      max-width:1180px;
-      margin:0 auto;
-      padding:24px;
+
+    /* ─── HEADER ─────────────────────────────────── */
+    header{
+      background:var(--purple-dk);
+      padding:10px 24px;
+      display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 2px 12px rgba(0,0,0,.25);
+      position:sticky;top:0;z-index:100;
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:18px;
-      background:linear-gradient(135deg,var(--navy),var(--blue));
-      color:white;
-      border-radius:24px;
-      padding:22px 24px;
-      box-shadow:var(--shadow);
-      position:relative;
-      overflow:hidden;
+    .header-logo{height:40px;filter:brightness(0) invert(1);}
+    .header-pill{
+      background:rgba(245,168,0,.18);
+      border:1px solid rgba(245,168,0,.4);
+      color:var(--gold);
+      font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+      padding:4px 12px;border-radius:var(--r-full);
     }
-    .brand::after{
-      content:"";
-      position:absolute;
-      inset:auto -60px -80px auto;
-      width:220px;
-      height:220px;
-      border-radius:50%;
-      background:rgba(255,255,255,.12);
-    }
-    .logo{
-      width:74px;height:74px;border-radius:18px;
-      background:rgba(255,255,255,.14);
-      display:grid;place-items:center;
-      border:1px solid rgba(255,255,255,.22);
-      flex:none;
-      font-weight:800;
-      letter-spacing:.08em;
-    }
-    .brand h1{margin:0;font-size:1.5rem}
-    .brand p{margin:6px 0 0;color:rgba(255,255,255,.88);max-width:800px}
-    .grid{
-      margin-top:22px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:20px;
-    }
-    .panel, .results{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:20px;
-    }
-    .question{
-      font-size:1.2rem;
-      font-weight:750;
-      margin:0 0 14px;
-    }
-    .sub{
-      color:var(--muted);
-      margin:0 0 18px;
-    }
-    .choices{
-      display:grid;
-      gap:12px;
-    }
-    .choice{
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px 16px;
-      background:#fff;
-      cursor:pointer;
-      transition:.2s ease;
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-    }
-    .choice:hover{transform:translateY(-1px);border-color:#b8d0ea;box-shadow:0 8px 20px rgba(31,111,178,.08)}
-    .choice input{margin-top:4px}
-    .choice strong{display:block;margin-bottom:4px}
-    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .pill{
-      font-size:.82rem;
-      padding:6px 10px;
-      border-radius:999px;
-      background:var(--sky);
-      border:1px solid #cfe2f6;
-      color:var(--navy);
-    }
-    .toolbar{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:16px 0 8px;
-    }
-    button{
-      border:0;
-      border-radius:14px;
-      padding:12px 16px;
-      font-weight:700;
-      cursor:pointer;
-    }
-    .primary{background:var(--navy);color:#fff}
-    .secondary{background:#e9f2fb;color:var(--navy)}
-    .ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
-    .progress{
-      height:12px;
-      border-radius:999px;
-      background:#e6eef7;
-      overflow:hidden;
-      margin:10px 0 18px;
-    }
-    .bar{
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg,var(--teal),var(--blue));
-      transition:width .3s ease;
-    }
-    .hidden{display:none}
-    .results h2,.results h3{margin-top:0}
+
+    /* ─── LAYOUT ─────────────────────────────────── */
+    .wrap{max-width:820px;margin:0 auto;padding:28px 16px 48px;}
+
+    /* ─── WIZARD CARD ────────────────────────────── */
     .card{
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:15px;
-      margin-top:12px;
-      background:linear-gradient(180deg,#fff,#f9fcff);
+      background:var(--white);
+      border-radius:var(--r-xl);
+      box-shadow:var(--sh-lg);
+      overflow:hidden;
     }
-    .score{
-      font-size:.85rem;
-      color:var(--muted);
-      margin-top:4px;
+
+    /* ─── PROGRESS ───────────────────────────────── */
+    .prog-bar{
+      background:var(--purple-lt);
+      padding:14px 28px;
+      display:none;align-items:center;gap:14px;
+      border-bottom:1px solid var(--border);
     }
-    .tag{
-      display:inline-block;
-      margin:6px 6px 0 0;
-      padding:5px 9px;
-      border-radius:999px;
-      background:#f1f7fd;
-      border:1px solid #d9e7f6;
-      font-size:.8rem;
+    .prog-bar.show{display:flex;}
+    .prog-track{
+      flex:1;height:7px;background:var(--border);
+      border-radius:var(--r-full);overflow:hidden;
     }
-    .filters{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin:14px 0 0;
+    .prog-fill{
+      height:100%;border-radius:var(--r-full);
+      background:linear-gradient(90deg,var(--purple),var(--gold));
+      transition:width .55s cubic-bezier(.4,0,.2,1);
     }
-    select, .level-btn{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px 14px;
-      font:inherit;
-      background:#fff;
-      color:var(--ink);
+    .prog-dots{display:flex;gap:5px;}
+    .prog-dot{
+      width:9px;height:9px;border-radius:50%;
+      background:var(--border);transition:background .3s;
     }
-    .level-group{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .level-btn.active{
-      background:var(--navy);
-      color:#fff;
-      border-color:var(--navy);
+    .prog-dot.done{background:var(--gold);}
+    .prog-dot.active{background:var(--purple);}
+    .prog-lbl{font-size:11px;font-weight:700;color:var(--purple);white-space:nowrap;}
+
+    /* ─── STEPS ──────────────────────────────────── */
+    .step{display:none;padding:40px;}
+    .step.active{display:block;animation:fadeSlide .38s ease forwards;}
+    @keyframes fadeSlide{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+
+    .eyebrow{
+      font-size:11px;font-weight:700;letter-spacing:1.6px;
+      text-transform:uppercase;color:var(--purple);margin-bottom:6px;
     }
-    .footer-note{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:.92rem;
+    .step-h{
+      font-family:'Montserrat',sans-serif;
+      font-size:25px;font-weight:800;
+      color:var(--text);line-height:1.2;margin-bottom:8px;
     }
-    @media (max-width: 900px){
-      .grid{grid-template-columns:1fr}
-      .filters,.level-group{grid-template-columns:1fr}
-      .brand{align-items:flex-start}
+    .step-sub{font-size:14px;color:var(--text-md);margin-bottom:26px;line-height:1.55;}
+
+    /* ─── WELCOME ────────────────────────────────── */
+    .welcome{text-align:center;padding:52px 36px;}
+    .welcome-glyph{font-size:62px;display:block;margin-bottom:18px;animation:pulse 3s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+    .brand-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--purple-lt);border:1px solid var(--border);
+      color:var(--purple);font-size:11px;font-weight:700;
+      letter-spacing:.8px;text-transform:uppercase;
+      padding:5px 14px;border-radius:var(--r-full);margin-bottom:20px;
     }
+    .welcome-h{
+      font-family:'Montserrat',sans-serif;font-size:36px;font-weight:900;
+      line-height:1.12;margin-bottom:14px;
+    }
+    .welcome-h span{color:var(--purple);}
+    .welcome-p{
+      font-size:15px;color:var(--text-md);line-height:1.65;
+      max-width:490px;margin:0 auto 32px;
+    }
+    .stat-row{display:flex;justify-content:center;gap:36px;margin-bottom:36px;}
+    .stat{text-align:center;}
+    .stat-n{
+      font-family:'Montserrat',sans-serif;font-size:30px;font-weight:800;
+      color:var(--purple);
+    }
+    .stat-l{font-size:11px;color:var(--text-lt);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+
+    /* ─── TEXTAREA ───────────────────────────────── */
+    .s-area{
+      width:100%;border:2px solid var(--border);border-radius:var(--r-md);
+      padding:14px 16px;font-family:'Open Sans',sans-serif;font-size:14px;
+      color:var(--text);resize:vertical;min-height:96px;outline:none;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .s-area:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(92,45,145,.14);}
+    .hint{margin-top:9px;font-size:12px;color:var(--text-lt);display:flex;align-items:flex-start;gap:6px;line-height:1.45;}
+
+    /* ─── SUBJECT GRID ───────────────────────────── */
+    .subject-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:11px;
+    }
+    .subj-card{
+      border:2px solid var(--border);border-radius:var(--r-md);
+      padding:15px 10px;text-align:center;cursor:pointer;
+      transition:all .2s cubic-bezier(.4,0,.2,1);
+      background:var(--white);user-select:none;
+    }
+    .subj-card:hover{border-color:var(--purple-md);background:var(--purple-xlt);transform:translateY(-2px);box-shadow:var(--sh-sm);}
+    .subj-card.sel{
+      border-color:var(--purple);background:var(--purple-lt);
+      transform:translateY(-2px);box-shadow:0 0 0 3px rgba(92,45,145,.15);
+    }
+    .subj-icon{font-size:26px;display:block;margin-bottom:7px;}
+    .subj-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.25;}
+
+    /* ─── AUTO-DETECT BANNER ─────────────────────── */
+    .detect-note{
+      display:flex;align-items:center;gap:9px;
+      background:var(--gold-lt);border:1px solid var(--gold);
+      border-radius:var(--r-sm);padding:10px 14px;
+      font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px;
+    }
+
+    /* ─── SOURCE TYPE GRID ───────────────────────── */
+    .src-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:11px;}
+    .src-card{
+      border:2px solid var(--border);border-radius:var(--r-md);
+      padding:14px;cursor:pointer;transition:all .2s;
+      background:var(--white);display:flex;align-items:flex-start;gap:11px;user-select:none;
+    }
+    .src-card:hover{border-color:var(--purple-md);background:var(--purple-xlt);box-shadow:var(--sh-sm);}
+    .src-card.sel{border-color:var(--purple);background:var(--purple-lt);box-shadow:0 0 0 3px rgba(92,45,145,.15);}
+    .src-box{
+      width:20px;height:20px;border-radius:4px;border:2px solid var(--border);
+      flex-shrink:0;display:flex;align-items:center;justify-content:center;
+      font-size:11px;transition:all .2s;margin-top:2px;
+    }
+    .src-card.sel .src-box{background:var(--purple);border-color:var(--purple);color:#fff;}
+    .src-lbl{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+    .src-desc{font-size:11px;color:var(--text-md);line-height:1.4;}
+    .src-ico{font-size:19px;flex-shrink:0;}
+
+    /* ─── LEVEL CARDS ────────────────────────────── */
+    .lvl-list{display:flex;flex-direction:column;gap:11px;}
+    .lvl-card{
+      border:2px solid var(--border);border-radius:var(--r-md);
+      padding:16px 18px;cursor:pointer;transition:all .2s;
+      background:var(--white);display:flex;align-items:center;gap:14px;user-select:none;
+    }
+    .lvl-card:hover{border-color:var(--purple-md);background:var(--purple-xlt);}
+    .lvl-card.sel{border-color:var(--purple);background:var(--purple-lt);box-shadow:0 0 0 3px rgba(92,45,145,.15);}
+    .lvl-ico{font-size:26px;flex-shrink:0;}
+    .lvl-n{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+    .lvl-d{font-size:12px;color:var(--text-md);}
+
+    /* ─── NEEDS GRID ─────────────────────────────── */
+    .need-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:11px;}
+    .need-card{
+      border:2px solid var(--border);border-radius:var(--r-md);
+      padding:14px 16px;cursor:pointer;transition:all .2s;
+      background:var(--white);display:flex;align-items:center;gap:12px;user-select:none;
+    }
+    .need-card:hover{border-color:var(--gold-dk);background:var(--gold-lt);}
+    .need-card.sel{border-color:var(--gold);background:var(--gold-lt);box-shadow:0 0 0 3px rgba(245,168,0,.18);}
+    .need-ico{font-size:22px;}
+    .need-txt{font-size:13px;font-weight:600;color:var(--text);line-height:1.35;}
+
+    /* ─── NAV BUTTONS ────────────────────────────── */
+    .nav{display:flex;justify-content:space-between;align-items:center;margin-top:30px;gap:12px;flex-wrap:wrap;}
+    .btn{
+      padding:11px 26px;border-radius:var(--r-full);
+      font-family:'Open Sans',sans-serif;font-size:14px;font-weight:700;
+      cursor:pointer;transition:all .18s;border:none;letter-spacing:.3px;
+    }
+    .btn-pri{
+      background:var(--purple);color:#fff;
+      box-shadow:0 4px 14px rgba(92,45,145,.3);
+    }
+    .btn-pri:hover{background:var(--purple-dk);box-shadow:0 6px 20px rgba(92,45,145,.4);transform:translateY(-1px);}
+    .btn-pri:active{transform:translateY(0);}
+    .btn-sec{background:transparent;color:var(--purple);border:2px solid var(--border);}
+    .btn-sec:hover{border-color:var(--purple);background:var(--purple-xlt);}
+    .btn-gold{
+      background:linear-gradient(135deg,var(--gold) 0%,#FFB800 100%);
+      color:var(--purple-dk);box-shadow:0 4px 18px rgba(245,168,0,.38);
+    }
+    .btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(245,168,0,.48);}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;}
+
+    /* ─── RESULTS ────────────────────────────────── */
+    .res-head{
+      text-align:center;padding:34px 36px 22px;
+      border-bottom:1px solid var(--purple-lt);
+    }
+    .res-body{padding:28px 36px 40px;}
+    .chips-row{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px;}
+    .chip{
+      background:var(--purple-lt);border:1px solid var(--border);
+      border-radius:var(--r-full);padding:4px 12px;
+      font-size:11px;font-weight:700;color:var(--purple);
+    }
+    .res-card{
+      border:2px solid var(--border);border-radius:var(--r-md);
+      padding:22px 22px 20px 26px;margin-bottom:18px;
+      background:var(--white);position:relative;overflow:hidden;
+      transition:box-shadow .2s,border-color .2s;
+    }
+    .res-card:last-child{margin-bottom:0;}
+    .res-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;}
+    .res-card:nth-child(1)::before{background:linear-gradient(180deg,var(--gold),var(--gold-dk));}
+    .res-card:nth-child(2)::before{background:linear-gradient(180deg,var(--purple),var(--purple-md));}
+    .res-card:nth-child(3)::before{background:linear-gradient(180deg,var(--purple-md),#AB8DD0);}
+    .res-card:hover{box-shadow:var(--sh-md);border-color:var(--purple-md);}
+    .res-rank{
+      font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;
+      margin-bottom:10px;display:flex;align-items:center;gap:7px;
+    }
+    .res-card:nth-child(1) .res-rank{color:var(--gold-dk);}
+    .res-card:nth-child(2) .res-rank{color:var(--purple);}
+    .res-card:nth-child(3) .res-rank{color:var(--purple-md);}
+    .res-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px;}
+    .res-ico{font-size:30px;flex-shrink:0;}
+    .res-name{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;}
+    .res-match-row{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+    .match-lbl{font-size:11px;font-weight:700;color:var(--text-md);white-space:nowrap;}
+    .match-track{flex:1;height:7px;background:var(--border);border-radius:var(--r-full);overflow:hidden;}
+    .match-fill{height:100%;border-radius:var(--r-full);width:0;transition:width 1.1s cubic-bezier(.4,0,.2,1) .3s;}
+    .res-card:nth-child(1) .match-fill{background:linear-gradient(90deg,var(--gold),var(--purple));}
+    .res-card:nth-child(2) .match-fill{background:linear-gradient(90deg,var(--purple),var(--purple-md));}
+    .res-card:nth-child(3) .match-fill{background:linear-gradient(90deg,var(--purple-md),#AB8DD0);}
+    .match-pct{font-size:13px;font-weight:700;color:var(--purple);white-space:nowrap;}
+    .res-desc{font-size:13px;color:var(--text-md);line-height:1.6;margin-bottom:10px;}
+    .res-why{
+      background:var(--purple-xlt);border-radius:var(--r-sm);
+      padding:9px 12px;font-size:12.5px;color:var(--text);
+      line-height:1.5;margin-bottom:12px;
+    }
+    .res-why strong{color:var(--purple);}
+    .res-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+    .res-tag{
+      background:var(--purple-lt);color:var(--purple);
+      font-size:10px;font-weight:700;padding:3px 9px;
+      border-radius:var(--r-full);letter-spacing:.3px;
+    }
+    .res-link{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--purple);color:#fff;
+      padding:9px 18px;border-radius:var(--r-full);
+      font-size:13px;font-weight:700;text-decoration:none;
+      transition:all .18s;
+    }
+    .res-link:hover{background:var(--purple-dk);transform:translateY(-1px);box-shadow:0 4px 12px rgba(92,45,145,.3);}
+    .res-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+    /* ─── RESULTS ACTIONS ────────────────────────── */
+    .res-actions{
+      text-align:center;margin-top:28px;padding-top:22px;
+      border-top:1px solid var(--purple-lt);
+      display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+    }
+    .more-link{
+      display:inline-flex;align-items:center;gap:6px;
+      color:var(--purple);font-size:13px;font-weight:700;text-decoration:none;
+      border:2px solid var(--border);padding:9px 18px;
+      border-radius:var(--r-full);transition:all .18s;
+    }
+    .more-link:hover{border-color:var(--purple);background:var(--purple-xlt);}
+
+    /* ─── FOOTER ─────────────────────────────────── */
+    footer{text-align:center;padding:20px;font-size:12px;color:var(--text-lt);}
+    footer a{color:var(--purple);text-decoration:none;}
+
+    /* ─── RESPONSIVE ─────────────────────────────── */
+    @media(max-width:600px){
+      .step{padding:26px 18px;}
+      .welcome{padding:36px 18px;}
+      .welcome-h{font-size:27px;}
+      .step-h{font-size:20px;}
+      .subject-grid{grid-template-columns:repeat(2,1fr);}
+      .src-grid{grid-template-columns:1fr;}
+      .stat-row{gap:22px;}
+      .res-head,.res-body{padding-left:18px;padding-right:18px;}
+    }
+
+    /* ─── LOADING ────────────────────────────────── */
+    .loading-overlay{
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:center;padding:60px 40px;
+    }
+    .loader{
+      width:48px;height:48px;border:4px solid var(--border);
+      border-top-color:var(--purple);border-radius:50%;
+      animation:spin .75s linear infinite;margin-bottom:16px;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{font-size:14px;color:var(--text-md);font-weight:600;}
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="brand">
-      <div class="logo">ACC</div>
-      <div>
-        <h1>ACC Library Database Finder</h1>
-        <p>Find the best database for your research by choosing your source type, media format, subject focus, and reading level.</p>
-      </div>
-    </header>
 
-    <div class="grid">
-      <section class="panel" id="wizard">
-        <div class="progress"><div class="bar" id="bar"></div></div>
-        <p class="question">What kind of information are you looking for?</p>
-        <p class="sub">Start broad, then narrow your choices with the prompts below.</p>
+<!-- ─── HEADER ─────────────────────────────────────── -->
+<header>
+  <img src="https://library.austincc.edu/img/accls-horz.svg" alt="ACC Library Services" class="header-logo"
+       onerror="this.style.display='none';document.getElementById('hdr-fallback').style.display='block'">
+  <span id="hdr-fallback" style="display:none;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;letter-spacing:.5px;">ACC Library Services</span>
+  <div class="header-pill">Database Finder</div>
+</header>
 
-        <div id="step1">
-          <div class="choices">
-            <label class="choice"><input type="radio" name="kind" value="scholarly"> <div><strong>Scholarly research</strong><span>Journal articles, studies, and academic sources.</span></div></label>
-            <label class="choice"><input type="radio" name="kind" value="primary"> <div><strong>Primary sources</strong><span>Original historical documents, archives, newspapers, and firsthand material.</span></div></label>
-            <label class="choice"><input type="radio" name="kind" value="media"> <div><strong>Media</strong><span>Streaming video, films, documentaries, or audio.</span></div></label>
-            <label class="choice"><input type="radio" name="kind" value="reference"> <div><strong>Reference / background</strong><span>Encyclopedias, dictionaries, overviews, and facts.</span></div></label>
-            <label class="choice"><input type="radio" name="kind" value="practical"> <div><strong>Practical / how-to</strong><span>Career help, repair guides, legal forms, or step-by-step guidance.</span></div></label>
-          </div>
+<!-- ─── MAIN ───────────────────────────────────────── -->
+<div class="wrap">
+  <div class="card" id="wizard">
 
-          <div class="filters">
-            <select id="subject">
-              <option value="">Any subject</option>
-              <option value="business">Business</option>
-              <option value="education">Education</option>
-              <option value="health">Health / Nursing / Medicine</option>
-              <option value="history">History / Social studies</option>
-              <option value="science">Science / Technology</option>
-              <option value="literature">Literature / Writing</option>
-              <option value="law">Law / Government</option>
-              <option value="general">General research</option>
-            </select>
-            <select id="media">
-              <option value="">Any media type</option>
-              <option value="articles">Articles / journals</option>
-              <option value="books">Books / eBooks</option>
-              <option value="video">Streaming video</option>
-              <option value="newspapers">Newspapers / news</option>
-              <option value="primary">Primary documents / archives</option>
-              <option value="data">Statistics / data / company info</option>
-            </select>
-          </div>
-
-          <div style="margin-top:14px;">
-            <div class="question" style="font-size:1rem;margin-bottom:10px;">Preferred reading level</div>
-            <div class="level-group">
-              <button class="level-btn" data-level="advanced">Advanced</button>
-              <button class="level-btn" data-level="college">College / academic</button>
-              <button class="level-btn" data-level="general">General / easy to read</button>
-            </div>
-          </div>
-
-          <div class="toolbar">
-            <button class="primary" id="recommend">Recommend 3 databases</button>
-            <button class="secondary" id="reset">Reset</button>
-          </div>
-
-          <p class="footer-note">Tip: Choose more than one clue in your head, but the tool will still rank the best three matches.</p>
-        </div>
-      </section>
-
-      <aside class="results" id="results">
-        <h2>Your recommendations</h2>
-        <p class="sub">The list updates after you choose preferences.</p>
-        <div id="output">
-          <div class="card">
-            <strong>Start by selecting your needs.</strong>
-            <div class="score">Results will appear here.</div>
-          </div>
-        </div>
-      </aside>
+    <!-- Progress Bar -->
+    <div class="prog-bar" id="prog">
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:20%"></div></div>
+      <div class="prog-dots" id="prog-dots"></div>
+      <div class="prog-lbl" id="prog-lbl">Step 1 of 5</div>
     </div>
-  </div>
 
-  <script>
-    const dbs = [
-      {name:"Academic Search Complete", kind:"scholarly", subject:["general","education","science","history","literature","business","health","law"], media:["articles"], level:["college","advanced"], desc:"Multi-subject scholarly and research articles.", why:"Best broad starting point for academic research."},
-      {name:"Academic OneFile (Gale)", kind:"scholarly", subject:["general","business","education","science","history","literature","health","law"], media:["articles","video"], level:["college","advanced"], desc:"Millions of articles from scholarly journals and authoritative sources, plus podcasts and videos.", why:"Strong multidisciplinary research source."},
-      {name:"JSTOR", kind:"scholarly", subject:["history","literature","science","general"], media:["articles","primary"], level:["college","advanced"], desc:"Academic journals and primary sources.", why:"Excellent for deep scholarly and historical research."},
-      {name:"Gale in Context: Opposing Viewpoints", kind:"scholarly", subject:["general","history","law","science"], media:["articles","primary"], level:["general","college"], desc:"Pro/con viewpoints from reference works, magazines, journals, newspapers, primary sources, and statistics.", why:"Useful for controversial topics and class debates."},
-      {name:"ERIC / Education Source", kind:"scholarly", subject:["education"], media:["articles","books"], level:["college","advanced"], desc:"Education journals, papers, and research materials.", why:"Best fit for teaching, learning, and pedagogy."},
-      {name:"PubMed", kind:"scholarly", subject:["health","science"], media:["articles"], level:["college","advanced"], desc:"Biomedical literature citations and links to full text where available.", why:"Ideal for medicine and life sciences."},
-      {name:"Fold3 Library Edition", kind:"primary", subject:["history","general"], media:["primary"], level:["college","advanced"], desc:"Military records, photos, and personal documents.", why:"Excellent for historical primary source research."},
-      {name:"NewsBank", kind:"primary", subject:["history","general","law"], media:["newspapers"], level:["general","college","advanced"], desc:"News sources and newspapers, including Texas titles.", why:"Great for newspapers and current or historical news."},
-      {name:"Newspapers.com (Texas Edition)", kind:"primary", subject:["history","general"], media:["newspapers"], level:["general","college","advanced"], desc:"Texas newspaper archive from 1842 to 2024.", why:"Strong choice for Texas history and genealogy."},
-      {name:"Gale in Context: World History", kind:"primary", subject:["history"], media:["primary","articles"], level:["general","college"], desc:"Articles, essays, and primary documents about world history.", why:"Good for history assignments needing primary documents."},
-      {name:"Academic Video Online", kind:"media", subject:["general","history","science","business","health","education","literature"], media:["video"], level:["college","advanced"], desc:"Large streaming video collection across many subjects.", why:"Great if the user wants documentaries and academic video."},
-      {name:"Kanopy", kind:"media", subject:["general","history","literature","science"], media:["video"], level:["general","college"], desc:"Feature films and documentaries with clipping tools.", why:"Best for high-quality film and documentary viewing."},
-      {name:"Films on Demand", kind:"media", subject:["general","education","science","history","business","health"], media:["video"], level:["general","college"], desc:"Educational streaming videos for most subjects.", why:"Flexible choice for classroom-ready video."},
-      {name:"Credo Reference", kind:"reference", subject:["general","history","science","business","literature","health","law"], media:["books"], level:["general","college"], desc:"General and subject-specific reference works.", why:"Strong background and overview source."},
-      {name:"Oxford Reference", kind:"reference", subject:["general","history","science","literature"], media:["books"], level:["general","college","advanced"], desc:"Dictionaries, encyclopedias, maps, timelines, and illustrations.", why:"Good for definitions and quick factual context."},
-      {name:"Gale eBooks", kind:"reference", subject:["general","education","science","history","business","health","literature","law"], media:["books"], level:["college","general"], desc:"General and subject-specific encyclopedias and eBooks.", why:"Useful for background reading and overviews."},
-      {name:"Gale Books & Authors", kind:"practical", subject:["literature","general"], media:["books"], level:["general"], desc:"Read-alikes, reviews, award winners, and themed book lists.", why:"Ideal for reader’s advisory and finding what to read next."},
-      {name:"Gale Business: Insights", kind:"practical", subject:["business"], media:["data"], level:["college","advanced"], desc:"Company profiles, financials, stock data, and industry analysis.", why:"Best for company and market research."},
-      {name:"Gale LegalForms", kind:"practical", subject:["law"], media:["documents"], level:["general","college"], desc:"Texas legal documents, forms, and explanations.", why:"Useful for legal form preparation."},
-      {name:"Learning Express Library Plus", kind:"practical", subject:["general","education"], media:["books","documents"], level:["general","college"], desc:"Job prep, career advancement, college readiness, and practice tests.", why:"Great for skills building and test prep."},
-      {name:"Statista", kind:"practical", subject:["business","science","general"], media:["data"], level:["college","advanced"], desc:"Statistical data on thousands of topics from many sources.", why:"Best when the user needs numbers and charts."}
-    ];
-
-    const state = {level:""};
-    const levelButtons = [...document.querySelectorAll(".level-btn")];
-    const output = document.getElementById("output");
-    const bar = document.getElementById("bar");
-
-    levelButtons.forEach(btn => btn.addEventListener("click", () => {
-      levelButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      state.level = btn.dataset.level;
-    }));
-
-    document.getElementById("recommend").addEventListener("click", () => {
-      const kind = document.querySelector('input[name="kind"]:checked')?.value || "";
-      const subject = document.getElementById("subject").value;
-      const media = document.getElementById("media").value;
-      const level = state.level;
-
-      const scored = dbs.map(db => {
-        let score = 0;
-        if (!kind || db.kind === kind) score += 4;
-        if (subject && db.subject.includes(subject)) score += 3;
-        if (media && db.media.includes(media)) score += 3;
-        if (level && db.level.includes(level)) score += 2;
-        if (!subject) score += 1;
-        if (!media) score += 1;
-        return {...db, score};
-      }).sort((a,b) => b.score - a.score).slice(0,3);
-
-      const pct = [kind, subject, media, level].filter(Boolean).length / 4 * 100;
-      bar.style.width = pct + "%";
-
-      output.innerHTML = scored.map((db, i) => `
-        <div class="card">
-          <h3>${i+1}. ${db.name}</h3>
-          <div class="score">Match score: ${db.score}</div>
-          <p>${db.desc}</p>
-          <p><strong>Why this fits:</strong> ${db.why}</p>
-          <div>
-            <span class="tag">${db.kind}</span>
-            ${db.subject.slice(0,3).map(s => `<span class="tag">${s}</span>`).join("")}
-          </div>
+    <!-- ── Step 0: Welcome ──────────────────────── -->
+    <div class="step active" id="step-0">
+      <div class="welcome">
+        <span class="welcome-glyph">🔎</span>
+        <div class="brand-badge">✦ ACC Library Services</div>
+        <h1 class="welcome-h">Find Your <span>Perfect</span><br>Research Database</h1>
+        <p class="welcome-p">Not sure where to start your research? Answer five quick questions and we'll recommend the three databases best matched to your exact needs—drawn from ACC's full collection of 150+ licensed resources.</p>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-n">150+</div><div class="stat-l">Databases</div></div>
+          <div class="stat"><div class="stat-n">5</div><div class="stat-l">Quick Steps</div></div>
+          <div class="stat"><div class="stat-n">3</div><div class="stat-l">Top Matches</div></div>
         </div>
-      `).join("");
-    });
+        <button class="btn btn-gold" onclick="startWizard()">Get Started &nbsp;→</button>
+      </div>
+    </div>
 
-    document.getElementById("reset").addEventListener("click", () => {
-      document.querySelectorAll('input[name="kind"]').forEach(r => r.checked = false);
-      document.getElementById("subject").value = "";
-      document.getElementById("media").value = "";
-      levelButtons.forEach(b => b.classList.remove("active"));
-      state.level = "";
-      bar.style.width = "0%";
-      output.innerHTML = `
-        <div class="card">
-          <strong>Start by selecting your needs.</strong>
-          <div class="score">Results will appear here.</div>
+    <!-- ── Step 1: Free Text ─────────────────────── -->
+    <div class="step" id="step-1">
+      <div class="eyebrow">Step 1 of 5</div>
+      <h2 class="step-h">What kind of information are you looking for?</h2>
+      <p class="step-sub">Describe your topic or research question. The more detail you give, the smarter the match.</p>
+      <textarea class="s-area" id="txt-input" rows="4"
+        placeholder="e.g. I need peer-reviewed articles about the effects of social media on teenage mental health for my PSYC 2301 paper…"
+        oninput="onText(this.value)"></textarea>
+      <div class="hint">💡 <span>Tip: mention your class, assignment type, or what you already know you need (articles, videos, statistics, etc.).</span></div>
+      <div class="nav">
+        <button class="btn btn-sec" onclick="go(0)">← Back</button>
+        <button class="btn btn-pri" id="btn1" onclick="go(2)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- ── Step 2: Subject ───────────────────────── -->
+    <div class="step" id="step-2">
+      <div class="eyebrow">Step 2 of 5</div>
+      <h2 class="step-h">Which subject area fits your research?</h2>
+      <p class="step-sub">We've made our best guess based on your description—confirm or tap another to change it.</p>
+      <div id="detect-note"></div>
+      <div class="subject-grid" id="subj-grid"></div>
+      <div class="nav">
+        <button class="btn btn-sec" onclick="go(1)">← Back</button>
+        <button class="btn btn-pri" id="btn2" onclick="go(3)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- ── Step 3: Source Types ───────────────────── -->
+    <div class="step" id="step-3">
+      <div class="eyebrow">Step 3 of 5</div>
+      <h2 class="step-h">What types of sources do you need?</h2>
+      <p class="step-sub">Select all that apply. Picking specific types helps us rank databases more precisely.</p>
+      <div class="src-grid" id="src-grid"></div>
+      <div class="nav">
+        <button class="btn btn-sec" onclick="go(2)">← Back</button>
+        <button class="btn btn-pri" id="btn3" onclick="go(4)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- ── Step 4: Reading Level ──────────────────── -->
+    <div class="step" id="step-4">
+      <div class="eyebrow">Step 4 of 5</div>
+      <h2 class="step-h">What's your preferred reading level?</h2>
+      <p class="step-sub">This helps match databases to your course level and background knowledge.</p>
+      <div class="lvl-list" id="lvl-list"></div>
+      <div class="nav">
+        <button class="btn btn-sec" onclick="go(3)">← Back</button>
+        <button class="btn btn-pri" id="btn4" onclick="go(5)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- ── Step 5: Special Needs ──────────────────── -->
+    <div class="step" id="step-5">
+      <div class="eyebrow">Step 5 of 5</div>
+      <h2 class="step-h">Any specific needs?</h2>
+      <p class="step-sub">Check anything that applies to boost results for that need—or skip straight to your matches.</p>
+      <div class="need-grid" id="need-grid"></div>
+      <div class="nav">
+        <button class="btn btn-sec" onclick="go(4)">← Back</button>
+        <button class="btn btn-gold" onclick="showResults()">Find My Databases &nbsp;✦</button>
+      </div>
+    </div>
+
+    <!-- ── Step 6: Results ────────────────────────── -->
+    <div class="step" id="step-6">
+      <div class="res-head">
+        <div class="eyebrow" style="text-align:center">Your Recommendations</div>
+        <h2 class="step-h" style="text-align:center;font-size:26px">Your Top 3 Database Matches</h2>
+        <div class="chips-row" id="chips"></div>
+      </div>
+      <div class="res-body">
+        <div id="res-list"></div>
+        <div class="res-actions">
+          <button class="btn btn-sec" onclick="startOver()">← Start Over</button>
+          <a href="https://library.austincc.edu/eresources/atoz.php" target="_blank" class="more-link">Browse All Databases ↗</a>
+          <a href="https://library.austincc.edu/help/ask.php" target="_blank" class="btn btn-pri">Ask a Librarian 24/7</a>
         </div>
-      `;
+      </div>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /wrap -->
+
+<footer>
+  © Austin Community College Library Services &nbsp;·&nbsp;
+  <a href="https://library.austincc.edu" target="_blank">library.austincc.edu</a> &nbsp;·&nbsp;
+  <a href="https://library.austincc.edu/help/ask.php" target="_blank">Get Expert Help 24/7</a>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATABASE CATALOG
+   Fields: id, name, icon, desc, bestFor, subjects[],
+           types[], levels[], lang[], texas, tags[], url
+═══════════════════════════════════════════════════════ */
+const DB = [
+
+  /* ── HEALTH & MEDICINE ─────────────────────────── */
+  {id:'cinahl', name:'CINAHL Ultimate', icon:'🏥',
+   desc:'The gold standard for nursing and allied health research. Covers peer-reviewed articles, books, dissertations, care standards, and patient education materials from 1937 to the present.',
+   bestFor:'Nursing students and healthcare professionals who need evidence-based clinical research, care guidelines, and nursing practice standards.',
+   subjects:['health'], types:['peer-reviewed','books'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Nursing','Allied Health','Evidence-Based','Clinical Skills','Peer-Reviewed'],
+   url:'https://research.ebsco.com/c/mie23f?db=cul'},
+
+  {id:'pubmed', name:'PubMed', icon:'🔬',
+   desc:'The U.S. National Library of Medicine\'s flagship biomedical database with 35+ million citations. Filter by study type—clinical trials, systematic reviews, meta-analyses—and link to free full text.',
+   bestFor:'Biomedical and life sciences research at any level. Essential for medicine, pharmacology, and clinical nursing courses.',
+   subjects:['health'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Biomedical','Free Government Resource','Clinical Trials','Life Sciences'],
+   url:'https://pubmed.ncbi.nlm.nih.gov/?otool=txauscclib'},
+
+  {id:'consumer-health', name:'Consumer Health Complete', icon:'💊',
+   desc:'Mainstream medicine, complementary therapies, and wellness content from magazines, reference books, and clinical reports—written for patients and the general public.',
+   bestFor:'Anyone seeking easy-to-understand health information for personal use, health literacy papers, or community health projects.',
+   subjects:['health'], types:['magazines','reference'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Consumer-Friendly','Wellness','Alternative Medicine','Easy to Read'],
+   url:'https://search.ebscohost.com/login.aspx?authtype=shib&custid=austin&groupid=main&profile=chc'},
+
+  {id:'gale-health', name:'Gale Health and Wellness', icon:'❤️',
+   desc:'One-stop health database combining peer-reviewed medical journals, consumer magazines, multimedia, and reference works. Covers mainstream medicine and complementary approaches.',
+   bestFor:'Students at any level who want scholarly and consumer health content—plus videos and topic overviews—without switching databases.',
+   subjects:['health'], types:['peer-reviewed','magazines','video','reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Comprehensive','Multimedia','Peer-Reviewed','Consumer Health'],
+   url:'https://link.gale.com/apps/HWRC?u=txshracd2487'},
+
+  {id:'medline', name:'MEDLINE (EBSCO)', icon:'🩺',
+   desc:'The NLM\'s comprehensive biomedical journal index via EBSCO, covering medicine, nursing, dentistry, and psychiatry from 1946 to the present with full-text links where available.',
+   bestFor:'Advanced health sciences research where comprehensive bibliographic coverage and reliable indexing are critical.',
+   subjects:['health'], types:['peer-reviewed'], levels:['advanced'],
+   lang:['en'], texas:false,
+   tags:['Biomedical','NLM Indexed','Comprehensive','1946–Present'],
+   url:'https://research.ebsco.com/c/mie23f?db=cmedm'},
+
+  {id:'alt-health', name:'Alt HealthWatch', icon:'🌿',
+   desc:'Peer-reviewed and popular articles on complementary, holistic, and integrative health care: acupuncture, herbal medicine, chiropractic, yoga, naturopathy, and more.',
+   bestFor:'Research on alternative and integrative medicine, or comparing holistic practices with conventional treatment approaches.',
+   subjects:['health'], types:['peer-reviewed','magazines'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Alternative Medicine','Holistic','Integrative','Wellness'],
+   url:'https://research.ebsco.com/c/mie23f?db=awh'},
+
+  {id:'dynamic-health', name:'Dynamic Health CDS + Skills', icon:'⚕️',
+   desc:'Evidence-based clinical decision support with step-by-step nursing skill demonstrations, drug references, care plans, and patient education materials for practicing nurses.',
+   bestFor:'Nursing and allied health students who need fast clinical answers and video demonstrations of nursing skills and procedures.',
+   subjects:['health'], types:['reference','video'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Clinical Skills','Video Demos','Nursing','Evidence-Based Practice'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fwww.dynahealth.com'},
+
+  {id:'gale-pt-sports', name:'Gale OneFile: Physical Therapy & Sports Medicine', icon:'🏃',
+   desc:'Academic journals and trade magazines covering physical therapy, exercise science, kinesiology, and sports medicine—from rehabilitation protocols to athletic performance.',
+   bestFor:'PT, kinesiology, and exercise science students needing peer-reviewed research on movement, rehabilitation, and sports performance.',
+   subjects:['health'], types:['peer-reviewed','magazines'], levels:['undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Physical Therapy','Sports Medicine','Kinesiology','Rehabilitation'],
+   url:'https://link.gale.com/apps/PPSM?u=txshracd2487'},
+
+  {id:'gale-nursing', name:'Gale OneFile: Nursing & Allied Health', icon:'👩‍⚕️',
+   desc:'Full-text nursing and allied health journals including titles cited in CINAHL, supporting specialized care, treatment protocols, and patient management.',
+   bestFor:'Nursing students looking for accessible, full-text journal articles on clinical practice, patient care, and nursing theory.',
+   subjects:['health'], types:['peer-reviewed'], levels:['undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Nursing','Full-Text','Clinical Practice','CINAHL-Cited Titles'],
+   url:'https://link.gale.com/apps/PPNU?u=txshracd2487'},
+
+  {id:'salud', name:'Salud en Español', icon:'🌐',
+   desc:'Evidence-based health reports and consumer-friendly fact sheets on wellness, disease, and treatment options—written entirely in Spanish.',
+   bestFor:'Spanish-speaking patients and students who need reliable health information in Spanish.',
+   subjects:['health'], types:['reference','magazines'], levels:['general'],
+   lang:['es'], texas:false,
+   tags:['Spanish Language','Consumer Health','Wellness','Evidence-Based'],
+   url:'https://search.ebscohost.com/login.aspx?authtype=shib&custid=austin&groupid=main&profile=chc-spa'},
+
+  {id:'gale-human-anatomy', name:'Gale Interactive: Human Anatomy', icon:'🫀',
+   desc:'Manipulate and explore interactive 3D anatomical models by body system or region. Supplemented by peer-reviewed articles and reference overviews for deeper study.',
+   bestFor:'Anatomy and physiology students who want to visualize structures in 3D rather than only read about them.',
+   subjects:['health','science'], types:['reference','video'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['3D Models','Interactive','Anatomy','Visual Learning'],
+   url:'https://link.gale.com/apps/IANAT?u=txshracd2487'},
+
+  /* ── BUSINESS & ECONOMICS ──────────────────────── */
+  {id:'biz-source', name:'Business Source Complete', icon:'💼',
+   desc:'The world\'s most comprehensive business database—peer-reviewed journals, industry magazines, case studies, company profiles, market research reports, and country economic data.',
+   bestFor:'Business students needing scholarly articles, case studies, SWOT analyses, or industry overview reports.',
+   subjects:['business'], types:['peer-reviewed','magazines','reference'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Comprehensive','Case Studies','Market Research','Company Profiles'],
+   url:'https://research.ebsco.com/c/mie23f?db=bth'},
+
+  {id:'econlit', name:'EconLit with Full Text', icon:'📊',
+   desc:'The American Economic Association\'s authoritative economics index with full-text access to 1.9 million+ records covering economic theory, policy, trade, labor, and financial markets.',
+   bestFor:'Economics students and researchers who need rigorous, peer-reviewed economic literature and want to explore AEA journal archives.',
+   subjects:['business'], types:['peer-reviewed'], levels:['advanced','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Economics','AEA','Full-Text','Econometrics','Policy'],
+   url:'https://research.ebsco.com/c/mie23f?db=eoh'},
+
+  {id:'gale-biz-global', name:'Gale Business: Insights Global', icon:'🌍',
+   desc:'Comprehensive international business intelligence with 460,000+ company profiles, Refinitiv financial data, country reports, and deep links to related academic content.',
+   bestFor:'Research on multinational companies, international markets, or cross-border business strategy.',
+   subjects:['business'], types:['reference','stats'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['International Business','Company Profiles','Financial Data','Market Intelligence'],
+   url:'https://link.gale.com/apps/BIG?u=txshracd2487'},
+
+  {id:'gale-entrepreneur', name:'Gale Business: Entrepreneurship', icon:'🚀',
+   desc:'All aspects of launching and operating a business: accounting, finance, HR, marketing, taxes, and management—including small business legal guides and startup case studies.',
+   bestFor:'Entrepreneurship and small business management students, or anyone planning to start or grow a business.',
+   subjects:['business'], types:['magazines','reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Entrepreneurship','Small Business','Startup','Practical Guidance'],
+   url:'https://link.gale.com/apps/SBRC?u=txshracd2487'},
+
+  {id:'statista', name:'Statista', icon:'📈',
+   desc:'Statistical data on 80,000+ topics from 22,500+ sources in business, government, and media. Easy-to-export infographics, charts, and datasets.',
+   bestFor:'Anyone who needs current statistics, data visualizations, or quantitative evidence to support a research argument.',
+   subjects:['business','general'], types:['stats'], levels:['general','undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Statistics','Data Visualization','Charts','Multi-Topic','Exportable'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=http%3A%2F%2Fwww.statista.com'},
+
+  {id:'wsj', name:'The Wall Street Journal', icon:'📋',
+   desc:'Full access to WSJ.com, apps, podcasts, and curated newsletters covering global business, financial markets, economics, and policy news.',
+   bestFor:'Current business and financial news, market data, and professional-grade economic reporting.',
+   subjects:['business','news'], types:['newspapers'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Business News','Finance','Stock Market','Global Economy'],
+   url:'https://partner.wsj.com/partner/austincommunitycollege'},
+
+  {id:'small-biz', name:'Small Business Source', icon:'🏪',
+   desc:'Information specifically for small business and entrepreneurship: business plans, legal structures, financing, marketing, and operations from practical sources.',
+   bestFor:'Students in business management and CTE programs researching small business operations and startup planning.',
+   subjects:['business'], types:['magazines','reference'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Small Business','Business Plans','Practical','Operations'],
+   url:'https://search.ebscohost.com/login.aspx?authtype=shib&custid=austin&groupid=main&profile=sbrc'},
+
+  /* ── SCIENCE & TECHNOLOGY ──────────────────────── */
+  {id:'scitech', name:'SciTech Premium Collection', icon:'⚗️',
+   desc:'Full-text applied and theoretical science literature: scholarly journals, trade publications, technical reports, conference proceedings, and government documents across all STEM fields.',
+   bestFor:'Engineering, chemistry, physics, and applied science students who need comprehensive technical research literature.',
+   subjects:['science'], types:['peer-reviewed'], levels:['advanced','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Applied Science','Engineering','Full-Text','Technical Reports','STEM'],
+   url:'https://search.proquest.com/scitechpremium?accountid=7013'},
+
+  {id:'applied-sci', name:'Applied Science & Technology Source', icon:'🔧',
+   desc:'Nearly 2,500 active applied science journals—over 2,000 peer-reviewed—spanning engineering, computing, robotics, materials science, and emerging technologies.',
+   bestFor:'Engineering, IT, and technology students who need peer-reviewed applied research rather than theoretical physics.',
+   subjects:['science'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Applied Science','Engineering','Peer-Reviewed','Interdisciplinary'],
+   url:'https://research.ebsco.com/c/mie23f?db=aps'},
+
+  {id:'gale-sci', name:'Gale In Context: Science', icon:'🧬',
+   desc:'Science topics database integrating reference overviews, peer-reviewed articles, videos, and news across biology, chemistry, physics, and earth science.',
+   bestFor:'Introductory science students who want authoritative background information plus journal articles and multimedia in one place.',
+   subjects:['science'], types:['reference','magazines','video'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Contextual','Multimedia','Multi-Discipline','Reference + Articles'],
+   url:'https://infotrac.gale.com/itweb/txshracd2487?db=SCIC'},
+
+  {id:'greenfile', name:'GreenFILE', icon:'🌱',
+   desc:'Scholarly and government citations covering global warming, renewable energy, environmental policy, pollution, conservation, and green technology.',
+   bestFor:'Environmental science, sustainability, and ecology students researching climate change, energy, and environmental policy.',
+   subjects:['science'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Environment','Sustainability','Climate Change','Ecology','Energy'],
+   url:'https://research.ebsco.com/c/mie23f?db=8gh'},
+
+  {id:'gale-interactive-sci', name:'Gale Interactive Science', icon:'🔭',
+   desc:'Full-text science articles combined with 200+ hands-on experiments, 300+ interactive simulations, and multimedia—covering biology, chemistry, physics, and earth science.',
+   bestFor:'Students who learn best through visual and interactive digital content alongside traditional journal articles.',
+   subjects:['science'], types:['reference','video'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Interactive','Simulations','Experiments','Visual Science'],
+   url:'https://link.gale.com/apps/ISSCI?u=txshracd2487'},
+
+  {id:'bbc-landmark', name:'BBC Landmark Video Collection', icon:'🎬',
+   desc:'Over 100 high-definition BBC documentaries on biology, anthropology, and natural science—including Planet Earth, Blue Planet, Dynasties, and Life.',
+   bestFor:'Science and environmental studies students who want premiere documentary videos to complement their academic reading.',
+   subjects:['science'], types:['video'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['BBC','Documentary','Biology','Nature','Planet Earth'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fvideo.alexanderstreet.com%2Fchannel%2Fthe-bbc-landmark-video-collection'},
+
+  {id:'computer-source', name:'Computer Source', icon:'💻',
+   desc:'Articles from journals and magazines on computers, networking, software development, programming languages, cybersecurity, electronics, and the Internet.',
+   bestFor:'Computer science and IT students who need a mix of academic articles and practical tech-industry coverage.',
+   subjects:['science'], types:['peer-reviewed','magazines'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Computer Science','IT','Networking','Cybersecurity','Programming'],
+   url:'https://research.ebsco.com/c/mie23f?db=cph'},
+
+  {id:'oreilly', name:"O'Reilly for Higher Education", icon:'📚',
+   desc:'45,000+ books and courses from O\'Reilly, Harvard Business Review, Pearson, and 200+ publishers, plus 30,000 hours of expert-led video on software, AI, data science, and leadership.',
+   bestFor:'Technology, computer science, and business students who want full textbooks and hands-on video courses from industry leaders.',
+   subjects:['science','business'], types:['books','video'], levels:['general','undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Tech Books','Video Courses','Programming','AI & Data Science','Industry-Led'],
+   url:'http://go.oreilly.com/austin-cc'},
+
+  {id:'gale-env', name:'Gale In Context: Environmental Studies', icon:'🌎',
+   desc:'400+ topic and state pages on water, air quality, ecotourism, green economy, environmental law, and climate across science, social studies, and humanities disciplines.',
+   bestFor:'Students tackling environmental topics that cross scientific and social/policy lines—from climate science to environmental justice.',
+   subjects:['science'], types:['reference','magazines'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Environmental Studies','Policy','Interdisciplinary','Climate','Green Economy'],
+   url:'https://link.gale.com/apps/GRNR?u=txshracd2487'},
+
+  {id:'georef', name:'GeoRef', icon:'🌋',
+   desc:'The American Geosciences Institute\'s index of 3.1+ million geoscience references: journal articles, maps, theses, and reports on geology, hydrology, and seismology.',
+   bestFor:'Geology, earth science, and environmental science students needing in-depth geoscience literature.',
+   subjects:['science'], types:['peer-reviewed'], levels:['advanced','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Geology','Geoscience','Earth Science','AGI','Hydrology'],
+   url:'https://search.proquest.com/georef?accountid=7013'},
+
+  /* ── SOCIAL SCIENCES & PSYCHOLOGY ─────────────── */
+  {id:'socindex', name:'SocINDEX with Full Text', icon:'👥',
+   desc:'The most comprehensive sociology database—peer-reviewed journals covering gender studies, criminal justice, social psychology, racial studies, religion, and social work.',
+   bestFor:'Sociology, social work, criminal justice, and gender studies students who need peer-reviewed academic journal articles.',
+   subjects:['social'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Sociology','Social Work','Gender Studies','Criminal Justice','Race Studies'],
+   url:'https://research.ebsco.com/c/mie23f?db=sih'},
+
+  {id:'psych-collection', name:'Psychology & Behavioral Sciences Collection', icon:'🧠',
+   desc:'Peer-reviewed journals on psychiatry, psychology, cognitive science, observational methods, and behavioral research across abnormal, developmental, and social psychology.',
+   bestFor:'Psychology students needing scholarly articles on mental health, cognition, behavior, and human development.',
+   subjects:['social'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Psychology','Psychiatry','Behavior','Mental Health','Peer-Reviewed'],
+   url:'https://research.ebsco.com/c/mie23f?db=pbh'},
+
+  {id:'bmho', name:'Behavior and Mental Health Online', icon:'🎥',
+   desc:'2,500+ counseling and therapy videos plus 3,500 books and transcripts—case demonstrations, assessment interviews, and psychotherapy techniques for behavioral health study.',
+   bestFor:'Counseling, psychology, and social work students who want to watch and analyze therapeutic techniques in video form.',
+   subjects:['social','health'], types:['video','books'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Video','Therapy Demonstrations','Counseling','Case Studies','Mental Health'],
+   url:'https://search.alexanderstreet.com/bmho?accountid=7013'},
+
+  {id:'lgbtq', name:'LGBTQ+ Source', icon:'🏳️‍🌈',
+   desc:'Peer-reviewed journals, popular magazines, and historically important primary sources on LGBTQ+ identity, health, culture, politics, and community—with a specialized LGBTQ+ thesaurus.',
+   bestFor:'Research on LGBTQ+ history, identity, health disparities, civil rights, and queer theory.',
+   subjects:['social'], types:['peer-reviewed','magazines','primary'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['LGBTQ+','Gender Studies','Primary Sources','Queer Theory','Health'],
+   url:'https://research.ebsco.com/c/mie23f?db=qth'},
+
+  {id:'opposing-viewpoints', name:'Gale In Context: Opposing Viewpoints', icon:'⚖️',
+   desc:'Pro/con viewpoints from reference works, academic journals, magazines, newspapers, and primary source documents on hundreds of controversial social, political, and ethical topics.',
+   bestFor:'Debate research, argumentative essays, and exploring multiple sides of social, political, and ethical issues.',
+   subjects:['social','law','news'], types:['peer-reviewed','magazines','primary','reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Pro/Con','Debate','Multiple Perspectives','Social Issues','Critical Thinking'],
+   url:'https://infotrac.gale.com/itweb/txshracd2487?db=OVIC'},
+
+  {id:'social-explorer', name:'Social Explorer', icon:'🗺️',
+   desc:'Interactive web-based mapping tool with U.S. demographic data from 1790 to the present, sourced from every decennial census and the American Community Survey.',
+   bestFor:'Sociology, geography, political science, and urban studies students who need data maps and demographic trends over time.',
+   subjects:['social','history'], types:['stats'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Demographics','Mapping','Census Data','Visual Data','U.S. History'],
+   url:'https://www.socialexplorer.com/openathens'},
+
+  {id:'religion-phil', name:'Religion & Philosophy Collection', icon:'🕊️',
+   desc:'Peer-reviewed journals on world religions, denominational theology, biblical studies, epistemology, ethics, and the history of Western and Eastern philosophy.',
+   bestFor:'Religious studies, philosophy, theology, and ethics students at any level.',
+   subjects:['social','history'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Religion','Philosophy','Theology','Ethics','World Religions'],
+   url:'https://research.ebsco.com/c/mie23f?db=rlh'},
+
+  {id:'gale-psych', name:'Gale OneFile: Psychology', icon:'🧩',
+   desc:'Authoritative periodical content across all fields of psychology—abnormal, biological, cognitive, developmental, personality, social, and applied—in one searchable database.',
+   bestFor:'Psychology students who want broad coverage of the field without filtering through a multidisciplinary database.',
+   subjects:['social'], types:['peer-reviewed'], levels:['undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Psychology','Full-Text','Cognitive','Social Psychology','Applied'],
+   url:'https://link.gale.com/apps/PPPC?u=txshracd2487'},
+
+  /* ── HISTORY & CULTURE ─────────────────────────── */
+  {id:'american-history', name:'American History', icon:'🇺🇸',
+   desc:'Five hundred years of U.S. political, military, social, and cultural history: reference articles, primary documents, images, and timelines from colonization through the 21st century.',
+   bestFor:'American history research spanning any era—colonialism, Civil War, Reconstruction, Civil Rights, and beyond.',
+   subjects:['history'], types:['reference','primary'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['American History','Political History','Military History','Cultural','Primary Sources'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=http%3A%2F%2Fonline.infobaselearning.com%2FDirect.aspx%3Faid%3D79355%26pid%3DWE52'},
+
+  {id:'world-history', name:'Gale In Context: World History', icon:'🌏',
+   desc:'Articles, essays, biographies, and primary source documents about world history from ancient civilizations and classical empires through modern global events.',
+   bestFor:'World history courses covering any period or region, with a helpful mix of scholarly articles and primary documents.',
+   subjects:['history'], types:['reference','primary'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['World History','Primary Sources','Global','Ancient to Modern','Reference'],
+   url:'https://infotrac.galegroup.com/itweb/txshracd2487?db=WHIC'},
+
+  {id:'jstor', name:'JSTOR', icon:'🏛️',
+   desc:'2,000+ academic journals in humanities, social sciences, and sciences, plus Artstor\'s curated image collections from leading museums and archives worldwide.',
+   bestFor:'Advanced humanities, history, and social science research needing archival journal depth and historical source material.',
+   subjects:['history','literature','social'], types:['peer-reviewed','primary'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Academic Journals','Archives','Humanities','Art Images','Historical Depth'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=http%3A%2F%2Fwww.jstor.org%2F'},
+
+  {id:'heritagequest', name:'HeritageQuest Online', icon:'🌳',
+   desc:'Comprehensive American genealogical sources with coverage from the 1700s through the 20th century: census records, local histories, vital records, and military documents.',
+   bestFor:'Genealogy research and tracing family roots in the United States, particularly pre-digital era records.',
+   subjects:['history'], types:['primary','reference'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Genealogy','Census Records','Family History','Primary Sources','1700s–Present'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=http%3A%2F%2Fwww.heritagequestonline.com%2F'},
+
+  {id:'handbook-texas', name:'Handbook of Texas Online', icon:'⭐',
+   desc:'The Texas State Historical Association\'s definitive encyclopedia of Texas—covering history, geography, culture, notable Texans, cities, counties, and major events.',
+   bestFor:'Any research with a Texas angle: regional history, local government, notable people, or geographical features of the Lone Star State.',
+   subjects:['history'], types:['reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:true,
+   tags:['Texas History','Free','Encyclopedic','TSHA','Geography'],
+   url:'https://tshaonline.org/handbook/online'},
+
+  {id:'fold3', name:'Fold3 Library Edition', icon:'🎖️',
+   desc:'Millions of primary source military records—service files, photos, pension applications, and personal documents—from the Revolutionary War through modern conflicts, via Ancestry.com archives.',
+   bestFor:'Military history research, veterans\' records searches, and genealogical research with a military connection.',
+   subjects:['history'], types:['primary'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Military Records','Primary Sources','Genealogy','Revolutionary War–Present','Archives'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Ffold3library.proquest.com%2F'},
+
+  {id:'tx-reference', name:'Texas Reference Center', icon:'🤠',
+   desc:'Magazines, journals, newspapers, and books about the history, culture, business, and current events of Texas—curated specifically for the Lone Star State.',
+   bestFor:'Texas-specific research for local history papers, current events, culture studies, or Texas regional issues.',
+   subjects:['history','news'], types:['magazines','newspapers','reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:true,
+   tags:['Texas','Local History','Culture','Current Events','Multi-Format'],
+   url:'https://research.ebsco.com/c/mie23f?db=tih'},
+
+  /* ── LITERATURE & THE ARTS ─────────────────────── */
+  {id:'gale-lit-resource', name:'Gale Literature Resource Center', icon:'📖',
+   desc:'Up-to-date literary analysis, biographies, critical overviews, full-text essays, and reviews on 130,000+ writers from all eras, genres, and global traditions.',
+   bestFor:'Literary analysis papers, author research, and in-depth literary criticism for English and world literature courses.',
+   subjects:['literature'], types:['reference','peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Literary Criticism','Author Biographies','All Eras','Global Literature','Critical Essays'],
+   url:'https://infotrac.gale.com/itweb/txshracd2487?db=LitRC'},
+
+  {id:'blooms', name:"Bloom's Literature", icon:'✍️',
+   desc:'Examines great writers, important works, memorable characters, and influential literary movements—organized by author, work, character, and theme for essay-writing support.',
+   bestFor:'English students writing literary analysis papers or studying specific authors, texts, and movements in American and world literature.',
+   subjects:['literature'], types:['reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Literary Analysis','Authors','Works','Themes','Essay Support'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fonline.infobaselearning.com%2FDirect.aspx%3Faid%3D79355%26pid%3DWE54'},
+
+  {id:'litfinder', name:'Gale Literature: LitFinder', icon:'🖊️',
+   desc:'Full text of 132,000+ poems, 670,000+ poetry citations, plus short stories, speeches, and plays from every tradition—searchable by title, author, subject, or first line.',
+   bestFor:'Finding the complete text of poems, short stories, speeches, and dramatic works for literature, writing, or speech courses.',
+   subjects:['literature'], types:['primary','reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Poetry','Short Stories','Full Text','Primary Texts','Speeches & Plays'],
+   url:'https://link.gale.com/apps/LITF?u=txshracd2487'},
+
+  {id:'drama-online', name:'Drama Online', icon:'🎭',
+   desc:'Full-text plays, scholarly critical books, video productions, audio plays, and acting-technique resources spanning Shakespeare to contemporary global drama.',
+   bestFor:'Theater arts, drama, and English students studying dramatic literature, performance theory, or Shakespeare.',
+   subjects:['literature'], types:['peer-reviewed','video','primary'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Theater','Shakespeare','Video Productions','Scripts','Drama Criticism'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fwww.dramaonlinelibrary.com%2F'},
+
+  {id:'naxos', name:'Naxos Music Library', icon:'🎵',
+   desc:'Streaming music library spanning classical, jazz, country, world music, rock, pop, and blues—with full albums, curated playlists, and music history reference content.',
+   bestFor:'Music appreciation, music theory, musicology, and music history courses—or just listening while studying.',
+   subjects:['literature'], types:['audio','reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Music Streaming','Classical','Jazz','World Music','Music History'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Faustincc.naxosmusiclibrary.com%2F'},
+
+  {id:'oxford-art', name:'Oxford Art Online', icon:'🎨',
+   desc:'Oxford\'s Grove Art—thousands of high-quality images and authoritative articles on artists, movements, periods, and art theory from antiquity to contemporary art.',
+   bestFor:'Art history research, studio art students seeking context, and anyone analyzing artistic movements and individual artists.',
+   subjects:['literature'], types:['reference'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Art History','Artists','Images','Movements','Grove Art'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=http%3A%2F%2Fwww.oxfordartonline.com%2Fgroveart'},
+
+  {id:'comics-plus', name:'Comics Plus', icon:'💥',
+   desc:'Unlimited access to thousands of digital comics, graphic novels, and manga from popular and independent publishers—no waitlists or holds.',
+   bestFor:'Graphic narrative and comics studies, as well as personal reading of comics and manga collections.',
+   subjects:['literature'], types:['books'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Comics','Graphic Novels','Manga','Digital','No Waitlist'],
+   url:'https://austincommunitycollegelibrariestx.librarypass.com/'},
+
+  {id:'humanities', name:'Humanities Full Text', icon:'🏺',
+   desc:'Full-text peer-reviewed humanities journals covering literature, history, linguistics, philosophy, archaeology, performing arts, religion, and film studies.',
+   bestFor:'Advanced humanities research requiring full-text access to top peer-reviewed journals in multiple humanities disciplines.',
+   subjects:['literature','history'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Humanities','Literature','Philosophy','Linguistics','Full-Text'],
+   url:'https://research.ebsco.com/c/mie23f?db=hft'},
+
+  /* ── EDUCATION & TEACHING ──────────────────────── */
+  {id:'education-source', name:'Education Source', icon:'🎓',
+   desc:'The most complete education research database—thousands of journals, books, and conference papers across every educational specialty, from early childhood to higher education.',
+   bestFor:'Education students and teachers researching pedagogy, curriculum theory, assessment, educational technology, and policy.',
+   subjects:['education'], types:['peer-reviewed','books'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Comprehensive','All Levels','Peer-Reviewed','Pedagogy','Educational Research'],
+   url:'https://research.ebsco.com/c/mie23f?db=eue'},
+
+  {id:'eric', name:'ERIC (EBSCO)', icon:'🏫',
+   desc:'The world\'s largest education research database (U.S. Dept. of Education), with EBSCO\'s full-text links where available for journals, government reports, and conference papers.',
+   bestFor:'Any education research paper or thesis—ERIC is the essential database for the field of education at any level.',
+   subjects:['education'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Essential for Education','Government Database','Full-Text Links','All Levels'],
+   url:'https://research.ebsco.com/c/mie23f?db=eric'},
+
+  {id:'teachingbooks', name:'TeachingBooks.net', icon:'📗',
+   desc:'Audio readings, author interviews, lesson plans, book guides, and activities for 40,000+ children\'s and young adult books in English and Spanish.',
+   bestFor:'Education students, K–12 teachers, and school librarians working with children\'s and young adult literature.',
+   subjects:['education'], types:['reference','audio'], levels:['general','undergraduate'],
+   lang:['en','es'], texas:false,
+   tags:["Children's Books","YA Literature","Lesson Plans","Author Interviews","K–12"],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fwww.teachingbooks.net%2F'},
+
+  {id:'gale-edu-ref', name:"Gale OneFile: Educator's Reference Complete", icon:'🧑‍🏫',
+   desc:'Full text for education titles in the ERIC database, covering preschool through higher ed with specialties including bilingual education, technology, health education, and testing.',
+   bestFor:'Teachers and education majors who want ERIC-indexed content with guaranteed full-text article access.',
+   subjects:['education'], types:['peer-reviewed'], levels:['undergraduate'],
+   lang:['en'], texas:false,
+   tags:['ERIC Full-Text','Bilingual Education','All Levels','Ed Technology','Testing'],
+   url:'https://link.gale.com/apps/PROF?u=txshracd2487'},
+
+  {id:'teacher-ref', name:'Teacher Reference Center', icon:'📐',
+   desc:'Scholarly, peer-reviewed articles on teaching methods, curriculum design, professional development, and educational theory targeted specifically at K–12 and community college educators.',
+   bestFor:'Practicing teachers and pre-service education students looking for peer-reviewed research on classroom practice.',
+   subjects:['education'], types:['peer-reviewed'], levels:['undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Teaching Methods','Professional Development','K–12','Curriculum Design'],
+   url:'https://research.ebsco.com/c/mie23f?db=trh'},
+
+  /* ── LAW & GOVERNMENT ──────────────────────────── */
+  {id:'heinonline', name:'HeinOnline Academic', icon:'⚖️',
+   desc:'U.S. federal and state case law, statutes, and multidisciplinary content in 100+ subject areas—from constitutional law and criminal justice to international relations and women\'s studies.',
+   bestFor:'Legal research, pre-law students, political science, and any topic requiring authoritative primary legal texts.',
+   subjects:['law'], types:['peer-reviewed','primary','reference'], levels:['advanced','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Case Law','Statutes','Legal Research','Political Science','International Law'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fheinonline.org%2FHOL%2FWelcome'},
+
+  {id:'cq-researcher', name:'CQ Researcher', icon:'🏛️',
+   desc:'In-depth CQ Press reports on political, social, environmental, educational, and economic topics—each report covers a single issue with background, current debate, and bibliography.',
+   bestFor:'Introductory research on complex political and social issues. A reliable starting point that explains the debate before you dive into journal articles.',
+   subjects:['law'], types:['reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Policy Reports','Social Issues','Background Research','Starting Point'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fcqpress.sagepub.com%2Fcqresearcher%2F'},
+
+  {id:'gale-legal', name:'Gale LegalForms', icon:'📄',
+   desc:'Comprehensive collection of Texas legal documents and forms—continuously updated to reflect current state laws—with attorney Q&A and state-specific legal information.',
+   bestFor:'Texas legal research, paralegal studies, and students or professionals who need state-specific legal form templates.',
+   subjects:['law'], types:['reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:true,
+   tags:['Texas Law','Legal Forms','State-Specific','Paralegal','Attorney Q&A'],
+   url:'https://infotrac.gale.com/itweb/txshracd2487?db=TGLF'},
+
+  {id:'legal-collection', name:'Legal Collection', icon:'📜',
+   desc:'Scholarly and practitioner articles on criminal justice, international law, federal law, organized crime, legal ethics, and the legal profession.',
+   bestFor:'Criminal justice and pre-law students who need academic journal articles on law topics.',
+   subjects:['law'], types:['peer-reviewed'], levels:['undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Criminal Justice','International Law','Legal Ethics','Organized Crime','Pre-Law'],
+   url:'https://research.ebsco.com/c/mie23f?db=lgh'},
+
+  {id:'cq-press', name:'CQ Press Library', icon:'🗳️',
+   desc:'CQ Almanac, Congress and the Nation, Historic Documents Series, and Politics in America—authoritative references on the U.S. legislative process and political history.',
+   bestFor:'Political science students researching Congress, U.S. elections, legislation, and American government.',
+   subjects:['law'], types:['reference','primary'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['U.S. Politics','Congress','Legislation','Political History','Primary Documents'],
+   url:'https://cqpress.sagepub.com/'},
+
+  {id:'military-db', name:'Military Database', icon:'🪖',
+   desc:'Cross-disciplinary coverage of military topics: international relations, aeronautics, defense technology, civil engineering, communications, and political science.',
+   bestFor:'Military science, political science, and criminal justice students with research topics involving defense, government, or international security.',
+   subjects:['law','history'], types:['peer-reviewed','magazines'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Military','Defense','International Relations','Aeronautics','Political Science'],
+   url:'https://www.proquest.com/military?accountid=7013'},
+
+  /* ── NEWS & CURRENT EVENTS ─────────────────────── */
+  {id:'newsbank', name:'NewsBank', icon:'📰',
+   desc:'America\'s News Collection—3,500+ sources with 190 Texas titles including the Austin American-Statesman, Houston Chronicle, Fort Worth Star-Telegram, and San Antonio Express-News.',
+   bestFor:'Local and regional Texas news, Austin community stories, and statewide newspaper archives for current or historical research.',
+   subjects:['news'], types:['newspapers'], levels:['general','undergraduate'],
+   lang:['en'], texas:true,
+   tags:['Texas News','Austin American-Statesman','3,500+ Sources','Current & Historical'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Finfoweb.newsbank.com%2Fapps%2Fnews%2Feasy-search%3Fp%3DNewsBank'},
+
+  {id:'gale-news', name:'Gale OneFile: News', icon:'🗞️',
+   desc:'2,300+ major U.S. regional, national, and local newspapers plus leading international titles—ideal for tracking national debates and comparing news coverage across outlets.',
+   bestFor:'National and international news research, media analysis, and comparing coverage across U.S. and global newspapers.',
+   subjects:['news'], types:['newspapers'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['National News','International','2,300+ Newspapers','Media Analysis'],
+   url:'https://link.gale.com/apps/STND?u=txshracd2487'},
+
+  {id:'newspaper-source', name:'Newspaper Source Plus', icon:'📲',
+   desc:'Full-text domestic and international newspapers, news magazines, and transcripts from TV and radio broadcasts—great for media studies and tracking how stories evolve.',
+   bestFor:'Journalism, media studies, and communication students researching news coverage and media framing across formats.',
+   subjects:['news'], types:['newspapers','magazines'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['International','TV & Radio Transcripts','Media Studies','Full-Text','Journalism'],
+   url:'https://research.ebsco.com/c/mie23f?db=n5h'},
+
+  {id:'nytimes', name:'The New York Times', icon:'🗽',
+   desc:'Full access to NYTimes.com—current articles, multimedia, newsletters, archives, and podcasts. Register once with your ACC email for unlimited access.',
+   bestFor:'Current national and international news research and contemporary journalism. Register free with ACC email at nytimes.com/activate-access/edu-access.',
+   subjects:['news'], types:['newspapers'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['National Newspaper','Free with ACC Email','Multimedia','Archives','Podcasts'],
+   url:'https://www.nytimes.com'},
+
+  {id:'newspapers-tx', name:'Newspapers.com – Texas Edition', icon:'🤠',
+   desc:'Full runs of 200+ Texas regional newspapers from 1842 to 2024—an irreplaceable archive for Texas local history, genealogy, and studying how events were reported across the state.',
+   bestFor:'Historical Texas newspaper research, family genealogy searches, and studying how news events were covered at the local level.',
+   subjects:['news','history'], types:['newspapers','primary'], levels:['general','undergraduate'],
+   lang:['en'], texas:true,
+   tags:['Texas','Historical Newspapers','1842–2024','Genealogy','Local History'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fnewspaperslibrary.proquest.com'},
+
+  {id:'flipster', name:'Flipster – Digital Magazines', icon:'📱',
+   desc:'Digital newsstand with popular titles including Consumer Reports, Essence, Forbes, People, Vogue, Popular Science, and 100+ other consumer magazines.',
+   bestFor:'General interest reading and current-events awareness. Great for popular press citations or leisure reading.',
+   subjects:['news'], types:['magazines'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Popular Magazines','Consumer Reports','Vogue','Forbes','Digital Newsstand'],
+   url:'https://search.ebscohost.com/login.aspx?authtype=shib&custid=austin&groupid=main&profile=eon'},
+
+  /* ── CAREER & VOCATIONAL ───────────────────────── */
+  {id:'fergusons', name:"Ferguson's Career Guidance Center", icon:'💼',
+   desc:'Industry profiles, professional articles, school planning resources, and career skills advice covering virtually every occupation from accounting to zoology.',
+   bestFor:'Career exploration, occupational research, and students deciding on a major or planning their professional path.',
+   subjects:['career'], types:['reference','magazines'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Career Exploration','Occupational Research','Job Skills','Industry Profiles'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=http%3A%2F%2Fonline.infobaselearning.com%2FDirect.aspx%3Faid%3D79355%26pid%3DWE34'},
+
+  {id:'learning-express', name:'Learning Express Library Plus', icon:'✏️',
+   desc:'Practice tests and study guides for TOEFL, MCAT, ACT, SAT, GRE, GMAT, LSAT, NCLEX, and AP exams—plus job preparation, computer skills, and adult learning modules.',
+   bestFor:'Students preparing for standardized tests or licensing exams, and adult learners building career-ready skills.',
+   subjects:['career'], types:['books','reference'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Test Prep','GRE / MCAT / NCLEX','Career Skills','Adult Learning','Licensing Exams'],
+   url:'https://search.ebscohost.com/login.aspx?authtype=shib&custid=austin&groupid=main&profile=jobcar'},
+
+  {id:'vocational', name:'Vocational Search & Career Collection', icon:'🔩',
+   desc:'Trade and industry magazine articles on skilled trades, technical fields, automotive, HVAC, construction, culinary, and other vocational career paths.',
+   bestFor:'Technical and CTE program students researching industry news, trade practices, and vocational career development.',
+   subjects:['career'], types:['magazines'], levels:['general'],
+   lang:['en'], texas:false,
+   tags:['Trade Journals','Vocational','CTE','Technical Fields','Industry News'],
+   url:'https://research.ebsco.com/c/mie23f?db=voh'},
+
+  /* ── GENERAL / MULTIDISCIPLINARY ───────────────── */
+  {id:'academic-search', name:'Academic Search Complete', icon:'🔍',
+   desc:'The world\'s most comprehensive multidisciplinary academic database—thousands of full-text peer-reviewed journals covering virtually every academic discipline from A to Z.',
+   bestFor:'Any research topic when you want a single, powerful search across all academic disciplines simultaneously.',
+   subjects:['general'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['en'], texas:false,
+   tags:['Multidisciplinary','Comprehensive','Peer-Reviewed','Full-Text','All Subjects'],
+   url:'https://research.ebsco.com/c/mie23f?db=a9h'},
+
+  {id:'credo', name:'Credo Reference', icon:'📕',
+   desc:'Online collection of 1,000+ general and subject-specific reference works—encyclopedias, dictionaries, thesauruses, and atlases—on all major academic topics.',
+   bestFor:'Getting reliable background knowledge on any topic before diving into journal articles. Perfect for starting any paper.',
+   subjects:['general'], types:['reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Reference','Encyclopedias','Background Info','All Topics','Starting Point'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fsearch.credoreference.com%2F'},
+
+  {id:'ebook-central', name:'Ebook Central', icon:'📱',
+   desc:'350,000+ academic ebooks on almost every subject, including 100,000+ Spanish-language titles—from ProQuest, the world\'s largest academic ebook platform.',
+   bestFor:'Finding full-length scholarly books in any subject area. Ideal when you need book-length depth rather than article snippets.',
+   subjects:['general'], types:['books'], levels:['general','undergraduate','advanced'],
+   lang:['en','es'], texas:false,
+   tags:['eBooks','350,000+ Titles','Spanish Language','ProQuest','All Subjects'],
+   url:'https://ebookcentral.proquest.com/lib/austincc'},
+
+  {id:'gale-college', name:'Gale In Context: College', icon:'🏛️',
+   desc:'Interdisciplinary content designed specifically for college-level research, supporting critical thinking, communication, collaboration, and creativity across all fields.',
+   bestFor:'First- and second-year college students building research skills across multiple disciplines in one guided database.',
+   subjects:['general'], types:['peer-reviewed','magazines','reference'], levels:['undergraduate'],
+   lang:['en'], texas:false,
+   tags:['College Level','Critical Thinking','Interdisciplinary','Research Skills','Well-Rounded'],
+   url:'https://link.gale.com/apps/CSIC?u=txshracd2487'},
+
+  {id:'masterfile', name:'MasterFILE Complete', icon:'📂',
+   desc:'Broad general-audience database with articles on business, health, education, science, social issues, and more—many assigned a Lexile reading level indicator.',
+   bestFor:'General interest research and students who want broad topic coverage without limiting to a single discipline.',
+   subjects:['general'], types:['magazines','peer-reviewed'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['General Interest','Lexile Levels','Broad Coverage','Multi-Topic'],
+   url:'https://research.ebsco.com/c/mie23f?db=f6h'},
+
+  {id:'kanopy', name:'Kanopy', icon:'🎞️',
+   desc:'18,000+ streaming films including the Criterion Collection, award-winning documentaries, international cinema, educational titles, and TV series. Free with ACC library login.',
+   bestFor:'Film studies, documentary research, cultural analysis, and educational viewing across any subject area.',
+   subjects:['general','literature'], types:['video'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Criterion Collection','Documentaries','International Cinema','Free with ACC'],
+   url:'http://austincc.kanopystreaming.com'},
+
+  {id:'avon', name:'Academic Video Online', icon:'📽️',
+   desc:'70,000+ streaming videos from PBS, BBC, and Sony spanning anthropology, business, counseling, film, health, history, music, and more—the largest academic video collection available.',
+   bestFor:'Any subject where a documentary or educational video would supplement your academic reading and research.',
+   subjects:['general'], types:['video'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['PBS','BBC','70,000+ Videos','Multi-Subject','Academic Documentaries'],
+   url:'https://go.openathens.net/redirector/austincc.edu?url=https%3A%2F%2Fvideo.alexanderstreet.com%2Fchannel%2Facademic-video-online'},
+
+  {id:'fuente', name:'Fuente Académica Premier', icon:'🇧🇷',
+   desc:'Spanish and English scholarly journal articles from publishers in Latin America, Portugal, and Spain—covering all major academic subjects with an iberoamerican perspective.',
+   bestFor:'Spanish-language academic research, Latin American studies, and finding scholarly perspectives from the Spanish-speaking world.',
+   subjects:['general','social'], types:['peer-reviewed'], levels:['undergraduate','advanced'],
+   lang:['es','en'], texas:false,
+   tags:['Spanish','Latin American Studies','Iberoamerican','Multilingual','Scholarly'],
+   url:'https://research.ebsco.com/c/mie23f?db=fua'},
+
+  {id:'gale-biography', name:'Gale In Context: Biography', icon:'🧑',
+   desc:'600,000+ biographical entries on international figures from all time periods. Search by name, occupation, nationality, ethnicity, gender, or historical period.',
+   bestFor:'Researching notable individuals for history, science, politics, arts, and any discipline where a person is the focus.',
+   subjects:['general','history'], types:['reference'], levels:['general','undergraduate'],
+   lang:['en'], texas:false,
+   tags:['Biography','Historical Figures','600,000+ Entries','International','Searchable'],
+   url:'https://link.gale.com/apps/BIC?u=txshracd2487'},
+];
+
+/* ═══════════════════════════════════════════════════
+   SUBJECT AREAS
+═══════════════════════════════════════════════════ */
+const SUBJECTS = [
+  {id:'health',      icon:'🏥', name:'Health, Medicine & Nursing'},
+  {id:'business',    icon:'💼', name:'Business & Economics'},
+  {id:'science',     icon:'🔬', name:'Science, Technology & Engineering'},
+  {id:'social',      icon:'👥', name:'Social Sciences & Psychology'},
+  {id:'history',     icon:'🏛️', name:'History & Culture'},
+  {id:'literature',  icon:'📖', name:'Literature & the Arts'},
+  {id:'education',   icon:'🎓', name:'Education & Teaching'},
+  {id:'law',         icon:'⚖️', name:'Law & Government'},
+  {id:'news',        icon:'📰', name:'News & Current Events'},
+  {id:'career',      icon:'🚀', name:'Career & Vocational'},
+  {id:'general',     icon:'🔍', name:'General / Not Sure Yet'},
+];
+
+/* ═══════════════════════════════════════════════════
+   SOURCE TYPES
+═══════════════════════════════════════════════════ */
+const SOURCE_TYPES = [
+  {id:'peer-reviewed', icon:'🎓', name:'Peer-Reviewed Articles', desc:'Scholarly journal articles reviewed by experts in the field'},
+  {id:'magazines',     icon:'📄', name:'Magazines & Popular Press', desc:'News magazines, trade publications, and general-interest articles'},
+  {id:'newspapers',    icon:'📰', name:'Newspapers & News', desc:'Current and historical newspaper articles from local, national, and global sources'},
+  {id:'books',         icon:'📚', name:'Books & eBooks', desc:'Full-length book-depth coverage, including textbooks and scholarly monographs'},
+  {id:'video',         icon:'🎬', name:'Videos & Documentaries', desc:'Educational films, streaming documentaries, and instructional video'},
+  {id:'audio',         icon:'🎵', name:'Streaming Audio', desc:'Music libraries, audiobooks, and podcast-style recordings'},
+  {id:'primary',       icon:'🏺', name:'Primary Sources & Archives', desc:'Original documents, historical records, manuscripts, and firsthand accounts'},
+  {id:'stats',         icon:'📊', name:'Statistics & Data', desc:'Quantitative datasets, infographics, survey results, and demographic data'},
+  {id:'reference',     icon:'📕', name:'Reference Works', desc:'Encyclopedias, dictionaries, handbooks, and topic overviews'},
+];
+
+/* ═══════════════════════════════════════════════════
+   READING LEVELS
+═══════════════════════════════════════════════════ */
+const LEVELS = [
+  {id:'general',      icon:'🌱', name:'General / Consumer-Friendly', desc:'Clear, accessible language for any reader—great for personal health, quick background, or community topics'},
+  {id:'undergraduate',icon:'📘', name:'Undergraduate / College-Level', desc:'Standard college research: journal articles, academic sources, and course-related materials'},
+  {id:'advanced',     icon:'🔭', name:'Advanced / Graduate-Level', desc:'In-depth technical or theoretical literature for upper-division or graduate research'},
+  {id:'any',          icon:'🎯', name:'No Preference', desc:'Show me the best matches regardless of reading level'},
+];
+
+/* ═══════════════════════════════════════════════════
+   SPECIAL NEEDS
+═══════════════════════════════════════════════════ */
+const NEEDS = [
+  {id:'spanish',    icon:'🌐', txt:'I need Spanish-language content'},
+  {id:'texas',      icon:'⭐', txt:'I need Texas-specific content'},
+  {id:'primary',    icon:'🏺', txt:'I need primary sources or archival documents'},
+  {id:'multimedia', icon:'🎬', txt:'I prefer interactive or multimedia content'},
+  {id:'stats',      icon:'📊', txt:'I specifically need statistics or data'},
+  {id:'ebooks',     icon:'📱', txt:'I want books or eBooks, not just articles'},
+];
+
+/* ═══════════════════════════════════════════════════
+   KEYWORDS → SUBJECT DETECTION
+═══════════════════════════════════════════════════ */
+const KW = {
+  health:    ['health','medical','medicine','disease','illness','drug','medication','nurse','nursing','doctor','physician','clinical','patient','hospital','diagnosis','surgery','anatomy','physiology','cancer','diabetes','nutrition','diet','wellness','therapy','mental health','psychiatric','pharmacy','physical therapy','exercise','fitness','alternative medicine','holistic','emergency','treatment','prescription','allergy','infection','virus','pandemic','vaccine','symptom'],
+  business:  ['business','economy','economics','marketing','finance','accounting','management','company','corporation','stock','investment','entrepreneur','startup','retail','commerce','trade','banking','market','industry','human resources','organizational','leadership','supply chain','advertising','small business','international business','corporate','revenue','profit','loss'],
+  science:   ['science','biology','chemistry','physics','mathematics','engineering','computer','programming','software','technology','algorithm','genetics','dna','ecology','environment','climate','geology','astronomy','space','laboratory','experiment','stem','electrical','mechanical','environmental','sustainability','energy','artificial intelligence','machine learning','data science','coding','robotics','materials'],
+  social:    ['society','social','sociology','psychology','behavior','mental','emotion','counseling','family','community','culture','anthropology','race','racism','ethnicity','gender','lgbtq','immigration','poverty','crime','criminal','justice','inequality','diversity','social work','discrimination','prejudice','stereotypes','identity'],
+  history:   ['history','historical','war','military','revolution','ancient','medieval','colonial','civil war','world war','civilization','archaeological','heritage','genealogy','ancestor','geography','texas history','american history','decade','century','era','document','archive'],
+  literature:['literature','literary','novel','fiction','story','poetry','poem','play','drama','theater','art','painting','music','film','movie','documentary','writing','author','criticism','humanities','graphic novel','comic','shakespeare','reading','language','book review','character','theme','genre','narrative'],
+  education: ['education','teaching','teacher','classroom','curriculum','pedagogy','learning','school','student','college','university','child development','k-12','elementary','secondary','higher education','adult education','bilingual','instruction','assessment','testing','educational technology','professional development','lesson plan'],
+  law:       ['law','legal','legislation','government','policy','court','judge','attorney','crime','criminal justice','constitutional','civil rights','international law','regulation','statute','congress','senate','politics','political science','public policy','rights','amendment','jurisdiction'],
+  news:      ['news','current events','newspaper','media','journalism','press','reporter','recent','latest','election','local','national','international','headline','breaking','magazine','broadcast','media coverage'],
+  career:    ['career','job','employment','work','resume','interview','professional','vocational','trade','skill','internship','salary','occupation','workplace','certification','training','test prep','gre','mcat','nclex','nursing exam','licensure'],
+};
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let state = {
+  step: 0, text: '', subject: null,
+  types: [], level: null,
+  needs: { spanish:false, texas:false, primary:false, multimedia:false, stats:false, ebooks:false }
+};
+
+/* ═══════════════════════════════════════════════════
+   KEYWORD DETECTION  (for subject auto-select)
+═══════════════════════════════════════════════════ */
+function detectSubject(txt){
+  const t = txt.toLowerCase();
+  let best = 'general', bestScore = 0;
+  for(const [subj, words] of Object.entries(KW)){
+    let sc = 0;
+    for(const w of words){ if(t.includes(w)) sc++; }
+    if(sc > bestScore){ bestScore = sc; best = subj; }
+  }
+  return bestScore > 0 ? best : null;
+}
+
+/* ═══════════════════════════════════════════════════
+   TEXT-RELEVANCE SCORING  (primary factor)
+
+   Weights:
+     Layer A – Subject keyword density   up to ~60 pts
+     Layer B – Source-type language       up to ~20 pts
+     Layer C – Direct metadata word hit  up to ~40 pts
+   Raw total capped and normalized to 0-60 before
+   being added to the secondary (MC) score.
+═══════════════════════════════════════════════════ */
+
+// Words too generic to carry signal
+const STOP = new Set([
+  'the','a','an','is','are','was','were','be','been','being','have','has','had',
+  'do','does','did','will','would','could','should','may','might','shall','must',
+  'can','for','to','of','in','on','at','by','with','from','and','or','but','not',
+  'it','this','that','these','those','my','i','me','we','you','they','he','she',
+  'about','some','any','all','more','most','very','also','just','what','how','when',
+  'where','which','who','why','want','like','looking','need','information','research',
+  'find','help','paper','class','course','articles','article','sources','source',
+  'using','use','know','get','give','show','tell','write','read','look','take',
+  'good','best','work','make','used','into','than','then','them','there','their',
+  'been','only','over','after','before','since','such','each','much','many','your'
+]);
+
+// Phrases in the user's text that signal a specific source TYPE
+const TYPE_KW = {
+  'peer-reviewed': ['peer-reviewed','peer reviewed','scholarly','journal article','academic article',
+                    'research article','empirical','study','literature review','evidence-based',
+                    'refereed','academic journal','scientific journal','research study'],
+  'magazines':     ['magazine','popular press','general audience','trade magazine','consumer'],
+  'newspapers':    ['newspaper','news article','news story','current events','press','journalism',
+                    'breaking news','editorial'],
+  'books':         ['book','textbook','ebook','e-book','monograph','chapter','full-length'],
+  'video':         ['video','film','movie','documentary','streaming','stream','watch','visual',
+                    'footage','recording','clip'],
+  'audio':         ['music','audio','podcast','listen','recording','stream music','sound'],
+  'primary':       ['primary source','original document','archive','firsthand','manuscript',
+                    'historical record','diary','letter','speech','testimony','raw data',
+                    'census','genealogy','military record'],
+  'stats':         ['statistic','statistics','data','dataset','numbers','percentage','rate',
+                    'survey','poll','demographic','quantitative','figure','chart','graph'],
+  'reference':     ['encyclopedia','dictionary','handbook','reference','overview','background',
+                    'definition','summary','introduction to','explain']
+};
+
+function textScore(db){
+  const raw = state.text.toLowerCase().trim();
+  if(!raw) return 0;
+
+  let s = 0;
+
+  // ── LAYER A: subject keyword density ────────────────
+  // For each subject keyword list, count how many terms appear in the user's text.
+  // Award points only if this database covers that subject.
+  for(const [subj, words] of Object.entries(KW)){
+    if(!db.subjects.includes(subj)) continue;
+    for(const w of words){
+      if(raw.includes(w)) s += 3;   // 3 pts per matching subject keyword
+    }
+  }
+
+  // ── LAYER B: source-type language in text ───────────
+  // If the user wrote "peer-reviewed" or "documentary", reward DBs of that type.
+  for(const [type, phrases] of Object.entries(TYPE_KW)){
+    if(!db.types.includes(type)) continue;
+    for(const ph of phrases){
+      if(raw.includes(ph)) s += 4;  // 4 pts per matching type phrase
+    }
+  }
+
+  // ── LAYER C: direct word-match against DB metadata ──
+  // Split user text into meaningful tokens; match each against the DB's
+  // name, description, bestFor, and tags (highest signal: name + tags).
+  const userTokens = [...new Set(
+    raw.split(/\s+/)
+       .map(w => w.replace(/^[^a-z0-9-]+|[^a-z0-9-]+$/g,''))  // trim punctuation
+       .filter(w => w.length >= 4 && !STOP.has(w))
+  )];
+
+  if(userTokens.length > 0){
+    const nameLow    = db.name.toLowerCase();
+    const descLow    = db.desc.toLowerCase();
+    const bestLow    = db.bestFor.toLowerCase();
+    const tagsLow    = db.tags.join(' ').toLowerCase();
+
+    for(const tok of userTokens){
+      // Escape any regex-special chars in the token
+      const safe = tok.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const re   = new RegExp(safe,'g');
+
+      // Name match → highest signal (6 pts per occurrence)
+      const nameHits = (nameLow.match(re)||[]).length;
+      s += nameHits * 6;
+
+      // Tag match → strong signal (5 pts per occurrence)
+      const tagHits  = (tagsLow.match(re)||[]).length;
+      s += tagHits * 5;
+
+      // bestFor match → good signal (3 pts per occurrence)
+      const bestHits = (bestLow.match(re)||[]).length;
+      s += bestHits * 3;
+
+      // desc match → moderate signal (2 pts per occurrence)
+      const descHits = (descLow.match(re)||[]).length;
+      s += descHits * 2;
+    }
+  }
+
+  // Cap and return (raw scores can run well past 60 for strong matches;
+  // we normalize in score() so relative ordering is preserved)
+  return s;
+}
+
+/* ═══════════════════════════════════════════════════
+   MAIN SCORING  (text-first, MC answers refine)
+
+   Text relevance  → capped at 60  (primary ~60 %)
+   Subject match   → max 12        (secondary)
+   Source types    → max  4 each   (tertiary)
+   Reading level   → max  8
+   Special needs   → stacking bonus (user-declared)
+═══════════════════════════════════════════════════ */
+function score(db){
+  let s = 0;
+  const {subject, types, level, needs} = state;
+
+  // ── TEXT RELEVANCE (primary factor, max 60) ────────
+  const rawText = textScore(db);
+  s += Math.min(60, rawText);
+
+  // ── SUBJECT MATCH (secondary, max 12) ─────────────
+  // Still meaningful when text is vague, but can't override a strong text signal.
+  if(subject === 'general'){
+    s += db.subjects.includes('general') ? 8 : 4;
+  } else if(subject){
+    if(db.subjects.includes(subject))        s += 12;
+    else if(db.subjects.includes('general')) s += 4;
+  }
+
+  // ── SOURCE TYPE (up to 4 pts × number selected) ───
+  if(types.length > 0){
+    const hits = types.filter(t => db.types.includes(t)).length;
+    s += hits * 4;
+    if(hits > 0 && hits === types.length) s += 3;  // perfect-fit bonus
+  }
+
+  // ── READING LEVEL (max 8) ─────────────────────────
+  const levelOrder = ['general','undergraduate','advanced'];
+  if(level === 'any' || level === null){
+    s += 3;
+  } else if(db.levels.includes(level)){
+    s += 8;
+  } else {
+    const ui = levelOrder.indexOf(level);
+    for(const dl of db.levels){
+      const di = levelOrder.indexOf(dl);
+      if(di >= 0 && Math.abs(ui - di) === 1){ s += 2; break; }
+    }
+  }
+
+  // ── SPECIAL NEEDS (explicit user-declared boosts) ─
+  if(needs.spanish   && db.lang.includes('es'))                               s += 18;
+  if(needs.texas     && db.texas)                                              s += 15;
+  if(needs.primary   && db.types.includes('primary'))                         s += 12;
+  if(needs.multimedia && (db.types.includes('video')||db.types.includes('audio'))) s += 12;
+  if(needs.stats     && db.types.includes('stats'))                            s += 12;
+  if(needs.ebooks    && db.types.includes('books'))                            s += 10;
+
+  return s;
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+function go(n){
+  document.getElementById(`step-${state.step}`).classList.remove('active');
+  state.step = n;
+  document.getElementById(`step-${n}`).classList.add('active');
+  updateProgress();
+}
+
+function startWizard(){ renderAll(); go(1); }
+
+function startOver(){
+  state = {step:0, text:'', subject:null, types:[], level:null,
+    needs:{spanish:false,texas:false,primary:false,multimedia:false,stats:false,ebooks:false}};
+  document.getElementById('txt-input').value = '';
+  go(0);
+  document.getElementById('prog').classList.remove('show');
+}
+
+function onText(v){
+  state.text = v;
+  document.getElementById('btn1').disabled = (v.trim().length < 5);
+}
+
+/* ═══════════════════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════════════════ */
+function updateProgress(){
+  const prog = document.getElementById('prog');
+  if(state.step === 0 || state.step === 6){
+    prog.classList.remove('show'); return;
+  }
+  prog.classList.add('show');
+  const pct = ((state.step) / 5) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-lbl').textContent = `Step ${state.step} of 5`;
+  const dots = document.getElementById('prog-dots');
+  dots.innerHTML = '';
+  for(let i=1;i<=5;i++){
+    const d = document.createElement('div');
+    d.className = 'prog-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
+    dots.appendChild(d);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER ALL UI ONCE
+═══════════════════════════════════════════════════ */
+function renderAll(){
+  renderSubjects(); renderSources(); renderLevels(); renderNeeds();
+}
+
+/* ── Subject Cards ── */
+function renderSubjects(){
+  const detected = detectSubject(state.text);
+  if(detected) state.subject = detected;
+  const g = document.getElementById('subj-grid');
+  g.innerHTML = '';
+  SUBJECTS.forEach(subj => {
+    const d = document.createElement('div');
+    d.className = 'subj-card' + (state.subject === subj.id ? ' sel' : '');
+    d.innerHTML = `<span class="subj-icon">${subj.icon}</span><div class="subj-name">${subj.name}</div>`;
+    d.onclick = () => {
+      state.subject = subj.id;
+      document.querySelectorAll('.subj-card').forEach(c => c.classList.remove('sel'));
+      d.classList.add('sel');
+      document.getElementById('btn2').disabled = false;
+    };
+    g.appendChild(d);
+  });
+  // auto-detect note
+  const note = document.getElementById('detect-note');
+  if(detected && detected !== 'general'){
+    const s = SUBJECTS.find(x => x.id === detected);
+    note.innerHTML = `<div class="detect-note">✨ <span>Based on your description, we think your topic is <strong>${s.name}</strong>. Change it below if needed.</span></div>`;
+  } else {
+    note.innerHTML = '';
+  }
+  document.getElementById('btn2').disabled = !state.subject;
+}
+
+/* ── Source Type Cards ── */
+function renderSources(){
+  const g = document.getElementById('src-grid');
+  g.innerHTML = '';
+  SOURCE_TYPES.forEach(st => {
+    const d = document.createElement('div');
+    d.className = 'src-card' + (state.types.includes(st.id) ? ' sel' : '');
+    d.innerHTML = `<span class="src-ico">${st.icon}</span><div class="src-box">${state.types.includes(st.id)?'✓':''}</div><div><div class="src-lbl">${st.name}</div><div class="src-desc">${st.desc}</div></div>`;
+    d.onclick = () => {
+      const idx = state.types.indexOf(st.id);
+      if(idx >= 0) state.types.splice(idx,1);
+      else state.types.push(st.id);
+      d.classList.toggle('sel');
+      d.querySelector('.src-box').textContent = state.types.includes(st.id) ? '✓' : '';
+      document.getElementById('btn3').disabled = state.types.length === 0;
+    };
+    g.appendChild(d);
+  });
+  document.getElementById('btn3').disabled = state.types.length === 0;
+}
+
+/* ── Level Cards ── */
+function renderLevels(){
+  const g = document.getElementById('lvl-list');
+  g.innerHTML = '';
+  LEVELS.forEach(lv => {
+    const d = document.createElement('div');
+    d.className = 'lvl-card' + (state.level === lv.id ? ' sel' : '');
+    d.innerHTML = `<span class="lvl-ico">${lv.icon}</span><div><div class="lvl-n">${lv.name}</div><div class="lvl-d">${lv.desc}</div></div>`;
+    d.onclick = () => {
+      state.level = lv.id;
+      document.querySelectorAll('.lvl-card').forEach(c => c.classList.remove('sel'));
+      d.classList.add('sel');
+      document.getElementById('btn4').disabled = false;
+    };
+    g.appendChild(d);
+  });
+  document.getElementById('btn4').disabled = !state.level;
+}
+
+/* ── Needs Cards ── */
+function renderNeeds(){
+  const g = document.getElementById('need-grid');
+  g.innerHTML = '';
+  NEEDS.forEach(n => {
+    const d = document.createElement('div');
+    d.className = 'need-card' + (state.needs[n.id] ? ' sel' : '');
+    d.innerHTML = `<span class="need-ico">${n.icon}</span><span class="need-txt">${n.txt}</span>`;
+    d.onclick = () => {
+      state.needs[n.id] = !state.needs[n.id];
+      d.classList.toggle('sel');
+    };
+    g.appendChild(d);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   SHOW RESULTS
+═══════════════════════════════════════════════════ */
+function showResults(){
+  // Score and sort
+  const scored = DB.map(db => ({db, sc: score(db)}))
+                   .sort((a,b) => b.sc - a.sc);
+  const maxSc = scored[0].sc || 1;
+  const top3 = scored.slice(0,3).map(({db,sc},i) => ({
+    ...db,
+    matchPct: Math.max(55, Math.round((sc / maxSc) * (100 - i*7)))
+  }));
+
+  // Summary chips
+  const chips = document.getElementById('chips');
+  const subj = SUBJECTS.find(x => x.id === state.subject);
+  chips.innerHTML = '';
+  if(subj) chips.innerHTML += `<span class="chip">${subj.icon} ${subj.name}</span>`;
+  state.types.forEach(t => {
+    const st = SOURCE_TYPES.find(x => x.id === t);
+    if(st) chips.innerHTML += `<span class="chip">${st.icon} ${st.name}</span>`;
+  });
+  const lv = LEVELS.find(x => x.id === state.level);
+  if(lv && lv.id !== 'any') chips.innerHTML += `<span class="chip">${lv.icon} ${lv.name}</span>`;
+  Object.entries(state.needs).forEach(([k,v]) => {
+    if(v){ const n = NEEDS.find(x => x.id === k); if(n) chips.innerHTML += `<span class="chip">${n.icon} ${n.txt.replace('I need ','').replace('I prefer ','').replace("I specifically need ","").replace("I want ","")} </span>`; }
+  });
+
+  // Rank labels
+  const rankLabels = ['🥇 Top Recommendation', '🥈 Strong Match', '🥉 Also Great'];
+
+  // Build result cards
+  const list = document.getElementById('res-list');
+  list.innerHTML = '';
+  top3.forEach((db, i) => {
+    const card = document.createElement('div');
+    card.className = 'res-card';
+    card.innerHTML = `
+      <div class="res-rank">${rankLabels[i]}</div>
+      <div class="res-top">
+        <div class="res-name-area">
+          <div class="res-name">${db.name}</div>
+        </div>
+        <span class="res-ico">${db.icon}</span>
+      </div>
+      <div class="res-match-row">
+        <span class="match-lbl">Match</span>
+        <div class="match-track"><div class="match-fill" id="fill-${i}" style="width:0%"></div></div>
+        <span class="match-pct">${db.matchPct}%</span>
+      </div>
+      <div class="res-desc">${db.desc}</div>
+      <div class="res-why"><strong>Why this database?</strong> ${db.bestFor}</div>
+      <div class="res-tags">${db.tags.map(t=>`<span class="res-tag">${t}</span>`).join('')}</div>
+      <div class="res-footer">
+        <a class="res-link" href="${db.url}" target="_blank">Open Database &nbsp;↗</a>
+        ${db.texas ? '<span style="font-size:12px;color:#C98800;font-weight:700;">⭐ Texas-Specific</span>' : ''}
+        ${db.lang.includes('es') ? '<span style="font-size:12px;color:#5C2D91;font-weight:700;">🌐 Spanish Available</span>' : ''}
+      </div>`;
+    list.appendChild(card);
+  });
+
+  go(6);
+
+  // Animate match bars after paint
+  requestAnimationFrame(() => {
+    top3.forEach((db, i) => {
+      setTimeout(() => {
+        const el = document.getElementById(`fill-${i}`);
+        if(el) el.style.width = db.matchPct + '%';
+      }, i * 120);
     });
-  </script>
+  });
+}
+</script>
 </body>
 </html>
