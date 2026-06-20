@@ -1,282 +1,1165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jonathan Thorn, EdD | Librarian</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACC Library Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+
   <style>
-    :root{
-      --navy:#123f6b;
-      --blue:#1f6fb2;
-      --sky:#eef6ff;
-      --teal:#0e9aa7;
-      --gold:#f4b942;
-      --ink:#17324a;
-      --muted:#5d6b7a;
-      --card:#ffffff;
-      --line:#d9e5f2;
-      --shadow:0 20px 50px rgba(18,63,107,.12);
-      --radius:22px;
+    /* ═══════════════════════════════════════
+       DESIGN TOKENS  (ACC brand palette)
+    ═══════════════════════════════════════ */
+    :root {
+      --purple:      #5C2D91;
+      --purple-dk:   #3A1760;
+      --purple-nav:  #4a2275;
+      --purple-lt:   #EDE7F6;
+      --purple-xlt:  #F8F5FD;
+      --gold:        #F5A800;
+      --gold-dk:     #C98800;
+      --gold-lt:     #FFF8E1;
+      --white:       #FFFFFF;
+      --off-white:   #F5F5F5;
+      --border:      #D9D9D9;
+      --text:        #222222;
+      --text-md:     #555555;
+      --text-lt:     #888888;
+      --link:        #5C2D91;
+      --link-hover:  #3A1760;
+      --utility-bg:  #2a1250;
+      --footer-bg:   #3A1760;
+      --footer-text: #C8B8E8;
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   16px;
+      --radius-full: 9999px;
     }
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      padding:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(31,111,178,.16), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(14,154,167,.12), transparent 26%),
-        linear-gradient(180deg,#f8fbff 0%, #eef5fc 100%);
-      min-height:100%;
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 15px; }
+
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.55;
     }
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:1180px;margin:0 auto;padding:24px}
-    header{
-      background:linear-gradient(135deg,var(--navy),var(--blue));
-      color:#fff;
-      border-radius:28px;
-      padding:28px 28px 24px;
-      box-shadow:var(--shadow);
-      position:relative;
-      overflow:hidden;
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { color: var(--link-hover); text-decoration: underline; }
+    ul { list-style: none; }
+
+    /* ═══════════════════════════════════════
+       UTILITY BAR
+    ═══════════════════════════════════════ */
+    .utility-bar {
+      background: var(--utility-bg);
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    header::after{
-      content:"";
-      position:absolute;
-      right:-70px;
-      top:-70px;
-      width:240px;
-      height:240px;
-      border-radius:50%;
-      background:rgba(255,255,255,.11);
+    .utility-bar .inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 20px;
+      display: flex; justify-content: flex-end; align-items: center;
+      flex-wrap: wrap; gap: 4px;
     }
-    .top{
-      display:flex;
-      gap:18px;
-      align-items:center;
-      position:relative;
-      z-index:1;
+    .utility-bar a {
+      color: rgba(255,255,255,.78);
+      font-size: 11.5px; font-weight: 600;
+      padding: 2px 9px;
+      border-right: 1px solid rgba(255,255,255,.18);
+      white-space: nowrap;
+      transition: color .15s;
     }
-    .logo{
-      width:84px;
-      height:84px;
-      border-radius:20px;
-      background:rgba(255,255,255,.14);
-      border:1px solid rgba(255,255,255,.2);
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      letter-spacing:.08em;
+    .utility-bar a:last-child { border-right: none; }
+    .utility-bar a:hover { color: var(--gold); text-decoration: none; }
+
+    /* ═══════════════════════════════════════
+       MAIN HEADER  (purple, expanded)
+    ═══════════════════════════════════════ */
+    .site-header {
+      background: linear-gradient(135deg, var(--purple-dk) 0%, var(--purple) 60%, #7040a8 100%);
+      padding: 18px 0 14px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.28);
+      position: relative;
     }
-    h1{
-      margin:0;
-      font-size:clamp(2rem,3vw,3rem);
-      line-height:1.05;
+    .site-header .inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
     }
-    .subtitle{
-      margin:10px 0 0;
-      color:rgba(255,255,255,.9);
-      font-size:1.05rem;
-      max-width:60ch;
+
+    /* Logo block */
+    .header-logo-wrap { display: flex; align-items: center; flex-shrink: 0; }
+    .header-logo { height: 52px; display: block; }
+    .logo-fallback {
+      color: #fff; font-family: 'Montserrat', sans-serif;
+      font-size: 22px; font-weight: 800; letter-spacing: .4px;
     }
-    .pillrow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:18px;
+    .logo-fallback span { color: var(--gold); }
+
+    /* Divider between logo and card */
+    .header-divider {
+      width: 1px; height: 70px;
+      background: rgba(255,255,255,.22);
+      flex-shrink: 0;
     }
-    .pill{
-      background:rgba(255,255,255,.14);
-      border:1px solid rgba(255,255,255,.18);
-      color:#fff;
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:.92rem;
+
+    /* Librarian info card */
+    .librarian-card {
+      display: flex; align-items: center; gap: 14px;
+      flex: 1;
     }
-    main{
-      display:grid;
-      grid-template-columns:1.05fr .95fr;
-      gap:22px;
-      margin-top:22px;
+    .librarian-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      flex-shrink: 0;
+      border: 3px solid var(--gold);
+      box-shadow: 0 2px 10px rgba(0,0,0,.35);
+      overflow: hidden;
+      background: var(--purple-dk);
     }
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
+    .librarian-avatar img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
-    .section-title{
-      margin:0 0 12px;
-      font-size:1.1rem;
-      color:var(--navy);
-      text-transform:uppercase;
-      letter-spacing:.06em;
+    .librarian-info {}
+    .librarian-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16.5px; font-weight: 800; color: #fff;
+      letter-spacing: .2px; line-height: 1.2; margin-bottom: 2px;
     }
-    .lead{
-      margin:0;
-      color:var(--muted);
-      line-height:1.65;
+    .librarian-name a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(245,168,0,.5);
+      transition: border-color .15s, color .15s;
     }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:14px;
-      margin-top:18px;
+    .librarian-name a:hover {
+      color: #FFD055;
+      border-bottom-color: #FFD055;
+      text-decoration: none;
     }
-    .stat{
-      background:linear-gradient(180deg,#fff,#f8fbff);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
+    .librarian-position {
+      font-size: 12.5px; color: rgba(255,255,255,.82);
+      font-weight: 600; margin-bottom: 7px; letter-spacing: .2px;
     }
-    .stat b{
-      display:block;
-      font-size:1rem;
-      margin-bottom:6px;
+    .expertise-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .expertise-tag {
+      background: rgba(245,168,0,.18);
+      border: 1px solid rgba(245,168,0,.4);
+      color: var(--gold);
+      font-size: 10.5px; font-weight: 700; letter-spacing: .4px;
+      text-transform: uppercase;
+      padding: 3px 9px; border-radius: var(--radius-full);
+      white-space: nowrap;
     }
-    .stat span{
-      color:var(--muted);
-      font-size:.95rem;
+
+    /* Mobile hamburger */
+    .hamburger {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: 4px; margin-left: auto;
     }
-    .list{
-      display:grid;
-      gap:12px;
-      margin-top:12px;
+    .hamburger .bar {
+      display: block; width: 24px; height: 2px;
+      background: #fff; margin: 5px 0; border-radius: 2px;
+      transition: all .25s;
     }
-    .item{
-      padding:14px 16px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:#fff;
+
+    /* ═══════════════════════════════════════
+       MAIN NAVIGATION
+    ═══════════════════════════════════════ */
+    .main-nav {
+      background: var(--purple-nav);
+      border-top: 1px solid rgba(255,255,255,.12);
+      border-bottom: 3px solid var(--gold);
     }
-    .item strong{
-      display:block;
-      margin-bottom:4px;
+    .main-nav .inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 20px;
     }
-    .item small{color:var(--muted)}
-    .cta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:18px;
+    .nav-row {
+      display: flex; align-items: center; flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,.09);
     }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:12px 16px;
-      border-radius:14px;
-      font-weight:700;
-      border:0;
-      cursor:pointer;
-      transition:transform .15s ease, box-shadow .15s ease;
+    .nav-row:last-child { border-bottom: none; }
+    .nav-row a {
+      color: rgba(255,255,255,.88);
+      font-size: 12.5px; font-weight: 600;
+      padding: 9px 14px; display: block;
+      border-right: 1px solid rgba(255,255,255,.1);
+      white-space: nowrap;
+      transition: background .15s, color .15s;
     }
-    .btn:hover{transform:translateY(-1px)}
-    .btn.primary{
-      background:var(--navy);
-      color:#fff;
-      box-shadow:0 10px 24px rgba(18,63,107,.18);
+    .nav-row a:last-child { border-right: none; }
+    .nav-row a:hover {
+      background: rgba(255,255,255,.1);
+      color: var(--gold);
+      text-decoration: none;
     }
-    .btn.secondary{
-      background:#eaf3fb;
-      color:var(--navy);
-      border:1px solid #d5e3f2;
+    .nav-row a.active {
+      background: rgba(245,168,0,.15);
+      color: var(--gold);
     }
-    .contact{
-      display:grid;
-      gap:10px;
-      margin-top:12px;
+
+    /* Mobile nav panel */
+    .mobile-nav {
+      display: none;
+      background: var(--purple-dk);
+      padding: 12px 0;
+      border-top: 2px solid var(--gold);
     }
-    .contact a{
-      padding:12px 14px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
+    .mobile-nav.open { display: block; }
+    .mobile-nav a {
+      display: block; color: rgba(255,255,255,.88);
+      padding: 10px 24px; font-size: 13px; font-weight: 600;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: background .15s;
     }
-    footer{
-      margin:18px 4px 8px;
-      color:var(--muted);
-      font-size:.92rem;
-      text-align:center;
+    .mobile-nav a:hover { background: rgba(255,255,255,.08); text-decoration: none; color: var(--gold); }
+
+    /* ═══════════════════════════════════════
+       HERO / SEARCH
+    ═══════════════════════════════════════ */
+    .search-hero {
+      background: linear-gradient(180deg, var(--purple-xlt) 0%, var(--white) 100%);
+      padding: 38px 20px 30px;
+      border-bottom: 1px solid var(--border);
     }
-    @media (max-width:900px){
-      main{grid-template-columns:1fr}
-      .grid{grid-template-columns:1fr}
-      .top{align-items:flex-start}
-      .logo{width:70px;height:70px}
+    .search-hero .inner { max-width: 820px; margin: 0 auto; }
+    .search-hero h1 {
+      font-size: 14px; color: var(--text-md); font-weight: 600;
+      margin-bottom: 14px; text-align: center;
     }
-    @media print{
-      body{background:#fff}
-      header,.card{box-shadow:none}
+    .search-form {
+      display: flex; gap: 0; border: 2px solid var(--purple);
+      border-radius: var(--radius-md); overflow: hidden;
+      box-shadow: 0 4px 18px rgba(92,45,145,.12);
     }
+    .search-type {
+      background: var(--purple-lt); border: none;
+      padding: 0 14px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px; font-weight: 600; color: var(--purple);
+      cursor: pointer; border-right: 2px solid var(--purple);
+      min-width: 110px; outline: none;
+    }
+    .search-type:focus { background: var(--purple); color: #fff; }
+    .search-input {
+      flex: 1; border: none; padding: 13px 16px;
+      font-family: 'Open Sans', sans-serif; font-size: 14px;
+      color: var(--text); outline: none; background: #fff;
+    }
+    .search-input::placeholder { color: var(--text-lt); }
+    .search-btn {
+      background: var(--purple); color: #fff;
+      border: none; padding: 13px 26px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; letter-spacing: .3px;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .search-btn:hover { background: var(--purple-dk); }
+
+    .search-options {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px; flex-wrap: wrap; gap: 8px;
+    }
+    .search-checkbox {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 13px; color: var(--text-md); cursor: pointer;
+    }
+    .search-checkbox input { accent-color: var(--purple); cursor: pointer; }
+
+    /* Search action buttons row */
+    .search-actions {
+      display: flex; align-items: stretch; gap: 10px;
+      margin-top: 16px; flex-wrap: wrap;
+    }
+    .s-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 10px 18px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px; font-weight: 700;
+      border-radius: var(--radius-full); cursor: pointer;
+      transition: all .18s; white-space: nowrap; text-decoration: none;
+      border: 2px solid transparent;
+    }
+    .s-btn-outline {
+      background: var(--white);
+      color: var(--purple);
+      border-color: var(--purple);
+    }
+    .s-btn-outline:hover {
+      background: var(--purple);
+      color: #fff;
+      text-decoration: none;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(92,45,145,.25);
+    }
+    .s-btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, #FFB800 100%);
+      color: var(--purple-dk);
+      border-color: var(--gold);
+      box-shadow: 0 3px 12px rgba(245,168,0,.3);
+    }
+    .s-btn-gold:hover {
+      background: linear-gradient(135deg, #FFB800 0%, var(--gold) 100%);
+      color: var(--purple-dk);
+      text-decoration: none;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(245,168,0,.4);
+    }
+    .s-btn-diag {
+      background: var(--purple);
+      color: #fff;
+      border-color: var(--purple);
+      box-shadow: 0 3px 12px rgba(92,45,145,.25);
+    }
+    .s-btn-diag:hover {
+      background: var(--purple-dk);
+      color: #fff;
+      text-decoration: none;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(92,45,145,.35);
+    }
+
+    /* ═══════════════════════════════════════
+       "NEED MORE SPECIFIC SEARCH?" SECTION
+    ═══════════════════════════════════════ */
+    .specific-search {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 20px;
+    }
+    .specific-search .inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 14px;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .specific-lbl {
+      font-size: 13px; font-weight: 700; color: var(--text-md);
+      white-space: nowrap;
+    }
+    .specific-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--off-white); border: 1px solid var(--border);
+      color: var(--purple); font-size: 12.5px; font-weight: 700;
+      padding: 7px 15px; border-radius: var(--radius-full);
+      transition: all .15s; white-space: nowrap;
+    }
+    .specific-link:hover {
+      background: var(--purple); color: #fff; border-color: var(--purple);
+      text-decoration: none; transform: translateY(-1px);
+    }
+
+    /* ═══════════════════════════════════════
+       CHAT BANNER
+    ═══════════════════════════════════════ */
+    .chat-banner {
+      background: linear-gradient(90deg, var(--purple-dk) 0%, var(--purple) 100%);
+      padding: 13px 20px;
+    }
+    .chat-banner .inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      flex-wrap: wrap;
+    }
+    .chat-lbl {
+      color: rgba(255,255,255,.85); font-size: 13px; font-weight: 700;
+      letter-spacing: .3px;
+    }
+    .chat-btn {
+      background: var(--gold); color: var(--purple-dk);
+      font-size: 12.5px; font-weight: 800;
+      padding: 7px 18px; border-radius: var(--radius-full);
+      text-decoration: none; letter-spacing: .3px;
+      transition: background .15s, transform .15s;
+    }
+    .chat-btn:hover {
+      background: #FFB800; text-decoration: none;
+      transform: translateY(-1px);
+    }
+    #chat-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4caf50; display: inline-block;
+      animation: blink 2s infinite; flex-shrink: 0;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    /* ═══════════════════════════════════════
+       MAIN CONTENT
+    ═══════════════════════════════════════ */
+    .content-area {
+      max-width: 1200px; margin: 0 auto;
+      padding: 30px 20px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    /* Cards */
+    .content-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+    .card-head {
+      background: linear-gradient(90deg, var(--purple) 0%, var(--purple-nav) 100%);
+      color: #fff; padding: 13px 18px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px; font-weight: 800; letter-spacing: .3px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-head span { color: var(--gold); }
+    .card-body { padding: 18px; }
+
+    /* Students card */
+    .help-link {
+      display: flex; align-items: center; gap: 9px;
+      background: var(--gold-lt); border: 1px solid var(--gold);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      margin-bottom: 14px; text-decoration: none;
+      color: var(--purple-dk); font-weight: 700; font-size: 13.5px;
+      transition: background .15s;
+    }
+    .help-link:hover { background: var(--gold); text-decoration: none; }
+    .find-label {
+      font-size: 12px; font-weight: 700; color: var(--text-lt);
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px;
+    }
+    .find-links a {
+      display: inline-flex; align-items: center; gap: 5px;
+      color: var(--purple); font-size: 13px; font-weight: 600;
+      margin-right: 12px; margin-bottom: 6px;
+    }
+    .find-links a:hover { color: var(--gold-dk); }
+    .guides-link {
+      display: block; margin-top: 14px;
+      background: var(--purple-xlt); border-radius: var(--radius-sm);
+      padding: 10px 14px; color: var(--purple);
+      font-size: 13px; font-weight: 600; text-decoration: none;
+      border-left: 3px solid var(--purple);
+      transition: background .15s;
+    }
+    .guides-link:hover { background: var(--purple-lt); text-decoration: none; }
+
+    /* Get help sub-card */
+    .gethelp-card {
+      margin-top: 14px; border-top: 1px solid var(--border); padding-top: 14px;
+    }
+    .gethelp-card .gh-lbl {
+      font-size: 11.5px; font-weight: 700; color: var(--text-lt);
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px;
+    }
+    .gethelp-card ul li { margin-bottom: 6px; }
+    .gethelp-card ul a {
+      font-size: 13px; color: var(--purple); font-weight: 600;
+    }
+    .gethelp-card ul li span {
+      font-size: 13px; color: var(--text-md);
+    }
+
+    /* Resources grid */
+    .resources-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .res-item {
+      display: block; background: var(--off-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 12px;
+      font-size: 12.5px; font-weight: 700; color: var(--purple);
+      text-decoration: none; text-align: center;
+      transition: all .15s; line-height: 1.3;
+    }
+    .res-item:hover {
+      background: var(--purple); color: #fff; border-color: var(--purple);
+      text-decoration: none; transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(92,45,145,.2);
+    }
+    .res-item .ri-icon { display: block; font-size: 18px; margin-bottom: 4px; }
+
+    /* Faculty card */
+    .faculty-links a {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 0; font-size: 13px; font-weight: 600; color: var(--purple);
+      border-bottom: 1px solid var(--off-white);
+      transition: color .15s, padding-left .15s;
+    }
+    .faculty-links a:last-child { border-bottom: none; }
+    .faculty-links a:hover {
+      color: var(--purple-dk); text-decoration: none;
+      padding-left: 4px;
+    }
+    .faculty-links a::before {
+      content: '›'; color: var(--gold-dk); font-size: 16px; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Zoom/Events strip */
+    .event-strip {
+      margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .event-item {
+      flex: 1; min-width: 130px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      overflow: hidden; text-align: center; text-decoration: none;
+      transition: box-shadow .15s;
+    }
+    .event-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+    .event-item img { display: block; width: 100%; }
+
+    /* ═══════════════════════════════════════
+       FLIPSTER / MAGAZINE CAROUSEL STRIP
+    ═══════════════════════════════════════ */
+    .mag-strip {
+      border-top: 1px solid var(--border);
+      background: var(--off-white); padding: 18px 20px;
+    }
+    .mag-strip .inner { max-width: 1200px; margin: 0 auto; }
+    .mag-strip h3 {
+      font-size: 12px; font-weight: 800; color: var(--text-lt);
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 10px;
+    }
+    .mag-scroll {
+      display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px;
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    }
+    .mag-thumb {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      min-width: 70px; text-align: center; cursor: pointer;
+    }
+    .mag-thumb .cover {
+      width: 62px; height: 80px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #fff;
+      text-align: center; line-height: 1.2; padding: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .mag-title { font-size: 10px; color: var(--text-md); font-weight: 600; line-height: 1.2; }
+    .mag-more {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--purple); font-size: 12.5px; font-weight: 700;
+      margin-top: 10px; transition: color .15s;
+    }
+    .mag-more:hover { color: var(--gold-dk); text-decoration: none; }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    footer {
+      background: var(--footer-bg);
+      color: var(--footer-text);
+      padding: 36px 20px 20px;
+    }
+    .footer-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    footer h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px; font-weight: 800;
+      color: var(--gold); text-transform: uppercase; letter-spacing: .7px;
+      margin-bottom: 12px;
+    }
+    footer ul li { margin-bottom: 7px; }
+    footer ul a {
+      color: var(--footer-text); font-size: 12.5px;
+      transition: color .15s;
+    }
+    footer ul a:hover { color: var(--gold); text-decoration: none; }
+    footer address {
+      font-style: normal; font-size: 12.5px; line-height: 1.7;
+      color: var(--footer-text);
+    }
+    .social-row { display: flex; gap: 9px; margin-top: 10px; flex-wrap: wrap; }
+    .soc-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+      color: var(--footer-text); font-size: 13px;
+      transition: all .15s; text-decoration: none;
+    }
+    .soc-btn:hover {
+      background: var(--gold); color: var(--purple-dk); border-color: var(--gold);
+      text-decoration: none;
+    }
+    .footer-bottom {
+      max-width: 1200px; margin: 16px auto 0;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; flex-wrap: wrap;
+    }
+    .footer-bottom p { font-size: 11.5px; color: rgba(255,255,255,.45); }
+    .footer-bottom a { color: rgba(255,255,255,.55); }
+    .footer-bottom a:hover { color: var(--gold); text-decoration: none; }
+    .cloud-badge {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 11px; color: rgba(255,255,255,.4);
+    }
+    .cloud-badge img { height: 22px; opacity: .55; }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .footer-grid { grid-template-columns: repeat(2, 1fr); }
+      .content-area { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .site-header .inner { flex-direction: column; align-items: flex-start; }
+      .header-divider { display: none; }
+      .librarian-card { width: 100%; }
+      .header-logo { height: 40px; }
+      .hamburger { display: block; }
+      .main-nav .nav-row { display: none; }
+      .main-nav .nav-row.show { display: flex; }
+      .resources-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .search-form { flex-direction: column; border-radius: var(--radius-md); }
+      .search-type { border-right: none; border-bottom: 2px solid var(--purple); padding: 10px 14px; }
+      .search-btn { width: 100%; }
+    }
+
+    /* ═══════════════════════════════════════
+       TOOLTIP for expertise tags
+    ═══════════════════════════════════════ */
+    .expertise-tag {
+      position: relative; cursor: default;
+    }
+    .expertise-tag[data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute; top: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30,10,60,.92); color: #fff;
+      font-size: 11px; font-weight: 600; padding: 4px 9px;
+      border-radius: var(--radius-sm); white-space: nowrap;
+      pointer-events: none; z-index: 20;
+    }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute; top: -40px; left: 0;
+      background: var(--gold); color: var(--purple-dk);
+      padding: 8px 16px; font-weight: 700; z-index: 1000;
+      transition: top .2s;
+    }
+    .skip-link:focus { top: 0; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="top">
-        <div class="logo">JT</div>
-        <div>
-          <h1>Jonathan Thorn, EdD</h1>
-          <div class="subtitle">Librarian at Austin Community College focused on Artificial Intelligence, Research Instruction, and Writing &amp; Editing.</div>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ═══════════════════════════════════════
+     UTILITY BAR
+═══════════════════════════════════════ -->
+<div class="utility-bar" role="navigation" aria-label="Utility navigation">
+  <div class="inner">
+    <a href="https://library.austincc.edu">Home</a>
+    <a href="https://austincc.ent.sirsi.net/client/en_US/default/search/patronlogin/">My Account</a>
+    <a href="https://library.austincc.edu/gen-info/services/stuservices-about.php">Students</a>
+    <a href="https://library.austincc.edu/gen-info/services/facservices-about.php">Faculty</a>
+    <a href="https://library.austincc.edu/help/ask.php">Get Help</a>
+    <a href="https://library.austincc.edu/loc/">Hours</a>
+    <a href="https://library.austincc.edu/gen-info/about.php">About Us</a>
+    <a href="https://library.austincc.edu/gen-info/acc-links.php">ACC Links</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SITE HEADER  (expanded)
+═══════════════════════════════════════ -->
+<header class="site-header" role="banner">
+  <div class="inner">
+
+    <!-- Logo -->
+    <div class="header-logo-wrap">
+      <a href="https://library.austincc.edu" aria-label="ACC Library Services Home">
+        <img src="https://library.austincc.edu/img/accls-horz.svg"
+             alt="ACC Library Services"
+             class="header-logo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="logo-fallback" style="display:none">
+          <span>ACC</span> Library Services
+        </div>
+      </a>
+    </div>
+
+    <!-- Divider -->
+    <div class="header-divider" aria-hidden="true"></div>
+
+    <!-- Librarian Info Card -->
+    <div class="librarian-card" role="complementary" aria-label="Librarian contact information">
+      <div class="librarian-avatar">
+        <img src="data:image/jpeg;base64,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" alt="Jonathan Thorn, EdD">
+      </div>
+      <div class="librarian-info">
+        <div class="librarian-name">
+          <a href="mailto:kthorn98@gmail.com" title="Email Jonathan Thorn, EdD">
+            Jonathan Thorn, EdD
+          </a>
+        </div>
+        <div class="librarian-position">Librarian &nbsp;·&nbsp; ACC Library Services</div>
+        <div class="expertise-row" aria-label="Areas of expertise">
+          <span class="expertise-tag" data-tip="Generative AI in library instruction">
+            🤖 Artificial Intelligence
+          </span>
+          <span class="expertise-tag" data-tip="Information literacy &amp; academic research">
+            🔍 Research Instruction
+          </span>
+          <span class="expertise-tag" data-tip="Academic writing &amp; editorial support">
+            ✍️ Writing &amp; Editing
+          </span>
         </div>
       </div>
-      <div class="pillrow" aria-label="Expertise highlights">
-        <span class="pill">Artificial Intelligence</span>
-        <span class="pill">Research Instruction</span>
-        <span class="pill">Writing &amp; Editing</span>
-        <span class="pill">Austin Community College</span>
-      </div>
-    </header>
+    </div>
 
-    <main>
-      <section class="card">
-        <h2 class="section-title">About</h2>
-        <p class="lead">I design learning experiences, support academic research, and help students and faculty use information ethically and effectively. My work blends library service, AI literacy, and clear communication.</p>
+    <!-- Mobile hamburger -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
 
-        <div class="grid" role="list" aria-label="Profile highlights">
-          <div class="stat" role="listitem"><b>Position</b><span>Librarian</span></div>
-          <div class="stat" role="listitem"><b>Institution</b><span>Austin Community College</span></div>
-          <div class="stat" role="listitem"><b>Focus</b><span>AI, research, and editing</span></div>
-        </div>
+  </div>
+</header>
 
-        <div class="cta">
-          <a class="btn primary" href="dbdiag.html">Open ACC Database Finder</a>
-          <button class="btn secondary" id="copyBtn" type="button">Copy Name</button>
-        </div>
-      </section>
-
-      <aside class="card">
-        <h2 class="section-title">Services</h2>
-        <div class="list">
-          <div class="item"><strong>Research Instruction</strong><small>Guidance on databases, search strategies, and source evaluation.</small></div>
-          <div class="item"><strong>Writing &amp; Editing</strong><small>Support for clarity, structure, tone, and academic style.</small></div>
-          <div class="item"><strong>Artificial Intelligence</strong><small>Practical AI use, literacy, and responsible integration into learning.</small></div>
-        </div>
-
-        <div class="contact" aria-label="Quick contact actions">
-          <a href="#" onclick="alert('Replace this with your email link or contact form.'); return false;">Email / Contact</a>
-          <a href="#" onclick="alert('Replace this with your scheduling link.'); return false;">Schedule a Consultation</a>
-        </div>
-      </aside>
-    </main>
-
-    <footer>Jonathan Thorn, EdD • Austin Community College</footer>
+<!-- ═══════════════════════════════════════
+     MAIN NAVIGATION
+═══════════════════════════════════════ -->
+<nav class="main-nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <div class="inner">
+    <div class="nav-row">
+      <a href="https://library.austincc.edu" class="active">Home</a>
+      <a href="https://library.austincc.edu/gen-info/about.php">About Us</a>
+      <a href="https://library.austincc.edu/gen-info/services/stuservices-about.php">For Students</a>
+      <a href="https://library.austincc.edu/gen-info/services/facservices-about.php">For Faculty</a>
+      <a href="https://library.austincc.edu/help/ask.php">Get Help</a>
+      <a href="https://library.austincc.edu/loc/">Hours</a>
+      <a href="https://austincc.ent.sirsi.net/client/en_US/default/search/patronlogin/">My Library Account</a>
+    </div>
+    <div class="nav-row">
+      <a href="https://library.austincc.edu/eresources/searchall.php">Search Books &amp; Articles</a>
+      <a href="https://austincc.sirsi.net/">Classic Catalog</a>
+      <a href="https://austincc.ent.sirsi.net/client/reserves">Course Reserves</a>
+      <a href="https://library.austincc.edu/eresources/atoz.php">A-Z List of Databases</a>
+      <a href="https://publications.ebsco.com/c/v7c2cl">Journal Finder</a>
+    </div>
   </div>
 
-  <script>
-    const btn = document.getElementById('copyBtn');
-    btn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText('Jonathan Thorn, EdD');
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = 'Copy Name', 1400);
-      } catch (e) {
-        alert('Copying is not supported in this browser.');
-      }
+  <!-- Mobile Nav (toggled) -->
+  <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+    <a href="https://library.austincc.edu">🏠 Home</a>
+    <a href="https://library.austincc.edu/gen-info/about.php">About Us</a>
+    <a href="https://library.austincc.edu/gen-info/services/stuservices-about.php">For Students</a>
+    <a href="https://library.austincc.edu/gen-info/services/facservices-about.php">For Faculty</a>
+    <a href="https://library.austincc.edu/help/ask.php">Get Help</a>
+    <a href="https://library.austincc.edu/loc/">Hours &amp; Locations</a>
+    <a href="https://austincc.ent.sirsi.net/client/en_US/default/search/patronlogin/">My Library Account</a>
+    <a href="https://library.austincc.edu/eresources/searchall.php">Search Books &amp; Articles</a>
+    <a href="https://austincc.sirsi.net/">Classic Catalog</a>
+    <a href="https://austincc.ent.sirsi.net/client/reserves">Course Reserves</a>
+    <a href="https://library.austincc.edu/eresources/atoz.php">A-Z List of Databases</a>
+    <a href="https://publications.ebsco.com/c/v7c2cl">Journal Finder</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HERO / SEARCH
+═══════════════════════════════════════ -->
+<main id="main-content">
+<section class="search-hero" aria-labelledby="search-heading">
+  <div class="inner">
+    <h1 id="search-heading">
+      Search the Library for books, ebooks, movies, music, articles, and more.
+    </h1>
+
+    <form class="search-form" role="search" action="https://research.ebsco.com/c/jjkmuy/search" method="get" onsubmit="return handleSearch(event)">
+      <select class="search-type" id="search-type" aria-label="Search by">
+        <option value="keyword">Keyword</option>
+        <option value="title">Title</option>
+        <option value="author">Author</option>
+      </select>
+      <input class="search-input" type="text" id="search-q" name="q"
+             placeholder="Search articles, books, journals &amp; more"
+             aria-label="Search query">
+      <button class="search-btn" type="submit">Search</button>
+    </form>
+
+    <div class="search-options">
+      <label class="search-checkbox">
+        <input type="checkbox" id="limit-books"> Limit to Books, Ebooks, &amp; Movies
+      </label>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="search-actions">
+      <a class="s-btn s-btn-outline"
+         href="https://austincc.ent.sirsi.net/client/en_US/default"
+         target="_blank" rel="noopener">
+        🗃️ Enterprise Catalog
+      </a>
+      <a class="s-btn s-btn-outline"
+         href="https://research.ebsco.com/c/jjkmuy/search/advanced/filters"
+         target="_blank" rel="noopener">
+        🔬 Advanced Search
+      </a>
+      <a class="s-btn s-btn-gold" href="dbdiag.html">
+        🎯 Database Diagnostic Tool
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     NEED A MORE SPECIFIC SEARCH?
+═══════════════════════════════════════ -->
+<section class="specific-search" aria-label="Additional search options">
+  <div class="inner">
+    <span class="specific-lbl">Need a more specific search?</span>
+    <a class="specific-link"
+       href="https://library.austincc.edu/eresources/atoz.php">
+      🗂️ A-Z List of Databases
+    </a>
+    <a class="specific-link"
+       href="https://publications.ebsco.com/c/v7c2cl"
+       target="_blank" rel="noopener">
+      📰 Journal Finder
+    </a>
+    <a class="specific-link"
+       href="https://library.austincc.edu/eresources/searchsite.php">
+      🔍 Search the Library Web Site
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CHAT BANNER
+═══════════════════════════════════════ -->
+<div class="chat-banner" role="complementary" aria-label="Chat services">
+  <div class="inner">
+    <span id="chat-dot" aria-label="Live chat online" title="Chat available now"></span>
+    <span class="chat-lbl">CHAT SERVICES are available 24/7 with expert librarians.</span>
+    <a class="chat-btn" href="https://library.austincc.edu/help/ask.php">
+      Chat Now →
+    </a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN CONTENT: 2 COLUMNS
+═══════════════════════════════════════ -->
+<div class="content-area" role="region" aria-label="Library services">
+
+  <!-- LEFT: Students -->
+  <div>
+    <div class="content-card">
+      <div class="card-head">
+        📚 What's Online? — <span>Students</span>
+      </div>
+      <div class="card-body">
+        <a class="help-link" href="https://library.austincc.edu/help/ask.php">
+          🙋 Get Help! Ask a Librarian
+        </a>
+
+        <div class="find-label">Find:</div>
+        <div class="find-links">
+          <a href="https://research.ebsco.com/c/jjkmuy/search">📖 Books &amp; Ebooks</a>
+          <a href="https://research.ebsco.com/c/jjkmuy/search">📄 Journal Articles</a>
+          <a href="https://library.austincc.edu/eresources/atoz.php">🗂️ Databases</a>
+        </div>
+
+        <a class="guides-link"
+           href="https://researchguides.austincc.edu/?b=g&d=a">
+          📘 Use our online research guides — linked to class and career content →
+        </a>
+
+        <div class="gethelp-card">
+          <div class="gh-lbl">Contact a Librarian</div>
+          <ul>
+            <li><a href="https://library.austincc.edu/help/ask.php">💬 24/7 Chat with Expert Librarians</a></li>
+            <li><a href="https://library.austincc.edu/help/ask.php">📞 Phone Us</a></li>
+            <li><span>✉️ Email: <a href="mailto:livechatacc@chat.libraryh3lp.com">livechatacc@chat.libraryh3lp.com</a></span></li>
+            <li><a href="https://calendly.com/d/csbb-q2p-zk7/zoom-a-librarian" target="_blank" rel="noopener">🎥 Zoom a Librarian</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zoom/Events images -->
+    <div class="event-strip">
+      <a class="event-item"
+         href="https://calendly.com/d/csbb-q2p-zk7/zoom-a-librarian"
+         target="_blank" rel="noopener"
+         title="Zoom a Librarian">
+        <img src="https://library.austincc.edu/img/ZAL.png"
+             alt="Zoom a Librarian"
+             onerror="this.parentElement.style.display='none'">
+      </a>
+      <a class="event-item"
+         href="https://researchguides.austincc.edu/LSEvents"
+         target="_blank" rel="noopener"
+         title="Library Events">
+        <img src="https://library.austincc.edu/img/EventsCal.png"
+             alt="Library Events Calendar"
+             onerror="this.parentElement.style.display='none'">
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Resources (Faculty + Quick Links) -->
+  <div>
+    <div class="content-card">
+      <div class="card-head">
+        🏛️ What's Online? — <span>Faculty</span>
+      </div>
+      <div class="card-body">
+        <div class="faculty-links">
+          <a href="http://library.austincc.edu/help/iloptions.php#request">Request Librarian Instruction</a>
+          <a href="https://researchguides.austincc.edu/?b=s">Online Research Guides by Subject</a>
+          <a href="https://library.austincc.edu/gen-info/facultylibrarians-subject.php">Faculty Librarians by Area of Study</a>
+          <a href="https://lookerstudio.google.com/s/gGhPl28hst4" target="_blank" rel="noopener">Dashboard Analytics</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Resources Grid -->
+    <div class="content-card" style="margin-top:16px">
+      <div class="card-head">
+        ⚡ Quick Resources
+      </div>
+      <div class="card-body">
+        <div class="resources-grid">
+          <a class="res-item" href="https://austincc.ent.sirsi.net/client/en_US/default/search/patronlogin/">
+            <span class="ri-icon">👤</span>My Library Account
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/gen-info/lending-about.php">
+            <span class="ri-icon">📦</span>Checkout Materials
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/loc/index.php">
+            <span class="ri-icon">📍</span>Locations &amp; Hours
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/gen-info/services/groupstudy-about.php">
+            <span class="ri-icon">🚪</span>Reserve a Room
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/gen-info/services/ss-txtbk.php">
+            <span class="ri-icon">📗</span>Textbook Help
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/help/tutorials.php">
+            <span class="ri-icon">🎓</span>Online Tutorials
+          </a>
+          <a class="res-item" href="https://researchguides.austincc.edu/">
+            <span class="ri-icon">🗺️</span>Research Guides
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/help/documentation.php">
+            <span class="ri-icon">❝❞</span>Citing Sources
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/gen-info/services/stuservices-about.php">
+            <span class="ri-icon">🎒</span>Student Services
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/gen-info/services/facservices-about.php">
+            <span class="ri-icon">🧑‍🏫</span>Faculty Services
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/help/faqs/index.php">
+            <span class="ri-icon">❓</span>How Do I… FAQs
+          </a>
+          <a class="res-item" href="https://library.austincc.edu/help/offcampus.php">
+            <span class="ri-icon">🏠</span>Off-Campus Access
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content-area -->
+
+<!-- ═══════════════════════════════════════
+     MAGAZINE STRIP (Flipster)
+═══════════════════════════════════════ -->
+<section class="mag-strip" aria-label="Digital magazines">
+  <div class="inner">
+    <h3>Browse Digital Magazines — Flipster</h3>
+    <div class="mag-scroll" id="mag-scroll">
+      <!-- Thumbnails injected by JS -->
+    </div>
+    <a class="mag-more"
+       href="https://search.ebscohost.com/login.aspx?authtype=shib&custid=austin&db=eon&profile=eon"
+       target="_blank" rel="noopener">
+      Browse full magazine collection →
+    </a>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer role="contentinfo">
+  <div class="footer-grid">
+
+    <!-- Col 1: Division + ACC -->
+    <div>
+      <h4>Teaching &amp; Learning Excellence Division</h4>
+      <ul>
+        <li><a href="https://tled.austincc.edu/about-tled/">About TLED</a></li>
+        <li><a href="https://library.austincc.edu/gen-info/privacy-information.php">Privacy Information</a></li>
+        <li><a href="http://www.austincc.edu/legalnotices/">Legal Notices</a></li>
+        <li><a href="https://www.austincc.edu/">ACC Home Page</a></li>
+      </ul>
+    </div>
+
+    <!-- Col 2: Address -->
+    <div>
+      <h4>ACC Library Services</h4>
+      <address>
+        Administrative Office<br>
+        5930 Middle Fiskville<br>
+        Austin, TX 78752<br>
+        512.223.3084
+      </address>
+      <ul style="margin-top:10px">
+        <li><a href="https://library.austincc.edu/gen-info/dir/ls-dir.php">Staff Directory</a></li>
+        <li><a href="https://library.austincc.edu/loc/index.php">Hours &amp; Locations</a></li>
+      </ul>
+      <div class="cloud-badge" style="margin-top:12px">
+        <img src="https://library.austincc.edu/img/cloud3.png"
+             alt="AWS Cloud"
+             onerror="this.style.display='none'">
+        <span>Library website in the AWS Cloud</span>
+      </div>
+    </div>
+
+    <!-- Col 3: Policies -->
+    <div>
+      <h4>Policies &amp; Guidelines</h4>
+      <ul>
+        <li><a href="https://library.austincc.edu/gen-info/about-mission.php">Mission &amp; Goals</a></li>
+        <li><a href="https://library.austincc.edu/gen-info/aup/acceptableuse.php">Acceptable Use Guidelines</a></li>
+        <li><a href="https://library.austincc.edu/gen-info/about-conduct.php">Conduct Policies</a></li>
+        <li><a href="https://library.austincc.edu/gen-info/lending-about.php">Checkout Policies</a></li>
+      </ul>
+      <div class="social-row" aria-label="Social media links">
+        <a class="soc-btn" href="https://facebook.com/acclibraryservices" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook">f</a>
+        <a class="soc-btn" href="https://twitter.com/acclibraries" target="_blank" rel="noopener" aria-label="Twitter / X" title="Twitter">𝕏</a>
+        <a class="soc-btn" href="https://instagram.com/acclibraries" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">📷</a>
+        <a class="soc-btn" href="https://www.youtube.com/acclibraryservices" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">▶</a>
+      </div>
+    </div>
+
+    <!-- Col 4: Contact -->
+    <div>
+      <h4>Comments? Requests? Questions?</h4>
+      <ul>
+        <li><a href="mailto:livechatacc@chat.libraryh3lp.com">✉️ Email Us</a></li>
+        <li><a href="https://library.austincc.edu/help/askpurchase.php">📖 Suggest a Book or Video</a></li>
+        <li><a href="https://library.austincc.edu/help/iloptions.php#presentationst">🎓 Request Instruction Class</a></li>
+        <li><a href="https://library.austincc.edu/help/askfeedback.php">💬 Comments &amp; Feedback</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>© Austin Community College Library Services &nbsp;·&nbsp;
+       <a href="https://library.austincc.edu">library.austincc.edu</a>
+    </p>
+    <p>Page maintained by
+      <a href="mailto:kthorn98@gmail.com">Jonathan Thorn, EdD</a>
+    </p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+  /* ── Mobile hamburger ────────────────── */
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobile-nav');
+
+  hamburger.addEventListener('click', () => {
+    const open = mobileNav.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    mobileNav.setAttribute('aria-hidden', open ? 'false' : 'true');
+    // Animate bars to X
+    const bars = hamburger.querySelectorAll('.bar');
+    if (open) {
+      bars[0].style.transform = 'translateY(7px) rotate(45deg)';
+      bars[1].style.opacity = '0';
+      bars[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+    } else {
+      bars[0].style.transform = '';
+      bars[1].style.opacity = '';
+      bars[2].style.transform = '';
+    }
+  });
+
+  /* ── Search handler ──────────────────── */
+  function handleSearch(e) {
+    e.preventDefault();
+    const q    = document.getElementById('search-q').value.trim();
+    const type = document.getElementById('search-type').value;
+    const limit = document.getElementById('limit-books').checked;
+    if (!q) {
+      document.getElementById('search-q').focus();
+      return false;
+    }
+    // Build EBSCOhost URL
+    let url = 'https://research.ebsco.com/c/jjkmuy/search?q=' + encodeURIComponent(q);
+    if (type === 'title')  url += '&searchField=TI';
+    if (type === 'author') url += '&searchField=AU';
+    if (limit)             url += '&limiters=FT1%3AY';
+    window.open(url, '_blank');
+  }
+
+  /* ── Magazine strip ──────────────────── */
+  const MAGS = [
+    { title: 'Consumer\nReports',     color: '#1565C0' },
+    { title: 'Forbes',                color: '#B71C1C' },
+    { title: 'National\nGeographic',  color: '#F9A825' },
+    { title: 'Popular\nScience',      color: '#1B5E20' },
+    { title: 'Essence',               color: '#4A148C' },
+    { title: 'Vogue',                 color: '#212121' },
+    { title: 'People',                color: '#C62828' },
+    { title: 'Sports\nIllustrated',   color: '#1565C0' },
+    { title: 'Rolling\nStone',        color: '#880E4F' },
+    { title: 'Wired',                 color: '#263238' },
+    { title: 'Time',                  color: '#D32F2F' },
+    { title: 'The Atlantic',          color: '#006064' },
+  ];
+
+  const scroll = document.getElementById('mag-scroll');
+  MAGS.forEach(m => {
+    const wrap = document.createElement('div');
+    wrap.className = 'mag-thumb';
+    wrap.innerHTML = `
+      <div class="cover" style="background:${m.color}">
+        ${m.title.replace('\n','<br>')}
+      </div>
+      <div class="mag-title">${m.title.replace('\n',' ')}</div>`;
+    scroll.appendChild(wrap);
+  });
+
+  /* ── Keyboard nav: close mobile menu on Escape ── */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileNav.classList.contains('open')) {
+      hamburger.click();
+      hamburger.focus();
+    }
+  });
+
+  /* ── Close mobile nav when a link is clicked ── */
+  mobileNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      if (mobileNav.classList.contains('open')) hamburger.click();
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
