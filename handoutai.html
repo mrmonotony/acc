@@ -512,7 +512,7 @@
         <div id="content-credibility" class="tab-content hidden flex flex-col gap-4">
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Enter URL, Author, or Website context:</label>
-            <textarea id="source-input" rows="3" placeholder="e.g. a blog post from Healthline.com written by a pediatrician in 2024..." class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-1 focus:ring-purple-900 outline-none resize-none"></textarea>
+            <textarea id="source-input" rows="3" placeholder="e.g. a blog post from Healthline.com written by a pediatrician..." class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-1 focus:ring-purple-900 outline-none resize-none"></textarea>
           </div>
           <button onclick="analyzeCredibility()" class="w-full bg-purple-900 hover:bg-purple-950 text-white font-bold text-sm py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow-sm">
             <span>Coach Me on Credibility</span> <i class="fa-solid fa-shield-halved"></i>
@@ -797,8 +797,13 @@
       resultsDiv.classList.add('hidden');
       errorBox.classList.add('hidden');
 
+      const currentYear = new Date().getFullYear();
+      const currentDateString = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
       const systemPrompt = `You are a critical thinking coach expert. Analyze the source background provided by the user. 
       Deliver structured instructions evaluating its credibility at an 8th-grade level. 
+      IMPORTANT: The current real-world date is ${currentDateString} (Current Year: ${currentYear}). 
+      Evaluate the timeliness, currency, and accuracy of publication dates based strictly on this date. Do not treat ${currentYear} or preceding years as the future.
       Strictly assign a Rating: 'HIGH CREDIBILITY' (green light), 'USE WITH CAUTION' (yellow light), or 'LOW CREDIBILITY / FALSE OUTLET' (red light) and back it with actionable steps the student can do to verify the source using Lateral Reading.`;
 
       const schema = {
@@ -906,6 +911,14 @@
         loader.classList.add('hidden');
       }
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentYear = new Date().getFullYear();
+      const sourceInput = document.getElementById('source-input');
+      if (sourceInput) {
+        sourceInput.placeholder = `e.g. a blog post from Healthline.com written by a pediatrician in ${currentYear}...`;
+      }
+    });
   </script>
 
 </body>
