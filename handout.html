@@ -1,770 +1,438 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>ACC Library - 2-Page Argumentative Essay Guide (Letter Size)</title>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        @page {
-            size: letter;
-            margin: 0.5in;
-            background-color: #f7f9fa;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-            color: #2c3e50;
-            font-size: 10pt; /* Slightly adjusted down from 10.5pt to guarantee 2 pages on Letter size */
-            line-height: 1.45;
-            background-color: #f7f9fa;
-        }
-        
-        /* Typography */
-        h1 { font-size: 17pt; color: #ffffff; margin: 0; font-weight: 700; text-transform: uppercase; }
-        h2 {
-            font-size: 12.5pt; color: #005a9c; margin: 12px 0 6px 0;
-            border-left: 4px solid #a32638; padding-left: 6px; page-break-after: avoid;
-        }
-        p { margin: 0 0 6px 0; }
-        
-        /* Banner Header */
-        .header-banner {
-            margin: -0.5in -0.5in 12px -0.5in;
-            padding: 12px 0.5in;
-            background: linear-gradient(135deg, #005a9c 0%, #003366 100%);
-            border-bottom: 4px solid #a32638;
-            color: #ffffff;
-        }
-        .header-banner .subtitle { font-size: 10pt; color: #e0e6ed; font-weight: 500; margin-bottom: 4px; }
-        .requirement-badge {
-            display: inline-block; background-color: #a32638; color: #ffffff;
-            padding: 3px 8px; font-size: 8.5pt; font-weight: bold; border-radius: 3px; margin-top: 4px;
-        }
-        
-        /* Learning Objectives Box */
-        .objectives-box {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            padding: 6px 8px;
-            margin-top: 6px;
-            font-size: 8pt;
-            line-height: 1.35;
-            color: #f0f4f8;
-        }
-        .objectives-box strong { color: #ffffff; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACC Library Research Handout</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome for engaging educational icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    /* ACC Official Purple & Secondary Indigo */
+    .bg-acc-purple { background-color: #3D1A54; }
+    .text-acc-purple { color: #3D1A54; }
+    .border-acc-purple { border-color: #3D1A54; }
+    .bg-acc-light { background-color: #f7f4fa; }
 
-        /* COMPONENT OVERVIEW ROADMAP */
-        .roadmap-container {
-            display: table;
-            width: 100%;
-            margin: 10px 0;
-            border-collapse: separate;
-            border-spacing: 6px 0;
-        }
-        .roadmap-box {
-            display: table-cell;
-            background: #ffffff;
-            border: 1px solid #dcdfe6;
-            border-top: 4px solid #005a9c;
-            border-radius: 4px;
-            padding: 6px;
-            width: 25%;
-            text-align: center;
-            vertical-align: top;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .roadmap-num {
-            font-size: 11pt; font-weight: bold; color: #a32638; margin-bottom: 2px;
-        }
-        .roadmap-txt { font-size: 8.5pt; font-weight: bold; color: #2c3e50; }
+    /* Print styling rules to enforce a perfect 2-page layout */
+    @media print {
+      body {
+        background-color: #ffffff;
+        color: #000000;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-shadow-none {
+        box-shadow: none !important;
+      }
+      .page-container {
+        width: 8.5in;
+        height: 11in;
+        padding: 0.5in !important;
+        margin: 0 !important;
+        page-break-after: always;
+        page-break-inside: avoid;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow: hidden;
+      }
+      .page-container:last-child {
+        page-break-after: avoid;
+      }
+      /* Ensure colors print correctly */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
 
-        /* Steps & Cards */
-        .schematic-step {
-            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px;
-            padding: 8px 10px; margin-bottom: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-        }
-        .step-num {
-            display: inline-block; background: #005a9c; color: #ffffff;
-            width: 18px; height: 18px; text-align: center; line-height: 18px;
-            border-radius: 50%; font-weight: bold; font-size: 9pt; margin-right: 6px;
-        }
-        .step-title { font-size: 10.5pt; font-weight: bold; color: #003366; display: inline-block; }
-        .step-content { margin-top: 3px; padding-left: 24px; }
-
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.5pt; }
-        th { background-color: #003366; color: #ffffff; padding: 6px 8px; text-align: left; font-weight: 600; }
-        td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; background-color: #ffffff; vertical-align: top; }
-        tr:nth-child(even) td { background-color: #f8fafc; }
-
-        /* Two Column Layout via Table */
-        .grid-table { width: 100%; border-collapse: collapse; margin: 0; }
-        .grid-table td { border: none; padding: 0 6px; background: transparent !important; width: 50%; }
-        .grid-table td:first-child { padding-left: 0; }
-        .grid-table td:last-child { padding-right: 0; }
-
-        .card {
-            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px;
-            padding: 8px 10px; height: 100%; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-        }
-        .card-title { font-weight: bold; margin-bottom: 4px; border-bottom: 2px solid #f0f4f8; padding-bottom: 4px; font-size: 10.5pt; }
-
-        .bullet-list { margin: 4px 0; padding-left: 16px; }
-        .bullet-list li { margin-bottom: 4px; }
-
-        .formula-box {
-            background-color: #fffaf0; border: 1px dashed #dd6b20;
-            padding: 8px; border-radius: 4px; margin-top: 6px;
-            font-family: 'Times New Roman', serif; font-style: italic; font-size: 10pt;
-        }
-
-        .footer {
-            margin-top: auto; border-top: 1px solid #dcdfe6; padding-top: 6px;
-            font-size: 8pt; color: #718096; text-align: center;
-        }
-        
-        .page-1-wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: calc(100vh - 1.0in); /* Corrected wrapper offset for letter margins */
-        }
-
-        /* SCREEN-ONLY INTERACTIVE STYLING */
-        @media screen {
-            body {
-                padding-right: 380px; /* Make space for side panel on desktop */
-                transition: padding-right 0.3s ease;
-            }
-            body.panel-collapsed {
-                padding-right: 0;
-            }
-            .page-break-indicator {
-                border-top: 2px dashed #a32638;
-                margin: 40px 0;
-                position: relative;
-                text-align: center;
-            }
-            .page-break-indicator::after {
-                content: "✂️ PDF Page Break (Lettersize Print Limit)";
-                position: absolute;
-                top: -12px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #f7f9fa;
-                padding: 2px 10px;
-                font-size: 8pt;
-                color: #a32638;
-                font-weight: bold;
-            }
-            /* Interactive Floating Companion Panel */
-            .companion-panel {
-                position: fixed;
-                right: 0;
-                top: 0;
-                bottom: 0;
-                width: 380px;
-                background-color: #ffffff;
-                box-shadow: -4px 0 20px rgba(0,0,0,0.15);
-                border-left: 4px solid #a32638;
-                z-index: 9999;
-                display: flex;
-                flex-direction: column;
-                transition: transform 0.3s ease;
-            }
-            .companion-panel.collapsed {
-                transform: translateX(100%);
-            }
-            .companion-header {
-                background: linear-gradient(135deg, #003366 0%, #005a9c 100%);
-                color: white;
-                padding: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                border-bottom: 2px solid #a32638;
-            }
-            .companion-title {
-                font-size: 11pt;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-            .companion-toggle-btn {
-                position: absolute;
-                left: -48px;
-                top: 80px;
-                width: 48px;
-                height: 48px;
-                background-color: #003366;
-                color: white;
-                border: none;
-                border-left: 4px solid #a32638;
-                border-top-left-radius: 8px;
-                border-bottom-left-radius: 8px;
-                cursor: pointer;
-                box-shadow: -2px 2px 8px rgba(0,0,0,0.15);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 16px;
-            }
-            .companion-toggle-btn:hover {
-                background-color: #005a9c;
-            }
-            .companion-body {
-                flex-grow: 1;
-                overflow-y: auto;
-                padding: 16px;
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-            }
-            /* Tabs */
-            .tabs-header {
-                display: flex;
-                background: #f0f4f8;
-                border-radius: 6px;
-                padding: 4px;
-                border: 1px solid #dcdfe6;
-            }
-            .tab-btn {
-                flex-grow: 1;
-                background: transparent;
-                border: none;
-                padding: 8px;
-                font-size: 8.5pt;
-                font-weight: bold;
-                color: #5a6e7f;
-                cursor: pointer;
-                border-radius: 4px;
-                transition: all 0.2s;
-            }
-            .tab-btn.active {
-                background: #ffffff;
-                color: #003366;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            }
-            .tab-content {
-                display: none;
-                flex-direction: column;
-                gap: 12px;
-            }
-            .tab-content.active {
-                display: flex;
-            }
-            .companion-input-group {
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-            }
-            .companion-label {
-                font-size: 8.5pt;
-                font-weight: bold;
-                color: #003366;
-                text-transform: uppercase;
-            }
-            .companion-textarea, .companion-input {
-                width: 100%;
-                border: 1px solid #cbd5e1;
-                border-radius: 6px;
-                padding: 10px;
-                font-family: inherit;
-                font-size: 9.5pt;
-                background: #f8fafc;
-            }
-            .companion-textarea:focus, .companion-input:focus {
-                outline: none;
-                border-color: #005a9c;
-                background: #ffffff;
-            }
-            .companion-textarea {
-                height: 80px;
-                resize: vertical;
-            }
-            .companion-action-btn {
-                background: #a32638;
-                color: white;
-                border: none;
-                padding: 10px;
-                font-weight: bold;
-                font-size: 9.5pt;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: background 0.2s;
-                text-align: center;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-            }
-            .companion-action-btn:hover {
-                background: #821e2c;
-            }
-            .companion-action-btn:disabled {
-                background: #cbd5e1;
-                cursor: not-allowed;
-            }
-            .companion-response-box {
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                border-radius: 6px;
-                padding: 12px;
-                font-size: 9pt;
-                line-height: 1.4;
-                max-height: 250px;
-                overflow-y: auto;
-                white-space: pre-line;
-            }
-            .response-placeholder {
-                color: #718096;
-                text-align: center;
-                padding: 20px 0;
-                font-style: italic;
-            }
-            .loader {
-                border: 2px solid #f3f3f3;
-                border-top: 2px solid #a32638;
-                border-radius: 50%;
-                width: 16px;
-                height: 16px;
-                animation: spin 1s linear infinite;
-                display: none;
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            .loading .loader {
-                display: inline-block;
-            }
-            .quick-insert-btn {
-                background: transparent;
-                border: 1px dashed #005a9c;
-                color: #005a9c;
-                border-radius: 4px;
-                padding: 4px 8px;
-                font-size: 8pt;
-                cursor: pointer;
-                text-align: left;
-                margin-top: 4px;
-                font-weight: 500;
-            }
-            .quick-insert-btn:hover {
-                background: #f0f4f8;
-            }
-        }
-
-        /* PRINT OVERRIDES - HIDES ALL INTERACTIVE ELEMENTS */
-        @media print {
-            body {
-                padding-right: 0 !important;
-                background-color: transparent !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .page-break-indicator {
-                display: none !important;
-            }
-            /* Keep exact A4 or Letter physical breaks working cleanly */
-            .page-1-wrapper {
-                min-height: calc(100vh - 1.0in);
-            }
-        }
-    </style>
+    /* Screen display mimicking printed sheets */
+    @media screen {
+      .page-container {
+        width: 8.5in;
+        height: 11in;
+        margin: 2rem auto;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+        border-radius: 8px;
+        position: relative;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="text-gray-800 antialiased print:m-0 print:p-0">
 
-    <!-- PAGE 1: SEARCH BAR & DATABASES -->
-    <div class="page-1-wrapper">
-        <div class="header-banner">
-            <h1>Argumentative Essay Research Guide</h1>
-            <div class="subtitle">Austin Community College Library Services • English Composition & Speech</div>
-            
-            <div class="objectives-box">
-                <strong>Learning Objectives:</strong><br>
-                • <strong>ENGL 1302:</strong> Locate and select credible sources applicable to the thesis.<br>
-                • <strong>SPCH 1315:</strong> Recognize and use principles of critical thinking, problem solving, and technical proficiency in gathering information for the development of oral presentations and argument.<br>
-                • <strong>SPCH 1315:</strong> Employ appropriate research and provide speeches with appropriate documentation.
-            </div>
-            
-            <div class="requirement-badge">Goal: 3–5 Clean Sources • MLA Format • Current Issue</div>
+  <!-- Interactive Control Panel (Hidden during Printing) -->
+  <div class="no-print bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-acc-purple flex items-center justify-center text-white font-bold">
+          <i class="fa-solid fa-graduation-cap"></i>
         </div>
-
-        <p style="font-size: 10pt; margin-bottom: 10px;">
-            <strong>Hello ACC Riverbats!</strong> This short guide shows you how to find, pick, and credit facts for your essay. Use this step-by-step roadmap to navigate both the library database systems and open web pages.
-        </p>
-
-        <div class="roadmap-container">
-            <div class="roadmap-box"><div class="roadmap-num">1</div><div class="roadmap-txt">Library Search</div></div>
-            <div class="roadmap-box"><div class="roadmap-num">2</div><div class="roadmap-txt">Pro Databases</div></div>
-            <div class="roadmap-box"><div class="roadmap-num">3</div><div class="roadmap-txt">Web Safety</div></div>
-            <div class="roadmap-box"><div class="roadmap-num">4</div><div class="roadmap-txt">MLA Citations</div></div>
+        <div>
+          <h1 class="text-sm font-bold text-gray-900 leading-tight">ACC Library Research Companion</h1>
+          <p class="text-xs text-gray-500">Perfectly formatted for standard letter printing or PDF export</p>
         </div>
-
-        <h2>Component 1: Using the Main Library Search Bar (OneSearch)</h2>
-        <p>The library search box acts like a giant search engine for our campus. It looks through books, articles, and videos all at once.</p>
-        
-        <div class="schematic-step">
-            <div><span class="step-num">1</span><span class="step-title">Pick Keywords, Not Sentences</span></div>
-            <div class="step-content">
-                <p>Do not type a whole question like <em>"Should schools ban smartphones?"</em> Instead, break your idea down into core word blocks connected by <strong>AND</strong>. Example: <span style="color:#a32638; font-weight:bold;">"smartphones" AND "schools"</span>.</p>
-            </div>
-        </div>
-
-        <div class="schematic-step">
-            <div><span class="step-num">2</span><span class="step-title">Use Filters to Clear the Clutter</span></div>
-            <div class="step-content">
-                <p>Your first search will give you too many results. Click these buttons on the left menu to clean them up:</p>
-                <ul class="bullet-list">
-                    <li><strong>Peer-Reviewed / Scholarly:</strong> Limits your list to articles checked by real experts.</li>
-                    <li><strong>Publication Date:</strong> Change this to the last 3 to 5 years so your issue stays current.</li>
-                    <li><strong>Source Type:</strong> Check "Articles" or "News" to match what your teacher wants.</li>
-                </ul>
-            </div>
-        </div>
-
-        <h2>Component 2: Searching Dedicated Pro Databases</h2>
-        <p>The main search bar is helpful, but going directly to a specific library tool gives you cleaner results with less junk.</p>
-
-        <table style="margin-bottom: 12px;">
-            <thead>
-                <tr>
-                    <th style="width: 25%;">Tool Name</th>
-                    <th style="width: 50%;">What It Does Best</th>
-                    <th style="width: 25%;">Quick Search Tip</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Opposing Viewpoints</strong></td>
-                    <td>Gives you pre-sorted pro and con articles on hot debates. Great for picking a side.</td>
-                    <td>Look at the "Viewpoint Articles" for ready-made arguments.</td>
-                </tr>
-                <tr>
-                    <td><strong>Academic Search</strong></td>
-                    <td>Holds millions of deep academic papers. Perfect for finding heavy expert proof.</td>
-                    <td>Click the "Subject Terms" tags to discover better search words.</td>
-                </tr>
-                <tr>
-                    <td><strong>CQ Researcher</strong></td>
-                    <td>Provides massive, neutral summary reports on single complex issues.</td>
-                    <td>Read the "Chronology" tab to see a clear timeline of the debate.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Pushing footer to the bottom -->
-        <div style="flex-grow: 1;"></div>
-        <div class="footer">Austin Community College District • Page 1 of 2</div>
-    </div>
-
-    <!-- EXACT PAGE BREAK -->
-    <div class="page-break-indicator"></div>
-    <div style="page-break-before: always;"></div>
-
-    <!-- PAGE 2 CONTENT -->
-    <div style="background: #003366; margin: -0.5in -0.5in 12px -0.5in; padding: 10px 0.5in; color: white; border-bottom: 2px solid #a32638;">
-        <strong style="font-size: 10.5pt; text-transform: uppercase;">ACC Library Research Guide • Page 2</strong>
-    </div>
-
-    <h2>Component 3: Checking Free Web Sources (Google & Wikipedia)</h2>
-    <p>You can use the regular web for your paper, but you must be a tough judge. Real research means verifying before you trust.</p>
-
-    <table class="grid-table">
-        <tr>
-            <td>
-                <div class="card">
-                    <div class="card-title" style="color: #4285F4;">The Google Safety Checklist (S.I.F.T.)</div>
-                    <ul class="bullet-list" style="padding-left: 12px; font-size: 9pt;">
-                        <li><strong>Stop:</strong> Check the URL ending. Trust <code>.edu</code> (schools) and <code>.gov</code> (government) over <code>.com</code> storefronts.</li>
-                        <li><strong>Investigate:</strong> Look up the author. Are they a trained expert, or just an angry blogger?</li>
-                        <li><strong>Find Better Context:</strong> Check if other trusted news hubs say the exact same thing.</li>
-                        <li><strong>Trace Back:</strong> Trace the quotes or data links to see the original study yourself.</li>
-                    </ul>
-                </div>
-            </td>
-            <td>
-                <div class="card">
-                    <div class="card-title" style="color: #a32638;">Using Wikipedia Smartly</div>
-                    <p style="font-size: 9pt;"><strong>Never cite Wikipedia in your final paper.</strong> Instead, treat it like a stepping stone to find the real sources:</p>
-                    <ul class="bullet-list" style="padding-left: 12px; font-size: 9pt;">
-                        <li><strong>Background:</strong> Read the introduction to learn basic names, vocabulary, and dates.</li>
-                        <li><strong>The Links:</strong> Scroll down to the bottom "References" box. Click those links to read the original source papers.</li>
-                        <li><strong>Talk Page:</strong> Click the "Talk" tab at the very top to see if editors are arguing over bad info or bias.</li>
-                    </ul>
-                </div>
-            </td>
-        </tr>
-    </table>
-
-    <h2>Component 4: Getting Citations & Quick MLA Guide</h2>
-    <p>Every piece of data you borrow needs a citation. Let our library systems build them for you automatically.</p>
-
-    <div class="schematic-step" style="margin-bottom: 6px;">
-        <div><span class="step-num">★</span><span class="step-title">The One-Click Citation Helper</span></div>
-        <div class="step-content">
-            <p>When you are looking at an article in <em>EBSCO</em> or <em>Gale</em>, look to the right-side toolbar. Click the <strong>"Cite"</strong> button, choose <strong>MLA 9th Edition</strong>, and copy it. Always fix formatting blunders like weird ALL-CAPS text before turning it in!</p>
-        </div>
-    </div>
-
-    <p style="font-weight: bold; margin-bottom: 4px;">Standard MLA 9th Core Formula Structure:</p>
-    <div class="formula-box">
-        Author Last, First. "Article Title." <em>Journal Title</em>, vol. X, no. Y, Year, pp. xx-xx. <em>Database</em>, URL.
-    </div>
-
-    <div style="background-color: #f0f4f8; border: 1px solid #005a9c; padding: 8px; border-radius: 4px; margin-top: 12px; text-align: center;">
-        <p style="margin: 0; font-weight: bold; color: #003366; font-size: 10.5pt;">
-            Stuck? Talk to a real human librarian! Visit a campus desk or text us 24/7 at 
-            <span style="color:#a32638;">library.austincc.edu</span>
-        </p>
-    </div>
-
-    <div class="footer" style="margin-top: 12px;">Austin Community College District • Page 2 of 2</div>
-
-
-    <!-- INTERACTIVE SIDEBAR FOR COMPANION APP (no-print guarantees it won't affect PDF layout) -->
-    <div class="companion-panel no-print" id="aiPanel">
-        <button class="companion-toggle-btn" onclick="togglePanel()" title="Toggle Research Companion">
-            <span id="toggleArrow">✨</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="window.print()" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold text-sm px-4 py-2 rounded-lg shadow transition duration-200 flex items-center gap-2">
+          <i class="fa-solid fa-print"></i> Print Handout (PDF)
         </button>
+      </div>
+    </div>
+  </div>
 
-        <div class="companion-header">
-            <div class="companion-title">Riverbat AI Companion</div>
-            <div style="font-size: 8pt; background: #a32638; padding: 2px 6px; border-radius: 4px; font-weight: bold;">ACC LIBRARY</div>
+  <div class="max-w-4xl mx-auto print:max-w-none">
+    
+    <!-- ================= PAGE 1 ================= -->
+    <div class="page-container p-8 flex flex-col justify-between border border-gray-100">
+      
+      <!-- PAGE HEADER with ACC Branding and Required Learning Objectives -->
+      <div>
+        <div class="flex justify-between items-start border-b-2 border-purple-900 pb-4 mb-4">
+          <div>
+            <div class="text-xs font-bold text-purple-700 tracking-wider uppercase mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-university"></i> Austin Community College • Library Services
+            </div>
+            <h1 class="text-2xl font-black text-acc-purple tracking-tight">EASY STEPS TO EXCELLENT RESEARCH</h1>
+            <p class="text-xs text-gray-600 mt-1">A Quick Guide for English Composition (ENGL 1302) & Speech (SPCH 1315)</p>
+          </div>
+          <div class="text-right max-w-xs hidden sm:block">
+            <span class="inline-block bg-purple-100 text-purple-900 text-[10px] font-bold px-2 py-1 rounded">Handout: Page 1 of 2</span>
+          </div>
         </div>
 
-        <div class="companion-body">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('keywordsTab', this)">✨ Keywords</button>
-                <button class="tab-btn" onclick="switchTab('mlaTab', this)">✨ MLA Fixer</button>
-                <button class="tab-btn" onclick="switchTab('siftTab', this)">✨ SIFT Safety</button>
+        <!-- Learning Objectives Accordion Bar -->
+        <div class="bg-acc-light border border-purple-200 rounded-lg p-3 mb-6">
+          <h4 class="text-[11px] font-extrabold text-acc-purple uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-bullseye text-purple-600"></i> Course Learning Objectives Met Today:
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[10px] text-gray-700 leading-relaxed">
+            <div class="bg-white p-1.5 rounded border border-purple-100">
+              <strong class="text-purple-900 font-bold block mb-0.5">ENGL 1302 Objective</strong>
+              Locate and select credible sources applicable to the thesis.
             </div>
-
-            <!-- TAB 1: KEYWORD GENERATOR -->
-            <div id="keywordsTab" class="tab-content active">
-                <p style="font-size: 8.5pt; color: #4a5568; margin-bottom: 10px;">
-                    Enter your essay prompt, question, or research topic to get professional database keyword combinations (AND/OR).
-                </p>
-                <div class="companion-input-group">
-                    <label class="companion-label" for="keywordTopic">Your Essay Topic</label>
-                    <textarea class="companion-textarea" id="keywordTopic" placeholder="e.g., Should social media platforms be legally responsible for teen mental health?"></textarea>
-                    <button class="quick-insert-btn" onclick="insertExampleTopic()">⚡ Try: Smartphones in Schools</button>
-                </div>
-                <button class="companion-action-btn" id="keywordBtn" onclick="generateKeywords()">
-                    <span>✨ Generate Search Strings</span>
-                    <div class="loader"></div>
-                </button>
-                <div class="companion-label" style="margin-top: 10px;">Recommended Search Terms</div>
-                <div class="companion-response-box" id="keywordResponse">
-                    <div class="response-placeholder">Your optimized keywords and boolean search terms will show up here.</div>
-                </div>
+            <div class="bg-white p-1.5 rounded border border-purple-100">
+              <strong class="text-purple-900 font-bold block mb-0.5">SPCH 1315 Objective A</strong>
+              Recognize and use critical thinking, problem solving, and technical skills to gather information.
             </div>
-
-            <!-- TAB 2: MLA FORMATTER -->
-            <div id="mlaTab" class="tab-content">
-                <p style="font-size: 8.5pt; color: #4a5568; margin-bottom: 10px;">
-                    Paste messy citations, author metadata, or article links to clean them up into perfect MLA 9th structures.
-                </p>
-                <div class="companion-input-group">
-                    <label class="companion-label" for="rawCitation">Messy / Raw Citation Info</label>
-                    <textarea class="companion-textarea" id="rawCitation" placeholder="e.g., Jane Doe, smartphone bans in education, journal of child studies volume 12, 2024, pg 14-20, Academic Search Ultimate database"></textarea>
-                </div>
-                <button class="companion-action-btn" id="mlaBtn" onclick="formatCitation()">
-                    <span>✨ Format MLA 9th Citation</span>
-                    <div class="loader"></div>
-                </button>
-                <div class="companion-label" style="margin-top: 10px;">MLA 9th Citation Result</div>
-                <div class="companion-response-box" id="mlaResponse">
-                    <div class="response-placeholder">Your clean copyable citation will show up here.</div>
-                </div>
+            <div class="bg-white p-1.5 rounded border border-purple-100">
+              <strong class="text-purple-900 font-bold block mb-0.5">SPCH 1315 Objective B</strong>
+              Employ appropriate research and provide speeches with proper documentation.
             </div>
-
-            <!-- TAB 3: SIFT CRITIC -->
-            <div id="siftTab" class="tab-content">
-                <p style="font-size: 8.5pt; color: #4a5568; margin-bottom: 10px;">
-                    Check raw source metadata, claims, or URLs using the S.I.F.T. checklist framework.
-                </p>
-                <div class="companion-input-group">
-                    <label class="companion-label" for="siftInput">Source Details or Claim</label>
-                    <textarea class="companion-textarea" id="siftInput" placeholder="e.g., A blog post on 'HealthLifeNow.com' stating school laptops increase depression rates, written by a writer named Todd."></textarea>
-                </div>
-                <button class="companion-action-btn" id="siftBtn" onclick="analyzeSIFT()">
-                    <span>✨ Analyze with S.I.F.T.</span>
-                    <div class="loader"></div>
-                </button>
-                <div class="companion-label" style="margin-top: 10px;">S.I.F.T. Evaluation</div>
-                <div class="companion-response-box" id="siftResponse">
-                    <div class="response-placeholder">Evaluation metrics and investigation advice will show up here.</div>
-                </div>
-            </div>
-
+          </div>
         </div>
+
+        <!-- SECTION 1: THE MAIN LIBRARY SEARCH BAR (EVERYTHING) -->
+        <div class="mb-6">
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-8 h-8 rounded-full bg-purple-900 text-white flex items-center justify-center font-bold text-sm">1</div>
+            <h2 class="text-base font-bold text-gray-950 uppercase tracking-tight">The "Everything Search": Main Library Search Bar</h2>
+          </div>
+          
+          <p class="text-xs text-gray-600 mb-4 leading-relaxed">
+            Think of the main search bar on the ACC Library homepage as your <strong>supercharged academic search engine</strong>. It looks through millions of books, articles, and videos all at once!
+          </p>
+
+          <!-- Infographic Blueprint: Step-by-Step Search Strategy -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            
+            <div class="border border-gray-200 rounded-xl p-3.5 bg-white shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-[10px] font-bold uppercase text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Step A</span>
+                  <i class="fa-solid fa-key text-yellow-500 text-sm"></i>
+                </div>
+                <h3 class="text-xs font-bold text-gray-900 mb-1">Pick Your Keywords</h3>
+                <p class="text-[11px] text-gray-600 leading-relaxed">
+                  Don't type full questions. Use 2 or 3 core words. 
+                  <span class="block mt-1 font-semibold text-gray-700">❌ "Should cell phones be banned in schools?"</span>
+                  <span class="block font-semibold text-purple-700">"cell phones AND school AND distraction"</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-3.5 bg-white shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-[10px] font-bold uppercase text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Step B</span>
+                  <i class="fa-solid fa-sliders text-blue-500 text-sm"></i>
+                </div>
+                <h3 class="text-xs font-bold text-gray-900 mb-1">Filter Your Results</h3>
+                <p class="text-[11px] text-gray-600 leading-relaxed">
+                  The left-hand sidebar is your superpower tool! Use these filter toggles:
+                </p>
+                <ul class="text-[10px] text-gray-700 space-y-1 mt-1 font-medium">
+                  <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-green-600 text-[8px]"></i> Peer-Reviewed Journals</li>
+                  <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-green-600 text-[8px]"></i> Date (Last 5 Years)</li>
+                  <li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-green-600 text-[8px]"></i> Available Online</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-3.5 bg-white shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-[10px] font-bold uppercase text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Step C</span>
+                  <i class="fa-solid fa-download text-green-500 text-sm"></i>
+                </div>
+                <h3 class="text-xs font-bold text-gray-900 mb-1">Grab the Goods</h3>
+                <p class="text-[11px] text-gray-600 leading-relaxed">
+                  Click on an article's title to access the full-text options.
+                </p>
+                <div class="mt-2 bg-yellow-50 border border-yellow-200 rounded p-1.5 text-[9px] text-yellow-900">
+                  <i class="fa-solid fa-lightbulb"></i> <strong>Pro Tip:</strong> Click the "Cite" button in the library catalog to get your pre-built MLA citation automatically!
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Interactive Search Schematic Mockup -->
+          <div class="bg-gray-50 border border-gray-200 rounded-xl p-3 flex flex-col gap-2">
+            <span class="text-[9px] font-extrabold uppercase text-gray-500 tracking-wider">Search Portal Visualization</span>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <div class="flex-grow bg-white border border-gray-300 rounded px-2 py-1 flex items-center justify-between text-xs text-gray-400">
+                <span>"social media" AND "mental health"</span>
+                <i class="fa-solid fa-magnifying-glass text-purple-900"></i>
+              </div>
+              <div class="bg-purple-900 text-white font-bold text-xs px-4 py-1.5 rounded flex items-center justify-center gap-1.5">
+                Search <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="bg-purple-100 text-purple-900 text-[9px] font-semibold px-2 py-0.5 rounded-full"><i class="fa-solid fa-filter"></i> Peer-Reviewed</span>
+              <span class="bg-purple-100 text-purple-900 text-[9px] font-semibold px-2 py-0.5 rounded-full"><i class="fa-solid fa-calendar"></i> Past 5 Years</span>
+              <span class="bg-purple-100 text-purple-900 text-[9px] font-semibold px-2 py-0.5 rounded-full"><i class="fa-solid fa-globe"></i> Full Text Online</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: DIVING INTO SPECIFIC DATABASES -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-8 h-8 rounded-full bg-purple-900 text-white flex items-center justify-center font-bold text-sm">2</div>
+            <h2 class="text-base font-bold text-gray-950 uppercase tracking-tight">Diving into Specific Databases</h2>
+          </div>
+
+          <p class="text-xs text-gray-600 mb-3.5 leading-relaxed">
+            The main search bar is helpful, but sometimes it is better to search inside specialized databases. A database is a curated digital closet containing high-quality journals and news articles.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Database Option 1 -->
+            <div class="border border-purple-100 rounded-xl bg-purple-50/50 p-4 flex gap-3.5">
+              <div class="text-purple-900 text-xl"><i class="fa-solid fa-scale-balanced"></i></div>
+              <div>
+                <h3 class="text-xs font-bold text-purple-950 mb-1">Opposing Viewpoints (Gale)</h3>
+                <p class="text-[11px] text-gray-600 leading-relaxed mb-2">
+                  <strong>Best for:</strong> Argumentative topics.
+                </p>
+                <div class="bg-white border border-purple-100 rounded p-2 text-[10px] text-gray-700 leading-relaxed">
+                  <strong class="text-purple-900">Why use it:</strong> It provides pre-organized debates featuring pro/con stances side-by-side. It is perfect for constructing solid counterarguments!
+                </div>
+              </div>
+            </div>
+
+            <!-- Database Option 2 -->
+            <div class="border border-purple-100 rounded-xl bg-purple-50/50 p-4 flex gap-3.5">
+              <div class="text-purple-900 text-xl"><i class="fa-solid fa-brain"></i></div>
+              <div>
+                <h3 class="text-xs font-bold text-purple-950 mb-1">Academic Search Complete</h3>
+                <p class="text-[11px] text-gray-600 leading-relaxed mb-2">
+                  <strong>Best for:</strong> Scholarly articles on various subjects.
+                </p>
+                <div class="bg-white border border-purple-100 rounded p-2 text-[10px] text-gray-700 leading-relaxed">
+                  <strong class="text-purple-900">Why use it:</strong> It contains peer-reviewed research papers reviewed by expert panels before publication. Extremely highly regarded by professors!
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PAGE FOOTER (PAGE 1) -->
+      <div class="border-t border-gray-100 pt-3 flex justify-between items-center text-[10px] text-gray-500">
+        <div>Austin Community College Library Services • Find help at <strong class="text-purple-900">library.austincc.edu</strong></div>
+        <div class="font-bold text-purple-900 uppercase">PAGE 1</div>
+      </div>
+
     </div>
 
-    <!-- APP BEHAVIOR SCRIPTS -->
-    <script class="no-print">
-        // Collapsible Panel State
-        function togglePanel() {
-            const panel = document.getElementById('aiPanel');
-            const body = document.body;
-            const arrow = document.getElementById('toggleArrow');
+
+    <!-- ================= PAGE 2 ================= -->
+    <div class="page-container p-8 flex flex-col justify-between border border-gray-100 print:mt-0">
+      
+      <!-- PAGE HEADER -->
+      <div>
+        <div class="flex justify-between items-start border-b-2 border-purple-900 pb-4 mb-4">
+          <div>
+            <div class="text-xs font-bold text-purple-700 tracking-wider uppercase mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-compass"></i> ACC Library Companion • Evaluation Guide
+            </div>
+            <h1 class="text-2xl font-black text-acc-purple tracking-tight">NAVIGATING GOOGLE & WIKIPEDIA</h1>
+            <p class="text-xs text-gray-600 mt-1">Smart critical thinking strategies for open-web sources</p>
+          </div>
+          <div class="text-right max-w-xs hidden sm:block">
+            <span class="inline-block bg-purple-100 text-purple-900 text-[10px] font-bold px-2 py-1 rounded">Handout: Page 2 of 2</span>
+          </div>
+        </div>
+
+        <!-- SECTION 3: EVALUATING THE OPEN WEB -->
+        <div class="mb-5">
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-8 h-8 rounded-full bg-purple-900 text-white flex items-center justify-center font-bold text-sm">3</div>
+            <h2 class="text-base font-bold text-gray-950 uppercase tracking-tight">Evaluating Google and Wikipedia Results</h2>
+          </div>
+
+          <p class="text-xs text-gray-600 mb-3.5 leading-relaxed">
+            While databases contain verified content, Google and Wikipedia are where most students begin their research. You can use these platforms, but you must be a detective to confirm their safety and reliability.
+          </p>
+
+          <!-- Infographic: The 3-Step Credibility Check -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
             
-            panel.classList.toggle('collapsed');
-            body.classList.toggle('panel-collapsed');
-            
-            if (panel.classList.contains('collapsed')) {
-                arrow.innerText = '✨';
-            } else {
-                arrow.innerText = '➡️';
-            }
-        }
+            <div class="border border-purple-100 rounded-xl p-3 bg-purple-50/30 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="w-5 h-5 rounded-full bg-purple-900 text-white flex items-center justify-center text-[10px] font-bold">1</div>
+                  <h3 class="text-xs font-bold text-gray-900">Check the Domain</h3>
+                </div>
+                <p class="text-[10px] text-gray-600 leading-relaxed mb-2">
+                  Look at the end of the website address (the URL):
+                </p>
+                <div class="space-y-1">
+                  <div class="bg-green-50 border border-green-200 text-green-900 text-[9px] px-2 py-1 rounded flex items-center justify-between">
+                    <span><strong>.gov / .edu</strong> (Safe/Trustworthy)</span>
+                    <i class="fa-solid fa-circle-check text-green-600"></i>
+                  </div>
+                  <div class="bg-yellow-50 border border-yellow-200 text-yellow-900 text-[9px] px-2 py-1 rounded flex items-center justify-between">
+                    <span><strong>.org</strong> (Double check bias)</span>
+                    <i class="fa-solid fa-triangle-exclamation text-yellow-600"></i>
+                  </div>
+                  <div class="bg-red-50 border border-red-200 text-red-900 text-[9px] px-2 py-1 rounded flex items-center justify-between">
+                    <span><strong>.com / .net</strong> (Often commercial)</span>
+                    <i class="fa-solid fa-circle-xmark text-red-600"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        // Tab Switching State
-        function switchTab(tabId, btnElement) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
-            
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            btnElement.classList.add('active');
-        }
+            <div class="border border-purple-100 rounded-xl p-3 bg-purple-50/30 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="w-5 h-5 rounded-full bg-purple-900 text-white flex items-center justify-center text-[10px] font-bold">2</div>
+                  <h3 class="text-xs font-bold text-gray-900">Practice "Lateral Reading"</h3>
+                </div>
+                <p class="text-[10px] text-gray-600 leading-relaxed">
+                  Do not trust a website based on its aesthetic layout alone.
+                </p>
+                <div class="bg-white border border-purple-100 rounded p-2 mt-2 text-[9px] text-gray-700 leading-relaxed">
+                  <strong class="text-purple-950 font-bold block mb-1">What is Lateral Reading?</strong>
+                  Open a new tab and search for the author or organization on Google. What are other sources saying about them? If nobody else supports their claims, step away!
+                </div>
+              </div>
+            </div>
 
-        // Quick Preset
-        function insertExampleTopic() {
-            document.getElementById('keywordTopic').value = "How does smartphone bans in middle schools affect student socialization and academic outcomes?";
-        }
+            <div class="border border-purple-100 rounded-xl p-3 bg-purple-50/30 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="w-5 h-5 rounded-full bg-purple-900 text-white flex items-center justify-center text-[10px] font-bold">3</div>
+                  <h3 class="text-xs font-bold text-gray-900">The Wikipedia Hack</h3>
+                </div>
+                <p class="text-[10px] text-gray-600 leading-relaxed">
+                  Never cite Wikipedia in your argumentative paper. Instead, use it as a <strong>launchpad</strong>.
+                </p>
+                <div class="bg-white border border-purple-100 rounded p-2 mt-2 text-[9px] text-gray-700 leading-relaxed">
+                  Scroll to the very bottom of the Wikipedia page to the <strong>"References"</strong> section. Click those links to read and cite the original documents directly!
+                </div>
+              </div>
+            </div>
 
-        // Gemini API Configuration & Call Mechanics
-        const apiKey = ""; // Environment populates this key on backend run
-        
-        // Exponential Backoff API Invoker
-        async function askGemini(systemPrompt, userPrompt) {
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ parts: [{ text: userPrompt }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] }
-            };
+          </div>
+        </div>
 
-            let currentDelay = 1000;
-            for (let attempt = 1; attempt <= 5; attempt++) {
-                try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Network status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (textResult) return textResult;
-                    throw new Error("No readable text found in payload response.");
-                } catch (err) {
-                    if (attempt === 5) {
-                        throw new Error("Failed to reach Gemini after maximum attempts. Please try again later.");
-                    }
-                    await new Promise(resolve => setTimeout(resolve, currentDelay));
-                    currentDelay *= 2; // Exponential Backoff Delays
-                }
-            }
-        }
+        <!-- VISUAL BLUEPRINT: SOURCES MATRIX -->
+        <div class="mb-5 bg-gray-50 border border-gray-200 rounded-xl p-4">
+          <h3 class="text-xs font-bold text-gray-950 uppercase tracking-wider mb-2.5 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-purple-900"></i> Source Credibility Assessment Cheat Sheet
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="border-l-4 border-green-500 bg-white p-2.5 rounded-r shadow-sm">
+              <h4 class="text-[11px] font-bold text-green-800 uppercase flex items-center gap-1">
+                <i class="fa-solid fa-circle-check"></i> High Credibility Sources
+              </h4>
+              <p class="text-[10px] text-gray-600 leading-relaxed mt-1">
+                • Published peer-reviewed research papers.<br>
+                • Official .gov files & state statistics databases.<br>
+                • Established non-partisan journalism outlets.
+              </p>
+            </div>
+            <div class="border-l-4 border-red-500 bg-white p-2.5 rounded-r shadow-sm">
+              <h4 class="text-[11px] font-bold text-red-800 uppercase flex items-center gap-1">
+                <i class="fa-solid fa-circle-xmark"></i> Warning Sign Sources
+              </h4>
+              <p class="text-[10px] text-gray-600 leading-relaxed mt-1">
+                • Personal blogs without cited references.<br>
+                • Sites heavily packed with advertisements.<br>
+                • Viral social media claims or opinion-only posts.
+              </p>
+            </div>
+          </div>
+        </div>
 
-        // Trigger Keyword Generator Integration
-        async function generateKeywords() {
-            const inputField = document.getElementById('keywordTopic');
-            const submitBtn = document.getElementById('keywordBtn');
-            const responseDiv = document.getElementById('keywordResponse');
-            
-            const queryVal = inputField.value.trim();
-            if (!queryVal) {
-                responseDiv.innerHTML = "<span style='color: #a32638;'>⚠️ Please enter a topic first.</span>";
-                return;
-            }
+        <!-- MLA CITATION QUICK CHECK -->
+        <div class="bg-purple-900 text-white rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-quote-right text-yellow-400"></i>
+            <h3 class="text-xs font-bold uppercase tracking-wider">Quick Check: MLA Reference Formatting (9th Edition)</h3>
+          </div>
+          <p class="text-[11px] text-purple-100 mb-3 leading-relaxed">
+            For ENGL 1302 and SPCH 1315, your sources must be formatted correctly on your works-cited list using MLA guidelines. Here is how a database journal article with a DOI (Digital Object Identifier) is built:
+          </p>
+          <div class="bg-purple-950 rounded p-3 font-mono text-[9.5px] leading-relaxed text-purple-200">
+            <span class="text-yellow-300 font-bold">Author Last, First.</span> 
+            "Title of the Article." 
+            <span class="italic text-cyan-300">Title of Journal</span>, 
+            vol. #, no. #, Year, pp. #-#. 
+            <span class="italic text-purple-300">Name of Database</span>, 
+            doi:xx.xxxxxxx.
+          </div>
+          <p class="text-[10px] text-purple-200 mt-2 italic flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-exclamation text-yellow-400"></i> Make sure to double-check that author names, volume details, and page ranges match your source details precisely!
+          </p>
+        </div>
 
-            // Lock UI
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-            responseDiv.innerHTML = "Consulting Riverbat AI Database Strategist...";
+      </div>
 
-            const systemPrompt = "You are a professional ACC Library Research consultant. Take the user's research topic and convert it into beautiful, optimized boolean search strings that they can copy/paste directly into database tools like OneSearch, Opposing Viewpoints, or EBSCO Academic Search. Organize your response clearly with: \n\n1. Suggested Keywords and Synonyms grouped nicely. \n2. 3-4 distinct Boolean Search Strings using AND/OR rules, bolding variables. Keep it succinct and academic.";
-            
-            try {
-                const answer = await askGemini(systemPrompt, queryVal);
-                responseDiv.textContent = answer;
-            } catch (err) {
-                responseDiv.innerHTML = `<span style='color: #a32638;'>⚠️ error occurred: ${err.message}</span>`;
-            } finally {
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
-            }
-        }
+      <!-- PAGE FOOTER (PAGE 2) -->
+      <div class="border-t border-gray-100 pt-3 flex justify-between items-center text-[10px] text-gray-500">
+        <div>Austin Community College Library Services • Find help at <strong class="text-purple-900">library.austincc.edu</strong></div>
+        <div class="font-bold text-purple-900 uppercase">PAGE 2</div>
+      </div>
 
-        // Trigger MLA Formatter Integration
-        async function formatCitation() {
-            const inputField = document.getElementById('rawCitation');
-            const submitBtn = document.getElementById('mlaBtn');
-            const responseDiv = document.getElementById('mlaResponse');
-            
-            const rawVal = inputField.value.trim();
-            if (!rawVal) {
-                responseDiv.innerHTML = "<span style='color: #a32638;'>⚠️ Please input citation details or a link.</span>";
-                return;
-            }
+    </div>
 
-            // Lock UI
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-            responseDiv.innerHTML = "Reordering citation parts to MLA 9th Rules...";
+  </div>
 
-            const systemPrompt = "You are an expert academic librarian at Austin Community College. Take the raw, messy, or incomplete book, journal, database metadata, or web data supplied by the user, and format it into a perfect MLA 9th Edition bibliography entry. Keep explanations to an absolute minimum (1-2 sentences at the end advising on any missing pieces). Provide only the clean copyable citation block first.";
-
-            try {
-                const answer = await askGemini(systemPrompt, rawVal);
-                responseDiv.textContent = answer;
-            } catch (err) {
-                responseDiv.innerHTML = `<span style='color: #a32638;'>⚠️ error occurred: ${err.message}</span>`;
-            } finally {
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
-            }
-        }
-
-        // Trigger SIFT Security Analyzer Integration
-        async function analyzeSIFT() {
-            const inputField = document.getElementById('siftInput');
-            const submitBtn = document.getElementById('siftBtn');
-            const responseDiv = document.getElementById('siftResponse');
-            
-            const rawVal = inputField.value.trim();
-            if (!rawVal) {
-                responseDiv.innerHTML = "<span style='color: #a32638;'>⚠️ Please input source metadata or claims.</span>";
-                return;
-            }
-
-            // Lock UI
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-            responseDiv.innerHTML = "Performing S.I.F.T. analysis...";
-
-            const systemPrompt = "You are a critical thinking coach at the ACC Library. Evaluate the source metadata, context, or claim provided by the user using the S.I.F.T. methodology (Stop, Investigate, Find better context, Trace back). Give a short analysis of potential bias, domain extensions (like .com vs .org), author credibility, and explicit check-actions the student must complete before trusting the claim. Keep paragraphs short and highly practical.";
-
-            try {
-                const answer = await askGemini(systemPrompt, rawVal);
-                responseDiv.textContent = answer;
-            } catch (err) {
-                responseDiv.innerHTML = `<span style='color: #a32638;'>⚠️ error occurred: ${err.message}</span>`;
-            } finally {
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
-            }
+</body>
+</html>
         }
     </script>
 </body>
