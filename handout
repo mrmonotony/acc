@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ACC Library - 2-Page Argumentative Essay Guide (Letter Size)</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        @page {
+            size: letter;
+            margin: 0.5in;
+            background-color: #f7f9fa;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            color: #2c3e50;
+            font-size: 10pt; /* Slightly adjusted down from 10.5pt to guarantee 2 pages on Letter size */
+            line-height: 1.45;
+            background-color: #f7f9fa;
+        }
+        
+        /* Typography */
+        h1 { font-size: 17pt; color: #ffffff; margin: 0; font-weight: 700; text-transform: uppercase; }
+        h2 {
+            font-size: 12.5pt; color: #005a9c; margin: 12px 0 6px 0;
+            border-left: 4px solid #a32638; padding-left: 6px; page-break-after: avoid;
+        }
+        p { margin: 0 0 6px 0; }
+        
+        /* Banner Header */
+        .header-banner {
+            margin: -0.5in -0.5in 12px -0.5in;
+            padding: 12px 0.5in;
+            background: linear-gradient(135deg, #005a9c 0%, #003366 100%);
+            border-bottom: 4px solid #a32638;
+            color: #ffffff;
+        }
+        .header-banner .subtitle { font-size: 10pt; color: #e0e6ed; font-weight: 500; margin-bottom: 4px; }
+        .requirement-badge {
+            display: inline-block; background-color: #a32638; color: #ffffff;
+            padding: 3px 8px; font-size: 8.5pt; font-weight: bold; border-radius: 3px; margin-top: 4px;
+        }
+        
+        /* Learning Objectives Box */
+        .objectives-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 6px 8px;
+            margin-top: 6px;
+            font-size: 8pt;
+            line-height: 1.35;
+            color: #f0f4f8;
+        }
+        .objectives-box strong { color: #ffffff; }
+
+        /* COMPONENT OVERVIEW ROADMAP */
+        .roadmap-container {
+            display: table;
+            width: 100%;
+            margin: 10px 0;
+            border-collapse: separate;
+            border-spacing: 6px 0;
+        }
+        .roadmap-box {
+            display: table-cell;
+            background: #ffffff;
+            border: 1px solid #dcdfe6;
+            border-top: 4px solid #005a9c;
+            border-radius: 4px;
+            padding: 6px;
+            width: 25%;
+            text-align: center;
+            vertical-align: top;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .roadmap-num {
+            font-size: 11pt; font-weight: bold; color: #a32638; margin-bottom: 2px;
+        }
+        .roadmap-txt { font-size: 8.5pt; font-weight: bold; color: #2c3e50; }
+
+        /* Steps & Cards */
+        .schematic-step {
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px;
+            padding: 8px 10px; margin-bottom: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .step-num {
+            display: inline-block; background: #005a9c; color: #ffffff;
+            width: 18px; height: 18px; text-align: center; line-height: 18px;
+            border-radius: 50%; font-weight: bold; font-size: 9pt; margin-right: 6px;
+        }
+        .step-title { font-size: 10.5pt; font-weight: bold; color: #003366; display: inline-block; }
+        .step-content { margin-top: 3px; padding-left: 24px; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.5pt; }
+        th { background-color: #003366; color: #ffffff; padding: 6px 8px; text-align: left; font-weight: 600; }
+        td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; background-color: #ffffff; vertical-align: top; }
+        tr:nth-child(even) td { background-color: #f8fafc; }
+
+        /* Two Column Layout via Table */
+        .grid-table { width: 100%; border-collapse: collapse; margin: 0; }
+        .grid-table td { border: none; padding: 0 6px; background: transparent !important; width: 50%; }
+        .grid-table td:first-child { padding-left: 0; }
+        .grid-table td:last-child { padding-right: 0; }
+
+        .card {
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px;
+            padding: 8px 10px; height: 100%; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .card-title { font-weight: bold; margin-bottom: 4px; border-bottom: 2px solid #f0f4f8; padding-bottom: 4px; font-size: 10.5pt; }
+
+        .bullet-list { margin: 4px 0; padding-left: 16px; }
+        .bullet-list li { margin-bottom: 4px; }
+
+        .formula-box {
+            background-color: #fffaf0; border: 1px dashed #dd6b20;
+            padding: 8px; border-radius: 4px; margin-top: 6px;
+            font-family: 'Times New Roman', serif; font-style: italic; font-size: 10pt;
+        }
+
+        .footer {
+            margin-top: auto; border-top: 1px solid #dcdfe6; padding-top: 6px;
+            font-size: 8pt; color: #718096; text-align: center;
+        }
+        
+        .page-1-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 1.0in); /* Corrected wrapper offset for letter margins */
+        }
+
+        /* SCREEN-ONLY INTERACTIVE STYLING */
+        @media screen {
+            body {
+                padding-right: 380px; /* Make space for side panel on desktop */
+                transition: padding-right 0.3s ease;
+            }
+            body.panel-collapsed {
+                padding-right: 0;
+            }
+            .page-break-indicator {
+                border-top: 2px dashed #a32638;
+                margin: 40px 0;
+                position: relative;
+                text-align: center;
+            }
+            .page-break-indicator::after {
+                content: "✂️ PDF Page Break (Lettersize Print Limit)";
+                position: absolute;
+                top: -12px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #f7f9fa;
+                padding: 2px 10px;
+                font-size: 8pt;
+                color: #a32638;
+                font-weight: bold;
+            }
+            /* Interactive Floating Companion Panel */
+            .companion-panel {
+                position: fixed;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 380px;
+                background-color: #ffffff;
+                box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+                border-left: 4px solid #a32638;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                transition: transform 0.3s ease;
+            }
+            .companion-panel.collapsed {
+                transform: translateX(100%);
+            }
+            .companion-header {
+                background: linear-gradient(135deg, #003366 0%, #005a9c 100%);
+                color: white;
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid #a32638;
+            }
+            .companion-title {
+                font-size: 11pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .companion-toggle-btn {
+                position: absolute;
+                left: -48px;
+                top: 80px;
+                width: 48px;
+                height: 48px;
+                background-color: #003366;
+                color: white;
+                border: none;
+                border-left: 4px solid #a32638;
+                border-top-left-radius: 8px;
+                border-bottom-left-radius: 8px;
+                cursor: pointer;
+                box-shadow: -2px 2px 8px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            }
+            .companion-toggle-btn:hover {
+                background-color: #005a9c;
+            }
+            .companion-body {
+                flex-grow: 1;
+                overflow-y: auto;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+            /* Tabs */
+            .tabs-header {
+                display: flex;
+                background: #f0f4f8;
+                border-radius: 6px;
+                padding: 4px;
+                border: 1px solid #dcdfe6;
+            }
+            .tab-btn {
+                flex-grow: 1;
+                background: transparent;
+                border: none;
+                padding: 8px;
+                font-size: 8.5pt;
+                font-weight: bold;
+                color: #5a6e7f;
+                cursor: pointer;
+                border-radius: 4px;
+                transition: all 0.2s;
+            }
+            .tab-btn.active {
+                background: #ffffff;
+                color: #003366;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            .tab-content {
+                display: none;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .tab-content.active {
+                display: flex;
+            }
+            .companion-input-group {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .companion-label {
+                font-size: 8.5pt;
+                font-weight: bold;
+                color: #003366;
+                text-transform: uppercase;
+            }
+            .companion-textarea, .companion-input {
+                width: 100%;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                padding: 10px;
+                font-family: inherit;
+                font-size: 9.5pt;
+                background: #f8fafc;
+            }
+            .companion-textarea:focus, .companion-input:focus {
+                outline: none;
+                border-color: #005a9c;
+                background: #ffffff;
+            }
+            .companion-textarea {
+                height: 80px;
+                resize: vertical;
+            }
+            .companion-action-btn {
+                background: #a32638;
+                color: white;
+                border: none;
+                padding: 10px;
+                font-weight: bold;
+                font-size: 9.5pt;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background 0.2s;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            .companion-action-btn:hover {
+                background: #821e2c;
+            }
+            .companion-action-btn:disabled {
+                background: #cbd5e1;
+                cursor: not-allowed;
+            }
+            .companion-response-box {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                padding: 12px;
+                font-size: 9pt;
+                line-height: 1.4;
+                max-height: 250px;
+                overflow-y: auto;
+                white-space: pre-line;
+            }
+            .response-placeholder {
+                color: #718096;
+                text-align: center;
+                padding: 20px 0;
+                font-style: italic;
+            }
+            .loader {
+                border: 2px solid #f3f3f3;
+                border-top: 2px solid #a32638;
+                border-radius: 50%;
+                width: 16px;
+                height: 16px;
+                animation: spin 1s linear infinite;
+                display: none;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .loading .loader {
+                display: inline-block;
+            }
+            .quick-insert-btn {
+                background: transparent;
+                border: 1px dashed #005a9c;
+                color: #005a9c;
+                border-radius: 4px;
+                padding: 4px 8px;
+                font-size: 8pt;
+                cursor: pointer;
+                text-align: left;
+                margin-top: 4px;
+                font-weight: 500;
+            }
+            .quick-insert-btn:hover {
+                background: #f0f4f8;
+            }
+        }
+
+        /* PRINT OVERRIDES - HIDES ALL INTERACTIVE ELEMENTS */
+        @media print {
+            body {
+                padding-right: 0 !important;
+                background-color: transparent !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break-indicator {
+                display: none !important;
+            }
+            /* Keep exact A4 or Letter physical breaks working cleanly */
+            .page-1-wrapper {
+                min-height: calc(100vh - 1.0in);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: SEARCH BAR & DATABASES -->
+    <div class="page-1-wrapper">
+        <div class="header-banner">
+            <h1>Argumentative Essay Research Guide</h1>
+            <div class="subtitle">Austin Community College Library Services • English Composition & Speech</div>
+            
+            <div class="objectives-box">
+                <strong>Learning Objectives:</strong><br>
+                • <strong>ENGL 1302:</strong> Locate and select credible sources applicable to the thesis.<br>
+                • <strong>SPCH 1315:</strong> Recognize and use principles of critical thinking, problem solving, and technical proficiency in gathering information for the development of oral presentations and argument.<br>
+                • <strong>SPCH 1315:</strong> Employ appropriate research and provide speeches with appropriate documentation.
+            </div>
+            
+            <div class="requirement-badge">Goal: 3–5 Clean Sources • MLA Format • Current Issue</div>
+        </div>
+
+        <p style="font-size: 10pt; margin-bottom: 10px;">
+            <strong>Hello ACC Riverbats!</strong> This short guide shows you how to find, pick, and credit facts for your essay. Use this step-by-step roadmap to navigate both the library database systems and open web pages.
+        </p>
+
+        <div class="roadmap-container">
+            <div class="roadmap-box"><div class="roadmap-num">1</div><div class="roadmap-txt">Library Search</div></div>
+            <div class="roadmap-box"><div class="roadmap-num">2</div><div class="roadmap-txt">Pro Databases</div></div>
+            <div class="roadmap-box"><div class="roadmap-num">3</div><div class="roadmap-txt">Web Safety</div></div>
+            <div class="roadmap-box"><div class="roadmap-num">4</div><div class="roadmap-txt">MLA Citations</div></div>
+        </div>
+
+        <h2>Component 1: Using the Main Library Search Bar (OneSearch)</h2>
+        <p>The library search box acts like a giant search engine for our campus. It looks through books, articles, and videos all at once.</p>
+        
+        <div class="schematic-step">
+            <div><span class="step-num">1</span><span class="step-title">Pick Keywords, Not Sentences</span></div>
+            <div class="step-content">
+                <p>Do not type a whole question like <em>"Should schools ban smartphones?"</em> Instead, break your idea down into core word blocks connected by <strong>AND</strong>. Example: <span style="color:#a32638; font-weight:bold;">"smartphones" AND "schools"</span>.</p>
+            </div>
+        </div>
+
+        <div class="schematic-step">
+            <div><span class="step-num">2</span><span class="step-title">Use Filters to Clear the Clutter</span></div>
+            <div class="step-content">
+                <p>Your first search will give you too many results. Click these buttons on the left menu to clean them up:</p>
+                <ul class="bullet-list">
+                    <li><strong>Peer-Reviewed / Scholarly:</strong> Limits your list to articles checked by real experts.</li>
+                    <li><strong>Publication Date:</strong> Change this to the last 3 to 5 years so your issue stays current.</li>
+                    <li><strong>Source Type:</strong> Check "Articles" or "News" to match what your teacher wants.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Component 2: Searching Dedicated Pro Databases</h2>
+        <p>The main search bar is helpful, but going directly to a specific library tool gives you cleaner results with less junk.</p>
+
+        <table style="margin-bottom: 12px;">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Tool Name</th>
+                    <th style="width: 50%;">What It Does Best</th>
+                    <th style="width: 25%;">Quick Search Tip</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Opposing Viewpoints</strong></td>
+                    <td>Gives you pre-sorted pro and con articles on hot debates. Great for picking a side.</td>
+                    <td>Look at the "Viewpoint Articles" for ready-made arguments.</td>
+                </tr>
+                <tr>
+                    <td><strong>Academic Search</strong></td>
+                    <td>Holds millions of deep academic papers. Perfect for finding heavy expert proof.</td>
+                    <td>Click the "Subject Terms" tags to discover better search words.</td>
+                </tr>
+                <tr>
+                    <td><strong>CQ Researcher</strong></td>
+                    <td>Provides massive, neutral summary reports on single complex issues.</td>
+                    <td>Read the "Chronology" tab to see a clear timeline of the debate.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pushing footer to the bottom -->
+        <div style="flex-grow: 1;"></div>
+        <div class="footer">Austin Community College District • Page 1 of 2</div>
+    </div>
+
+    <!-- EXACT PAGE BREAK -->
+    <div class="page-break-indicator"></div>
+    <div style="page-break-before: always;"></div>
+
+    <!-- PAGE 2 CONTENT -->
+    <div style="background: #003366; margin: -0.5in -0.5in 12px -0.5in; padding: 10px 0.5in; color: white; border-bottom: 2px solid #a32638;">
+        <strong style="font-size: 10.5pt; text-transform: uppercase;">ACC Library Research Guide • Page 2</strong>
+    </div>
+
+    <h2>Component 3: Checking Free Web Sources (Google & Wikipedia)</h2>
+    <p>You can use the regular web for your paper, but you must be a tough judge. Real research means verifying before you trust.</p>
+
+    <table class="grid-table">
+        <tr>
+            <td>
+                <div class="card">
+                    <div class="card-title" style="color: #4285F4;">The Google Safety Checklist (S.I.F.T.)</div>
+                    <ul class="bullet-list" style="padding-left: 12px; font-size: 9pt;">
+                        <li><strong>Stop:</strong> Check the URL ending. Trust <code>.edu</code> (schools) and <code>.gov</code> (government) over <code>.com</code> storefronts.</li>
+                        <li><strong>Investigate:</strong> Look up the author. Are they a trained expert, or just an angry blogger?</li>
+                        <li><strong>Find Better Context:</strong> Check if other trusted news hubs say the exact same thing.</li>
+                        <li><strong>Trace Back:</strong> Trace the quotes or data links to see the original study yourself.</li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <div class="card">
+                    <div class="card-title" style="color: #a32638;">Using Wikipedia Smartly</div>
+                    <p style="font-size: 9pt;"><strong>Never cite Wikipedia in your final paper.</strong> Instead, treat it like a stepping stone to find the real sources:</p>
+                    <ul class="bullet-list" style="padding-left: 12px; font-size: 9pt;">
+                        <li><strong>Background:</strong> Read the introduction to learn basic names, vocabulary, and dates.</li>
+                        <li><strong>The Links:</strong> Scroll down to the bottom "References" box. Click those links to read the original source papers.</li>
+                        <li><strong>Talk Page:</strong> Click the "Talk" tab at the very top to see if editors are arguing over bad info or bias.</li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <h2>Component 4: Getting Citations & Quick MLA Guide</h2>
+    <p>Every piece of data you borrow needs a citation. Let our library systems build them for you automatically.</p>
+
+    <div class="schematic-step" style="margin-bottom: 6px;">
+        <div><span class="step-num">★</span><span class="step-title">The One-Click Citation Helper</span></div>
+        <div class="step-content">
+            <p>When you are looking at an article in <em>EBSCO</em> or <em>Gale</em>, look to the right-side toolbar. Click the <strong>"Cite"</strong> button, choose <strong>MLA 9th Edition</strong>, and copy it. Always fix formatting blunders like weird ALL-CAPS text before turning it in!</p>
+        </div>
+    </div>
+
+    <p style="font-weight: bold; margin-bottom: 4px;">Standard MLA 9th Core Formula Structure:</p>
+    <div class="formula-box">
+        Author Last, First. "Article Title." <em>Journal Title</em>, vol. X, no. Y, Year, pp. xx-xx. <em>Database</em>, URL.
+    </div>
+
+    <div style="background-color: #f0f4f8; border: 1px solid #005a9c; padding: 8px; border-radius: 4px; margin-top: 12px; text-align: center;">
+        <p style="margin: 0; font-weight: bold; color: #003366; font-size: 10.5pt;">
+            Stuck? Talk to a real human librarian! Visit a campus desk or text us 24/7 at 
+            <span style="color:#a32638;">library.austincc.edu</span>
+        </p>
+    </div>
+
+    <div class="footer" style="margin-top: 12px;">Austin Community College District • Page 2 of 2</div>
+
+
+    <!-- INTERACTIVE SIDEBAR FOR COMPANION APP (no-print guarantees it won't affect PDF layout) -->
+    <div class="companion-panel no-print" id="aiPanel">
+        <button class="companion-toggle-btn" onclick="togglePanel()" title="Toggle Research Companion">
+            <span id="toggleArrow">✨</span>
+        </button>
+
+        <div class="companion-header">
+            <div class="companion-title">Riverbat AI Companion</div>
+            <div style="font-size: 8pt; background: #a32638; padding: 2px 6px; border-radius: 4px; font-weight: bold;">ACC LIBRARY</div>
+        </div>
+
+        <div class="companion-body">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('keywordsTab', this)">✨ Keywords</button>
+                <button class="tab-btn" onclick="switchTab('mlaTab', this)">✨ MLA Fixer</button>
+                <button class="tab-btn" onclick="switchTab('siftTab', this)">✨ SIFT Safety</button>
+            </div>
+
+            <!-- TAB 1: KEYWORD GENERATOR -->
+            <div id="keywordsTab" class="tab-content active">
+                <p style="font-size: 8.5pt; color: #4a5568; margin-bottom: 10px;">
+                    Enter your essay prompt, question, or research topic to get professional database keyword combinations (AND/OR).
+                </p>
+                <div class="companion-input-group">
+                    <label class="companion-label" for="keywordTopic">Your Essay Topic</label>
+                    <textarea class="companion-textarea" id="keywordTopic" placeholder="e.g., Should social media platforms be legally responsible for teen mental health?"></textarea>
+                    <button class="quick-insert-btn" onclick="insertExampleTopic()">⚡ Try: Smartphones in Schools</button>
+                </div>
+                <button class="companion-action-btn" id="keywordBtn" onclick="generateKeywords()">
+                    <span>✨ Generate Search Strings</span>
+                    <div class="loader"></div>
+                </button>
+                <div class="companion-label" style="margin-top: 10px;">Recommended Search Terms</div>
+                <div class="companion-response-box" id="keywordResponse">
+                    <div class="response-placeholder">Your optimized keywords and boolean search terms will show up here.</div>
+                </div>
+            </div>
+
+            <!-- TAB 2: MLA FORMATTER -->
+            <div id="mlaTab" class="tab-content">
+                <p style="font-size: 8.5pt; color: #4a5568; margin-bottom: 10px;">
+                    Paste messy citations, author metadata, or article links to clean them up into perfect MLA 9th structures.
+                </p>
+                <div class="companion-input-group">
+                    <label class="companion-label" for="rawCitation">Messy / Raw Citation Info</label>
+                    <textarea class="companion-textarea" id="rawCitation" placeholder="e.g., Jane Doe, smartphone bans in education, journal of child studies volume 12, 2024, pg 14-20, Academic Search Ultimate database"></textarea>
+                </div>
+                <button class="companion-action-btn" id="mlaBtn" onclick="formatCitation()">
+                    <span>✨ Format MLA 9th Citation</span>
+                    <div class="loader"></div>
+                </button>
+                <div class="companion-label" style="margin-top: 10px;">MLA 9th Citation Result</div>
+                <div class="companion-response-box" id="mlaResponse">
+                    <div class="response-placeholder">Your clean copyable citation will show up here.</div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SIFT CRITIC -->
+            <div id="siftTab" class="tab-content">
+                <p style="font-size: 8.5pt; color: #4a5568; margin-bottom: 10px;">
+                    Check raw source metadata, claims, or URLs using the S.I.F.T. checklist framework.
+                </p>
+                <div class="companion-input-group">
+                    <label class="companion-label" for="siftInput">Source Details or Claim</label>
+                    <textarea class="companion-textarea" id="siftInput" placeholder="e.g., A blog post on 'HealthLifeNow.com' stating school laptops increase depression rates, written by a writer named Todd."></textarea>
+                </div>
+                <button class="companion-action-btn" id="siftBtn" onclick="analyzeSIFT()">
+                    <span>✨ Analyze with S.I.F.T.</span>
+                    <div class="loader"></div>
+                </button>
+                <div class="companion-label" style="margin-top: 10px;">S.I.F.T. Evaluation</div>
+                <div class="companion-response-box" id="siftResponse">
+                    <div class="response-placeholder">Evaluation metrics and investigation advice will show up here.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- APP BEHAVIOR SCRIPTS -->
+    <script class="no-print">
+        // Collapsible Panel State
+        function togglePanel() {
+            const panel = document.getElementById('aiPanel');
+            const body = document.body;
+            const arrow = document.getElementById('toggleArrow');
+            
+            panel.classList.toggle('collapsed');
+            body.classList.toggle('panel-collapsed');
+            
+            if (panel.classList.contains('collapsed')) {
+                arrow.innerText = '✨';
+            } else {
+                arrow.innerText = '➡️';
+            }
+        }
+
+        // Tab Switching State
+        function switchTab(tabId, btnElement) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // Quick Preset
+        function insertExampleTopic() {
+            document.getElementById('keywordTopic').value = "How does smartphone bans in middle schools affect student socialization and academic outcomes?";
+        }
+
+        // Gemini API Configuration & Call Mechanics
+        const apiKey = ""; // Environment populates this key on backend run
+        
+        // Exponential Backoff API Invoker
+        async function askGemini(systemPrompt, userPrompt) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let currentDelay = 1000;
+            for (let attempt = 1; attempt <= 5; attempt++) {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Network status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (textResult) return textResult;
+                    throw new Error("No readable text found in payload response.");
+                } catch (err) {
+                    if (attempt === 5) {
+                        throw new Error("Failed to reach Gemini after maximum attempts. Please try again later.");
+                    }
+                    await new Promise(resolve => setTimeout(resolve, currentDelay));
+                    currentDelay *= 2; // Exponential Backoff Delays
+                }
+            }
+        }
+
+        // Trigger Keyword Generator Integration
+        async function generateKeywords() {
+            const inputField = document.getElementById('keywordTopic');
+            const submitBtn = document.getElementById('keywordBtn');
+            const responseDiv = document.getElementById('keywordResponse');
+            
+            const queryVal = inputField.value.trim();
+            if (!queryVal) {
+                responseDiv.innerHTML = "<span style='color: #a32638;'>⚠️ Please enter a topic first.</span>";
+                return;
+            }
+
+            // Lock UI
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            responseDiv.innerHTML = "Consulting Riverbat AI Database Strategist...";
+
+            const systemPrompt = "You are a professional ACC Library Research consultant. Take the user's research topic and convert it into beautiful, optimized boolean search strings that they can copy/paste directly into database tools like OneSearch, Opposing Viewpoints, or EBSCO Academic Search. Organize your response clearly with: \n\n1. Suggested Keywords and Synonyms grouped nicely. \n2. 3-4 distinct Boolean Search Strings using AND/OR rules, bolding variables. Keep it succinct and academic.";
+            
+            try {
+                const answer = await askGemini(systemPrompt, queryVal);
+                responseDiv.textContent = answer;
+            } catch (err) {
+                responseDiv.innerHTML = `<span style='color: #a32638;'>⚠️ error occurred: ${err.message}</span>`;
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Trigger MLA Formatter Integration
+        async function formatCitation() {
+            const inputField = document.getElementById('rawCitation');
+            const submitBtn = document.getElementById('mlaBtn');
+            const responseDiv = document.getElementById('mlaResponse');
+            
+            const rawVal = inputField.value.trim();
+            if (!rawVal) {
+                responseDiv.innerHTML = "<span style='color: #a32638;'>⚠️ Please input citation details or a link.</span>";
+                return;
+            }
+
+            // Lock UI
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            responseDiv.innerHTML = "Reordering citation parts to MLA 9th Rules...";
+
+            const systemPrompt = "You are an expert academic librarian at Austin Community College. Take the raw, messy, or incomplete book, journal, database metadata, or web data supplied by the user, and format it into a perfect MLA 9th Edition bibliography entry. Keep explanations to an absolute minimum (1-2 sentences at the end advising on any missing pieces). Provide only the clean copyable citation block first.";
+
+            try {
+                const answer = await askGemini(systemPrompt, rawVal);
+                responseDiv.textContent = answer;
+            } catch (err) {
+                responseDiv.innerHTML = `<span style='color: #a32638;'>⚠️ error occurred: ${err.message}</span>`;
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Trigger SIFT Security Analyzer Integration
+        async function analyzeSIFT() {
+            const inputField = document.getElementById('siftInput');
+            const submitBtn = document.getElementById('siftBtn');
+            const responseDiv = document.getElementById('siftResponse');
+            
+            const rawVal = inputField.value.trim();
+            if (!rawVal) {
+                responseDiv.innerHTML = "<span style='color: #a32638;'>⚠️ Please input source metadata or claims.</span>";
+                return;
+            }
+
+            // Lock UI
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            responseDiv.innerHTML = "Performing S.I.F.T. analysis...";
+
+            const systemPrompt = "You are a critical thinking coach at the ACC Library. Evaluate the source metadata, context, or claim provided by the user using the S.I.F.T. methodology (Stop, Investigate, Find better context, Trace back). Give a short analysis of potential bias, domain extensions (like .com vs .org), author credibility, and explicit check-actions the student must complete before trusting the claim. Keep paragraphs short and highly practical.";
+
+            try {
+                const answer = await askGemini(systemPrompt, rawVal);
+                responseDiv.textContent = answer;
+            } catch (err) {
+                responseDiv.innerHTML = `<span style='color: #a32638;'>⚠️ error occurred: ${err.message}</span>`;
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
