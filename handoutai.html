@@ -460,13 +460,38 @@
       <!-- Main Tool Box -->
       <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col gap-5 sticky top-24">
         
-        <div class="flex items-center gap-2 border-b border-gray-100 pb-3">
-          <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-950">
-            <i class="fa-solid fa-robot text-sm"></i>
+        <div class="flex items-center gap-2 border-b border-gray-100 pb-3 justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-950">
+              <i class="fa-solid fa-robot text-sm"></i>
+            </div>
+            <div>
+              <h2 class="font-bold text-gray-950 text-base">Gemini Research Lab</h2>
+              <p class="text-xs text-gray-500 font-medium">Interactive companion tools</p>
+            </div>
           </div>
-          <div>
-            <h2 class="font-bold text-gray-950 text-base">Gemini Research Lab</h2>
-            <p class="text-xs text-gray-500">AI-powered tools mapping directly to your handout lessons</p>
+        </div>
+
+        <!-- Dynamic API Key Settings Panel (Resolves GitHub Pages HTTP 403 blocks) -->
+        <div class="border border-purple-200 rounded-xl bg-purple-50/50 p-3">
+          <button onclick="toggleApiSettings()" class="w-full text-left text-xs text-purple-900 font-bold flex items-center justify-between">
+            <span id="api-settings-label" class="flex items-center gap-1.5">
+              <i class="fa-solid fa-gear animate-spin-slow"></i> GitHub Pages Settings
+            </span>
+            <i class="fa-solid fa-chevron-down text-[10px]" id="api-chevron"></i>
+          </button>
+          
+          <div id="api-settings-panel" class="hidden mt-3 pt-2 border-t border-purple-200/50 flex flex-col gap-2">
+            <p class="text-[10px] text-gray-600 leading-relaxed">
+              When hosting on your own website (like GitHub Pages), you must provide your own <strong>Google AI Studio API Key</strong> to power the AI features.
+            </p>
+            <div class="flex gap-2">
+              <input type="password" id="custom-api-key" placeholder="Paste your AI Studio Key here..." class="flex-grow text-xs border border-gray-300 rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-purple-900">
+              <button onclick="saveApiKey()" class="bg-purple-900 hover:bg-purple-950 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition duration-150">
+                Save
+              </button>
+            </div>
+            <p class="text-[9px] text-gray-500 italic flex items-center gap-1"><i class="fa-solid fa-lock"></i> Saved securely in your browser's local storage.</p>
           </div>
         </div>
 
@@ -588,7 +613,7 @@
           <span class="text-xs font-semibold text-gray-600">Consulting Research Assistant...</span>
         </div>
 
-        <div id="ai-error-box" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-red-800 flex items-start gap-2">
+        <div id="ai-error-box" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-red-800 flex flex-start gap-2">
           <i class="fa-solid fa-triangle-exclamation text-red-600 mt-0.5"></i>
           <span id="ai-error-text">An error occurred. Please try again.</span>
         </div>
@@ -655,8 +680,45 @@
       }, 3000);
     }
 
+    // API Settings Toggle Logic
+    function toggleApiSettings() {
+      const panel = document.getElementById('api-settings-panel');
+      const chevron = document.getElementById('api-chevron');
+      panel.classList.toggle('hidden');
+      chevron.classList.toggle('fa-chevron-down');
+      chevron.classList.toggle('fa-chevron-up');
+    }
+
+    // Secure local storage save configuration
+    function saveApiKey() {
+      const keyVal = document.getElementById('custom-api-key').value.trim();
+      const label = document.getElementById('api-settings-label');
+      
+      if (keyVal) {
+        localStorage.setItem('acc_library_gemini_key', keyVal);
+        label.innerHTML = `<i class="fa-solid fa-circle-check text-green-600"></i> Key Configured & Saved`;
+        alertMessageBox("Your API key is saved! AI Tools are active.");
+      } else {
+        localStorage.removeItem('acc_library_gemini_key');
+        label.innerHTML = `<i class="fa-solid fa-gear"></i> GitHub Pages Settings`;
+        alertMessageBox("API key removed. Running in native developer context.");
+      }
+      toggleApiSettings();
+    }
+
     async function callGeminiAPI(systemPrompt, userQuery, responseSchema = null) {
-      const apiKey = ""; // Left empty for automatic Canvas execution runtime
+      // 1. Fetch Key from Browser Context LocalStorage (for GitHub Pages hosting)
+      let apiKey = localStorage.getItem('acc_library_gemini_key') || "";
+      
+      // 2. Identify if running externally without an API key config
+      const isExternalHosting = window.location.hostname !== "localhost" && 
+                                !window.location.hostname.includes("canvas") && 
+                                !window.location.hostname.includes("internal");
+                                
+      if (!apiKey && isExternalHosting) {
+        throw new Error("Missing Credentials! Please click the 'GitHub Pages Settings' gear panel above and enter your Google AI Studio API Key to enable the AI tools on your website.");
+      }
+
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
       
       const payload = {
@@ -686,6 +748,10 @@
           });
           
           if (!response.ok) {
+            // If the key is invalid or restricted, Google responds with HTTP 403 / 400
+            if (response.status === 403) {
+              throw new Error("Gemini API Error (HTTP 403): Access Denied. Your API key might be invalid, or it lacks permissions for 'Generative Language API'. Double check your credentials in Google AI Studio.");
+            }
             if (response.status === 429 && retries > 0) {
               await new Promise(res => setTimeout(res, delay));
               retries--;
@@ -913,6 +979,15 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+      // Load saved API Key if it exists
+      const savedKey = localStorage.getItem('acc_library_gemini_key');
+      const label = document.getElementById('api-settings-label');
+      
+      if (savedKey) {
+        document.getElementById('custom-api-key').value = savedKey;
+        label.innerHTML = `<i class="fa-solid fa-circle-check text-green-600"></i> Key Configured & Saved`;
+      }
+
       const currentYear = new Date().getFullYear();
       const sourceInput = document.getElementById('source-input');
       if (sourceInput) {
