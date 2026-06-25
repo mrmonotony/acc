@@ -835,7 +835,7 @@
       <a href="https://austincc.ent.sirsi.net/client/en_US/default/search/patronlogin/">My Library Account</a>
     </div>
     <div class="nav-row">
-      <a href="https://library.austincc.edu">Search Books &amp; Articles</a>
+      <a href="https://library.austincc.edu/eresources/searchall.php">Search Books &amp; Articles</a>
       <a href="https://austincc.sirsi.net/">Classic Catalog</a>
       <a href="https://austincc.ent.sirsi.net/client/reserves">Course Reserves</a>
       <a href="https://library.austincc.edu/eresources/atoz.php">A-Z List of Databases</a>
@@ -853,7 +853,7 @@
     <a href="https://library.austincc.edu/help/ask.php">Get Help</a>
     <a href="https://library.austincc.edu/loc/">Hours &amp; Locations</a>
     <a href="https://austincc.ent.sirsi.net/client/en_US/default/search/patronlogin/">My Library Account</a>
-    <a href="https://library.austincc.edu">Search Books &amp; Articles</a>
+    <a href="https://library.austincc.edu/eresources/searchall.php">Search Books &amp; Articles</a>
     <a href="https://austincc.sirsi.net/">Classic Catalog</a>
     <a href="https://austincc.ent.sirsi.net/client/reserves">Course Reserves</a>
     <a href="https://library.austincc.edu/eresources/atoz.php">A-Z List of Databases</a>
@@ -872,7 +872,7 @@
       Search the Library for books, ebooks, movies, music, articles, and more.
     </h1>
 
-    <form class="search-form" role="search" action="https://research.ebsco.com/c/jjkmuy/search" method="get" onsubmit="return handleSearch(event)">
+    <form class="search-form" role="search" action="https://library.austincc.edu" method="get" onsubmit="return handleSearch(event)">
       <select class="search-type" id="search-type" aria-label="Search by">
         <option value="keyword">Keyword</option>
         <option value="title">Title</option>
@@ -1200,27 +1200,7 @@
   /* ── Search handler ──────────────────── */
   function handleSearch(e) {
     e.preventDefault();
-    const q     = document.getElementById('search-q').value.trim();
-    const type  = document.getElementById('search-type').value;
-    const limit = document.getElementById('limit-books').checked;
-
-    if (!q) {
-      document.getElementById('search-q').focus();
-      return false;
-    }
-
-    // Map dropdown to EBSCO EDS field codes
-    const fieldMap = { keyword: '', title: 'TI', author: 'AU' };
-    const field    = fieldMap[type] || '';
-
-    // Build query string and redirect to library.austincc.edu's
-    // EBSCO EDS search interface in the current browser tab.
-    const params = new URLSearchParams({ q });
-    if (field)  params.set('searchField', field);
-    if (limit)  params.set('limiters', 'FT1:Y');
-
-    window.location.href =
-      'https://library.austincc.edu/eresources/searchall.php?' + params.toString();
+    window.location.href = 'https://library.austincc.edu';
     return false;
   }
 
