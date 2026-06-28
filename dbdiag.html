@@ -1568,14 +1568,26 @@ function go(n){
 function startWizard(){ renderAll(); go(1); }
 
 function startOver(){
+  // Capture which step is currently visible BEFORE resetting state,
+  // so we can hide it correctly (avoids go() deactivating the wrong step).
+  const currentStep = state.step;
+
   state = {
     step:0, text:'', subjects:[], types:[], levelRanking:[],
     needs:{spanish:false,texas:false,primary:false,multimedia:false,stats:false,ebooks:false},
     skipped:{2:false,3:false,4:false,5:false},
     auto:{subjects:[],types:[],level:null,needKeys:[]}
   };
+
+  // Hide the results page, show the welcome screen
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  document.getElementById('step-0').classList.add('active');
+
+  // Reset the text input and its Next button
   document.getElementById('txt-input').value = '';
-  go(0);
+  document.getElementById('btn1').disabled = true;
+
+  // Hide the progress bar (not shown on welcome/results screens)
   document.getElementById('prog').classList.remove('show');
 }
 
