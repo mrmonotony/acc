@@ -347,6 +347,97 @@
     }
     @keyframes spin{to{transform:rotate(360deg)}}
     .loading-text{font-size:14px;color:var(--text-md);font-weight:600;}
+
+    /* ── Auto-detect badge ──────────────────────── */
+    .auto-badge {
+      font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; padding: 2px 8px;
+      border-radius: var(--r-full);
+      display: inline-block; margin-top: 6px; cursor: default;
+    }
+    .auto-badge-gold {
+      background: rgba(245,168,0,.15); color: var(--gold-dk);
+      border: 1px solid rgba(245,168,0,.4);
+    }
+    .auto-badge-purple {
+      background: rgba(92,45,145,.1); color: var(--purple);
+      border: 1px solid rgba(92,45,145,.25);
+    }
+
+    /* ── Auto-detect banner ─────────────────────── */
+    .auto-banner {
+      background: linear-gradient(135deg, #FFF8E1 0%, #FFFDE7 100%);
+      border: 1px solid rgba(245,168,0,.45);
+      border-radius: var(--r-sm);
+      padding: 10px 14px; margin-bottom: 14px;
+      font-size: 12.5px; color: var(--text); line-height: 1.7;
+    }
+    .auto-banner strong { color: var(--gold-dk); }
+    .auto-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(245,168,0,.2); border: 1px solid rgba(245,168,0,.45);
+      color: var(--gold-dk); font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: var(--r-full); margin: 2px 3px;
+    }
+
+    /* ── Step instruction note ──────────────────── */
+    .step-note {
+      font-size: 12px; color: var(--text-md);
+      background: var(--purple-xlt); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 8px 13px;
+      margin-bottom: 14px; display: flex; align-items: center;
+      gap: 8px; line-height: 1.45;
+    }
+
+    /* ── Skip button ────────────────────────────── */
+    .skip-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-lt); font-size: 12.5px; font-weight: 600;
+      padding: 6px 8px; text-decoration: underline;
+      text-underline-offset: 2px; transition: color .15s;
+      font-family: 'Open Sans', sans-serif;
+    }
+    .skip-btn:hover { color: var(--text-md); }
+
+    /* ── Subject card: auto-selected (gold) ─────── */
+    .subj-card.auto-sel {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, #FFF8E1 0%, var(--white) 100%);
+      box-shadow: 0 0 0 3px rgba(245,168,0,.15);
+      transform: translateY(-2px);
+    }
+    .subj-card.auto-sel:hover { border-color: var(--gold-dk); }
+
+    /* ── Level ranked badges ────────────────────── */
+    .rank-badge {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; flex-shrink: 0;
+      transition: all .2s;
+    }
+    .lvl-card.sel .rank-badge { display: flex; }
+    .lvl-card.sel-1 {
+      border-color: var(--gold); background: var(--gold-lt);
+      box-shadow: 0 0 0 3px rgba(245,168,0,.2);
+    }
+    .lvl-card.sel-1 .rank-badge { background: var(--gold-dk); color: var(--purple-dk); }
+    .lvl-card.sel-2 {
+      border-color: var(--purple); background: var(--purple-lt);
+      box-shadow: 0 0 0 3px rgba(92,45,145,.15);
+    }
+    .lvl-card.sel-2 .rank-badge { background: var(--purple); color: #fff; }
+    .lvl-card.sel-3 {
+      border-color: var(--purple-md); background: var(--purple-xlt);
+      box-shadow: 0 0 0 3px rgba(92,45,145,.1);
+    }
+    .lvl-card.sel-3 .rank-badge { background: var(--purple-md); color: #fff; }
+
+    /* ── All-detected full-step notice ──────────── */
+    .all-detected {
+      text-align: center; padding: 22px 16px;
+      color: var(--text-md); font-size: 13.5px; line-height: 1.65;
+    }
+    .all-detected .ad-icon { font-size: 38px; display: block; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -404,12 +495,13 @@
     <!-- ── Step 2: Subject ───────────────────────── -->
     <div class="step" id="step-2">
       <div class="eyebrow">Step 2 of 5</div>
-      <h2 class="step-h">Which subject area fits your research?</h2>
-      <p class="step-sub">We've made our best guess based on your description—confirm or tap another to change it.</p>
+      <h2 class="step-h">Which subject area(s) fit your research?</h2>
+      <p class="step-sub">Select <strong>one or more</strong> subjects. Items already mentioned in your description are highlighted and pre-selected—click to deselect if incorrect.</p>
       <div id="detect-note"></div>
       <div class="subject-grid" id="subj-grid"></div>
       <div class="nav">
         <button class="btn btn-sec" onclick="go(1)">← Back</button>
+        <button class="skip-btn" onclick="skipStep(2)">Skip this step</button>
         <button class="btn btn-pri" id="btn2" onclick="go(3)" disabled>Next →</button>
       </div>
     </div>
@@ -418,10 +510,12 @@
     <div class="step" id="step-3">
       <div class="eyebrow">Step 3 of 5</div>
       <h2 class="step-h">What types of sources do you need?</h2>
-      <p class="step-sub">Select all that apply. Picking specific types helps us rank databases more precisely.</p>
+      <p class="step-sub">Select <strong>all that apply</strong>. Source types already detected from your description are hidden here—they're already included in your results.</p>
+      <div id="src-detect"></div>
       <div class="src-grid" id="src-grid"></div>
       <div class="nav">
         <button class="btn btn-sec" onclick="go(2)">← Back</button>
+        <button class="skip-btn" onclick="skipStep(3)">Skip this step</button>
         <button class="btn btn-pri" id="btn3" onclick="go(4)" disabled>Next →</button>
       </div>
     </div>
@@ -429,11 +523,13 @@
     <!-- ── Step 4: Reading Level ──────────────────── -->
     <div class="step" id="step-4">
       <div class="eyebrow">Step 4 of 5</div>
-      <h2 class="step-h">What's your preferred reading level?</h2>
-      <p class="step-sub">This helps match databases to your course level and background knowledge.</p>
+      <h2 class="step-h">Rank your preferred reading level(s)</h2>
+      <p class="step-sub"><strong>Click in order of preference</strong> to rank up to three levels (1st, 2nd, 3rd choice). Click a selected level again to remove it.</p>
+      <div id="lvl-detect"></div>
       <div class="lvl-list" id="lvl-list"></div>
       <div class="nav">
         <button class="btn btn-sec" onclick="go(3)">← Back</button>
+        <button class="skip-btn" onclick="skipStep(4)">Skip this step</button>
         <button class="btn btn-pri" id="btn4" onclick="go(5)" disabled>Next →</button>
       </div>
     </div>
@@ -442,10 +538,12 @@
     <div class="step" id="step-5">
       <div class="eyebrow">Step 5 of 5</div>
       <h2 class="step-h">Any specific needs?</h2>
-      <p class="step-sub">Check anything that applies to boost results for that need—or skip straight to your matches.</p>
+      <p class="step-sub">Select <strong>all that apply</strong> to boost your results. Items already detected from your description are shown below and already included—no need to select again.</p>
+      <div id="need-detect"></div>
       <div class="need-grid" id="need-grid"></div>
       <div class="nav">
         <button class="btn btn-sec" onclick="go(4)">← Back</button>
+        <button class="skip-btn" onclick="showResults()">Skip &amp; see results</button>
         <button class="btn btn-gold" onclick="showResults()">Find My Databases &nbsp;✦</button>
       </div>
     </div>
@@ -1175,7 +1273,6 @@ const LEVELS = [
   {id:'general',      icon:'🌱', name:'General / Consumer-Friendly', desc:'Clear, accessible language for any reader—great for personal health, quick background, or community topics'},
   {id:'undergraduate',icon:'📘', name:'Undergraduate / College-Level', desc:'Standard college research: journal articles, academic sources, and course-related materials'},
   {id:'advanced',     icon:'🔭', name:'Advanced / Graduate-Level', desc:'In-depth technical or theoretical literature for upper-division or graduate research'},
-  {id:'any',          icon:'🎯', name:'No Preference', desc:'Show me the best matches regardless of reading level'},
 ];
 
 /* ═══════════════════════════════════════════════════
@@ -1210,23 +1307,61 @@ const KW = {
    STATE
 ═══════════════════════════════════════════════════ */
 let state = {
-  step: 0, text: '', subject: null,
-  types: [], level: null,
-  needs: { spanish:false, texas:false, primary:false, multimedia:false, stats:false, ebooks:false }
+  step: 0,
+  text: '',
+  subjects:      [],          // multi-select array (was single 'subject')
+  types:         [],          // multi-select array (unchanged)
+  levelRanking:  [],          // ranked-choice array: [first_pref, second_pref, ...]
+  needs:         { spanish:false, texas:false, primary:false, multimedia:false, stats:false, ebooks:false },
+  skipped:       { 2:false, 3:false, 4:false, 5:false },
+  auto:          { subjects:[], types:[], level:null, needKeys:[] }
 };
 
 /* ═══════════════════════════════════════════════════
-   KEYWORD DETECTION  (for subject auto-select)
+   FULL TEXT DETECTION  (subjects + types + level + needs)
+   Called once in renderAll(); results stored in state.auto.
 ═══════════════════════════════════════════════════ */
-function detectSubject(txt){
+function detectFromText(txt) {
   const t = txt.toLowerCase();
-  let best = 'general', bestScore = 0;
-  for(const [subj, words] of Object.entries(KW)){
+
+  // ── Subjects: score all, keep those ≥ 40% of top scorer ──
+  const subjScores = {};
+  for (const [subj, words] of Object.entries(KW)) {
     let sc = 0;
-    for(const w of words){ if(t.includes(w)) sc++; }
-    if(sc > bestScore){ bestScore = sc; best = subj; }
+    for (const w of words) { if (t.includes(w)) sc++; }
+    if (sc > 0) subjScores[subj] = sc;
   }
-  return bestScore > 0 ? best : null;
+  const maxSubj = Math.max(0, ...Object.values(subjScores));
+  const subjects = Object.entries(subjScores)
+    .filter(([, sc]) => sc >= Math.max(1, maxSubj * 0.4))
+    .sort((a, b) => b[1] - a[1])
+    .map(([id]) => id);
+
+  // ── Source types: phrase matching ─────────────────────────
+  const types = [];
+  for (const [type, phrases] of Object.entries(TYPE_KW)) {
+    if (phrases.some(ph => t.includes(ph))) types.push(type);
+  }
+
+  // ── Reading level: keyword matching ──────────────────────
+  let level = null;
+  const advKW  = ['graduate','advanced',"master's",'doctoral','phd','ph.d','thesis','dissertation','graduate-level','upper division'];
+  const ugKW   = ['undergraduate','college level','undergrad','associate','bachelor','community college','lower division','entry level','college course','200-level','300-level','400-level'];
+  const genKW  = ['general','introductory','intro','101','basic','beginner','layperson','consumer health','everyday','patient','community health'];
+  if      (advKW.some(w => t.includes(w)))  level = 'advanced';
+  else if (ugKW.some(w => t.includes(w)))   level = 'undergraduate';
+  else if (genKW.some(w => t.includes(w)))  level = 'general';
+
+  // ── Special needs ─────────────────────────────────────────
+  const needKeys = [];
+  if (['spanish','español','espanol','in spanish','en español','spanish-language'].some(w => t.includes(w))) needKeys.push('spanish');
+  if (['texas','austin','lone star','texan','tx ','texas-specific'].some(w => t.includes(w))) needKeys.push('texas');
+  if (['primary source','original document','archiv','firsthand','historical record','manuscript','firsthand account'].some(w => t.includes(w))) needKeys.push('primary');
+  if (['video','documentary','film','movie','streaming','watch','listen','audio','music recording'].some(w => t.includes(w))) needKeys.push('multimedia');
+  if (['statistic','statistics',' data ','dataset','quantitative','survey data','census data'].some(w => t.includes(w))) needKeys.push('stats');
+  if (['ebook','e-book','textbook','full book','book chapter','read a book'].some(w => t.includes(w))) needKeys.push('ebooks');
+
+  return { subjects, types, level, needKeys };
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1346,57 +1481,76 @@ function textScore(db){
 /* ═══════════════════════════════════════════════════
    MAIN SCORING  (text-first, MC answers refine)
 
-   Text relevance  → capped at 60  (primary ~60 %)
-   Subject match   → max 12        (secondary)
-   Source types    → max  4 each   (tertiary)
-   Reading level   → max  8
-   Special needs   → stacking bonus (user-declared)
+   Text relevance  → capped at 60  (~60 % weight)
+   Subject match   → max 12        (multi-select OR)
+   Source types    → max  4 each
+   Reading level   → 8/5/2 for rank-1/2/3
+   Special needs   → stacking bonus
 ═══════════════════════════════════════════════════ */
 function score(db){
   let s = 0;
-  const {subject, types, level, needs} = state;
+  const { subjects, types, levelRanking, needs, skipped, auto } = state;
 
   // ── TEXT RELEVANCE (primary factor, max 60) ────────
-  const rawText = textScore(db);
-  s += Math.min(60, rawText);
+  s += Math.min(60, textScore(db));
 
-  // ── SUBJECT MATCH (secondary, max 12) ─────────────
-  // Still meaningful when text is vague, but can't override a strong text signal.
-  if(subject === 'general'){
-    s += db.subjects.includes('general') ? 8 : 4;
-  } else if(subject){
-    if(db.subjects.includes(subject))        s += 12;
-    else if(db.subjects.includes('general')) s += 4;
+  // ── SUBJECT MATCH (max 12) ─────────────────────────
+  // Use explicitly selected subjects; fall back to auto-detected if skipped/empty
+  const effSubjs = (skipped[2] || subjects.length === 0) ? auto.subjects : subjects;
+  if (effSubjs.length > 0) {
+    const matched = effSubjs.some(subj =>
+      subj === 'general' ? db.subjects.includes('general') : db.subjects.includes(subj)
+    );
+    if (matched)                              s += 12;
+    else if (db.subjects.includes('general')) s +=  4;
   }
 
-  // ── SOURCE TYPE (up to 4 pts × number selected) ───
-  if(types.length > 0){
-    const hits = types.filter(t => db.types.includes(t)).length;
+  // ── SOURCE TYPE (up to 4 pts each + 3 bonus) ──────
+  const effTypes = (skipped[3] || types.length === 0) ? auto.types : types;
+  if (effTypes.length > 0) {
+    const hits = effTypes.filter(t => db.types.includes(t)).length;
     s += hits * 4;
-    if(hits > 0 && hits === types.length) s += 3;  // perfect-fit bonus
+    if (hits > 0 && hits === effTypes.length) s += 3;
   }
 
-  // ── READING LEVEL (max 8) ─────────────────────────
-  const levelOrder = ['general','undergraduate','advanced'];
-  if(level === 'any' || level === null){
-    s += 3;
-  } else if(db.levels.includes(level)){
-    s += 8;
+  // ── READING LEVEL — ranked preference ─────────────
+  // rank-1 → 8 pts, rank-2 → 5 pts, rank-3 → 2 pts
+  const effRanking = (skipped[4] || levelRanking.length === 0)
+    ? (auto.level ? [auto.level] : [])
+    : levelRanking;
+
+  if (effRanking.length === 0) {
+    s += 3; // no preference / neutral
   } else {
-    const ui = levelOrder.indexOf(level);
-    for(const dl of db.levels){
-      const di = levelOrder.indexOf(dl);
-      if(di >= 0 && Math.abs(ui - di) === 1){ s += 2; break; }
+    const rankPts = [8, 5, 2];
+    let awarded = false;
+    for (let i = 0; i < Math.min(effRanking.length, 3); i++) {
+      if (db.levels.includes(effRanking[i])) {
+        s += rankPts[i]; awarded = true; break;
+      }
+    }
+    // Adjacent-level partial credit if nothing matched
+    if (!awarded) {
+      const lvOrder = ['general','undergraduate','advanced'];
+      const topIdx  = lvOrder.indexOf(effRanking[0]);
+      for (const dl of db.levels) {
+        const di = lvOrder.indexOf(dl);
+        if (di >= 0 && Math.abs(topIdx - di) === 1) { s += 1; break; }
+      }
     }
   }
 
-  // ── SPECIAL NEEDS (explicit user-declared boosts) ─
-  if(needs.spanish   && db.lang.includes('es'))                               s += 18;
-  if(needs.texas     && db.texas)                                              s += 15;
-  if(needs.primary   && db.types.includes('primary'))                         s += 12;
-  if(needs.multimedia && (db.types.includes('video')||db.types.includes('audio'))) s += 12;
-  if(needs.stats     && db.types.includes('stats'))                            s += 12;
-  if(needs.ebooks    && db.types.includes('books'))                            s += 10;
+  // ── SPECIAL NEEDS (user-declared + auto-detected) ─
+  const effNeedKeys = [...new Set([
+    ...Object.entries(needs).filter(([,v]) => v).map(([k]) => k),
+    ...(skipped[5] ? [] : auto.needKeys)
+  ])];
+  if (effNeedKeys.includes('spanish')    && db.lang.includes('es'))                                s += 18;
+  if (effNeedKeys.includes('texas')      && db.texas)                                               s += 15;
+  if (effNeedKeys.includes('primary')    && db.types.includes('primary'))                           s += 12;
+  if (effNeedKeys.includes('multimedia') && (db.types.includes('video')||db.types.includes('audio'))) s += 12;
+  if (effNeedKeys.includes('stats')      && db.types.includes('stats'))                             s += 12;
+  if (effNeedKeys.includes('ebooks')     && db.types.includes('books'))                             s += 10;
 
   return s;
 }
@@ -1414,8 +1568,12 @@ function go(n){
 function startWizard(){ renderAll(); go(1); }
 
 function startOver(){
-  state = {step:0, text:'', subject:null, types:[], level:null,
-    needs:{spanish:false,texas:false,primary:false,multimedia:false,stats:false,ebooks:false}};
+  state = {
+    step:0, text:'', subjects:[], types:[], levelRanking:[],
+    needs:{spanish:false,texas:false,primary:false,multimedia:false,stats:false,ebooks:false},
+    skipped:{2:false,3:false,4:false,5:false},
+    auto:{subjects:[],types:[],level:null,needKeys:[]}
+  };
   document.getElementById('txt-input').value = '';
   go(0);
   document.getElementById('prog').classList.remove('show');
@@ -1451,83 +1609,242 @@ function updateProgress(){
    RENDER ALL UI ONCE
 ═══════════════════════════════════════════════════ */
 function renderAll(){
+  state.auto = detectFromText(state.text);
   renderSubjects(); renderSources(); renderLevels(); renderNeeds();
 }
 
-/* ── Subject Cards ── */
+/* ── Subject Cards — multi-select, auto-detected pre-selected & filtered ── */
 function renderSubjects(){
-  const detected = detectSubject(state.text);
-  if(detected) state.subject = detected;
-  const g = document.getElementById('subj-grid');
+  const { auto } = state;
+  const g    = document.getElementById('subj-grid');
+  const note = document.getElementById('detect-note');
   g.innerHTML = '';
-  SUBJECTS.forEach(subj => {
+
+  // Pre-select auto-detected subjects (add to state.subjects if not already in)
+  auto.subjects.forEach(id => {
+    if (!state.subjects.includes(id)) state.subjects.push(id);
+  });
+
+  // Auto-detect banner
+  if (auto.subjects.length > 0) {
+    const names = auto.subjects.map(id => {
+      const s = SUBJECTS.find(x => x.id === id);
+      return s ? `<span class="auto-tag">${s.icon} ${s.name}</span>` : '';
+    }).join('');
+    note.innerHTML = `<div class="auto-banner">✨ <strong>Auto-detected from your description:</strong> ${names}
+      <br><span style="font-size:11px;color:var(--text-lt)">These are already included in scoring. Click to deselect if incorrect.</span></div>`;
+  } else {
+    note.innerHTML = `<div class="step-note">💡 Select one or more subject areas—multi-select is allowed.</div>`;
+  }
+
+  // Render only subjects NOT in auto.subjects
+  const toShow = SUBJECTS.filter(s => !auto.subjects.includes(s.id));
+
+  if (toShow.length === 0) {
+    // All subjects were auto-detected — nothing to show
+    g.innerHTML = `<div class="all-detected">
+      <span class="ad-icon">🎯</span>
+      All relevant subject areas were detected from your description.<br>
+      Click <strong>Next →</strong> to continue.
+    </div>`;
+    document.getElementById('btn2').disabled = false;
+    return;
+  }
+
+  toShow.forEach(subj => {
+    const isSel = state.subjects.includes(subj.id);
     const d = document.createElement('div');
-    d.className = 'subj-card' + (state.subject === subj.id ? ' sel' : '');
-    d.innerHTML = `<span class="subj-icon">${subj.icon}</span><div class="subj-name">${subj.name}</div>`;
+    d.className = 'subj-card' + (isSel ? ' sel' : '');
+    d.innerHTML = `<span class="subj-icon">${subj.icon}</span>
+      <div class="subj-name">${subj.name}</div>
+      ${isSel ? '<span class="auto-badge auto-badge-purple">✓ Selected</span>' : ''}`;
     d.onclick = () => {
-      state.subject = subj.id;
-      document.querySelectorAll('.subj-card').forEach(c => c.classList.remove('sel'));
-      d.classList.add('sel');
-      document.getElementById('btn2').disabled = false;
+      const idx = state.subjects.indexOf(subj.id);
+      if (idx >= 0) {
+        state.subjects.splice(idx, 1);
+        d.classList.remove('sel');
+        const badge = d.querySelector('.auto-badge');
+        if (badge) badge.remove();
+      } else {
+        state.subjects.push(subj.id);
+        d.classList.add('sel');
+        const b = document.createElement('span');
+        b.className = 'auto-badge auto-badge-purple';
+        b.textContent = '✓ Selected';
+        d.appendChild(b);
+      }
+      document.getElementById('btn2').disabled =
+        state.subjects.length === 0 && !state.skipped[2];
     };
     g.appendChild(d);
   });
-  // auto-detect note
-  const note = document.getElementById('detect-note');
-  if(detected && detected !== 'general'){
-    const s = SUBJECTS.find(x => x.id === detected);
-    note.innerHTML = `<div class="detect-note">✨ <span>Based on your description, we think your topic is <strong>${s.name}</strong>. Change it below if needed.</span></div>`;
-  } else {
-    note.innerHTML = '';
-  }
-  document.getElementById('btn2').disabled = !state.subject;
+
+  document.getElementById('btn2').disabled = state.subjects.length === 0;
 }
 
-/* ── Source Type Cards ── */
+/* ── Source Type Cards — filter auto-detected, show banner ── */
 function renderSources(){
-  const g = document.getElementById('src-grid');
-  g.innerHTML = '';
-  SOURCE_TYPES.forEach(st => {
+  const { auto } = state;
+  const g      = document.getElementById('src-grid');
+  const detect = document.getElementById('src-detect');
+  g.innerHTML  = '';
+
+  // Banner listing already-detected source types
+  if (auto.types.length > 0) {
+    const names = auto.types.map(id => {
+      const st = SOURCE_TYPES.find(x => x.id === id);
+      return st ? `<span class="auto-tag">${st.icon} ${st.name}</span>` : '';
+    }).join('');
+    detect.innerHTML = `<div class="auto-banner" style="margin-bottom:14px">
+      ✨ <strong>Already included from your description:</strong> ${names}
+    </div>`;
+  } else {
+    detect.innerHTML = '';
+  }
+
+  // Show only types NOT already auto-detected
+  const toShow = SOURCE_TYPES.filter(st => !auto.types.includes(st.id));
+
+  if (toShow.length === 0) {
+    g.innerHTML = `<div class="all-detected">
+      <span class="ad-icon">📋</span>
+      All source types were detected from your description.<br>
+      Click <strong>Next →</strong> to continue.
+    </div>`;
+    document.getElementById('btn3').disabled = false;
+    return;
+  }
+
+  toShow.forEach(st => {
+    const isSel = state.types.includes(st.id);
     const d = document.createElement('div');
-    d.className = 'src-card' + (state.types.includes(st.id) ? ' sel' : '');
-    d.innerHTML = `<span class="src-ico">${st.icon}</span><div class="src-box">${state.types.includes(st.id)?'✓':''}</div><div><div class="src-lbl">${st.name}</div><div class="src-desc">${st.desc}</div></div>`;
+    d.className = 'src-card' + (isSel ? ' sel' : '');
+    d.innerHTML = `<span class="src-ico">${st.icon}</span>
+      <div class="src-box">${isSel ? '✓' : ''}</div>
+      <div><div class="src-lbl">${st.name}</div><div class="src-desc">${st.desc}</div></div>`;
     d.onclick = () => {
       const idx = state.types.indexOf(st.id);
-      if(idx >= 0) state.types.splice(idx,1);
-      else state.types.push(st.id);
+      if (idx >= 0) state.types.splice(idx, 1);
+      else           state.types.push(st.id);
       d.classList.toggle('sel');
       d.querySelector('.src-box').textContent = state.types.includes(st.id) ? '✓' : '';
-      document.getElementById('btn3').disabled = state.types.length === 0;
+      document.getElementById('btn3').disabled =
+        state.types.length === 0 && !state.skipped[3];
     };
     g.appendChild(d);
   });
+
   document.getElementById('btn3').disabled = state.types.length === 0;
 }
 
-/* ── Level Cards ── */
+/* ── Level Cards — ranked choice (click in order of preference) ── */
 function renderLevels(){
-  const g = document.getElementById('lvl-list');
-  g.innerHTML = '';
-  LEVELS.forEach(lv => {
+  const { auto } = state;
+  const detect = document.getElementById('lvl-detect');
+  const g      = document.getElementById('lvl-list');
+  g.innerHTML  = '';
+
+  // Auto-detected level banner
+  if (auto.level) {
+    const lv = LEVELS.find(x => x.id === auto.level);
+    if (lv) {
+      detect.innerHTML = `<div class="auto-banner" style="margin-bottom:14px">
+        ✨ <strong>Auto-detected from your description:</strong>
+        <span class="auto-tag">${lv.icon} ${lv.name}</span>
+        — already factored in at the top of your results.<br>
+        <span style="font-size:11px;color:var(--text-lt)">
+          You can still rank preferences below (excluding this level—it's already included).
+        </span>
+      </div>`;
+      // Pre-add to ranking if not already there
+      if (!state.levelRanking.includes(auto.level)) {
+        state.levelRanking.unshift(auto.level);
+      }
+    }
+  } else {
+    detect.innerHTML = '';
+  }
+
+  // Show levels not yet auto-detected (or all if none detected)
+  const toShow = LEVELS.filter(lv => lv.id !== auto.level);
+
+  if (toShow.length === 0) {
+    g.innerHTML = `<div class="all-detected">
+      <span class="ad-icon">📘</span>
+      Reading level detected from your description.<br>
+      Click <strong>Next →</strong> to continue.
+    </div>`;
+    document.getElementById('btn4').disabled = false;
+    return;
+  }
+
+  toShow.forEach(lv => {
+    const rankIdx  = state.levelRanking.indexOf(lv.id);
+    const rankNum  = rankIdx >= 0 ? rankIdx + 1 + (auto.level ? 1 : 0) : 0;
+    // Adjust display rank: if auto.level occupies rank 1, user selections start at 2
+    const dispRank = rankIdx >= 0 ? rankIdx + 1 + (auto.level && !state.levelRanking.includes(auto.level) ? 0 : (auto.level ? 1 : 0)) : 0;
+    // Simplified: just use position in levelRanking array + offset for auto
+    const selIdx   = state.levelRanking.indexOf(lv.id);
+    const dRank    = selIdx >= 0 ? selIdx + 1 : 0;
+    const rankCls  = dRank > 0 ? ` sel sel-${Math.min(dRank,3)}` : '';
+
     const d = document.createElement('div');
-    d.className = 'lvl-card' + (state.level === lv.id ? ' sel' : '');
-    d.innerHTML = `<span class="lvl-ico">${lv.icon}</span><div><div class="lvl-n">${lv.name}</div><div class="lvl-d">${lv.desc}</div></div>`;
-    d.onclick = () => {
-      state.level = lv.id;
-      document.querySelectorAll('.lvl-card').forEach(c => c.classList.remove('sel'));
-      d.classList.add('sel');
-      document.getElementById('btn4').disabled = false;
-    };
+    d.className = `lvl-card${rankCls}`;
+    d.dataset.id = lv.id;
+    d.innerHTML = `
+      <div class="rank-badge">${dRank > 0 ? dRank : ''}</div>
+      <span class="lvl-ico">${lv.icon}</span>
+      <div><div class="lvl-n">${lv.name}</div><div class="lvl-d">${lv.desc}</div></div>`;
+    d.onclick = () => toggleLevelRank(lv.id);
     g.appendChild(d);
   });
-  document.getElementById('btn4').disabled = !state.level;
+
+  document.getElementById('btn4').disabled =
+    state.levelRanking.length === 0 && !state.skipped[4];
 }
 
-/* ── Needs Cards ── */
+function toggleLevelRank(id){
+  const idx = state.levelRanking.indexOf(id);
+  if (idx >= 0) state.levelRanking.splice(idx, 1);
+  else           state.levelRanking.push(id);
+  renderLevels(); // re-render to refresh rank badges
+  document.getElementById('btn4').disabled =
+    state.levelRanking.length === 0 && !state.skipped[4];
+}
+
+/* ── Needs Cards — filter auto-detected, show banner ── */
 function renderNeeds(){
-  const g = document.getElementById('need-grid');
-  g.innerHTML = '';
-  NEEDS.forEach(n => {
+  const { auto } = state;
+  const detect = document.getElementById('need-detect');
+  const g      = document.getElementById('need-grid');
+  g.innerHTML  = '';
+
+  // Banner for auto-detected needs
+  if (auto.needKeys.length > 0) {
+    const names = auto.needKeys.map(k => {
+      const n = NEEDS.find(x => x.id === k);
+      return n ? `<span class="auto-tag">${n.icon} ${n.txt.replace(/^I (need|prefer|specifically need|want) /,'')}</span>` : '';
+    }).join('');
+    detect.innerHTML = `<div class="auto-banner" style="margin-bottom:14px">
+      ✨ <strong>Already detected from your description:</strong> ${names}
+    </div>`;
+  } else {
+    detect.innerHTML = '';
+  }
+
+  // Show only needs NOT already auto-detected
+  const toShow = NEEDS.filter(n => !auto.needKeys.includes(n.id));
+
+  if (toShow.length === 0) {
+    g.innerHTML = `<div class="all-detected" style="padding:16px 0">
+      <span class="ad-icon">✅</span>
+      All relevant needs were detected from your description.<br>
+      Click <strong>Find My Databases →</strong> to see your results.
+    </div>`;
+    return;
+  }
+
+  toShow.forEach(n => {
     const d = document.createElement('div');
     d.className = 'need-card' + (state.needs[n.id] ? ' sel' : '');
     d.innerHTML = `<span class="need-ico">${n.icon}</span><span class="need-txt">${n.txt}</span>`;
@@ -1537,6 +1854,14 @@ function renderNeeds(){
     };
     g.appendChild(d);
   });
+}
+
+/* ═══════════════════════════════════════════════════
+   SKIP STEP
+═══════════════════════════════════════════════════ */
+function skipStep(n){
+  state.skipped[n] = true;
+  go(n + 1);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1552,19 +1877,41 @@ function showResults(){
     matchPct: Math.max(55, Math.round((sc / maxSc) * (100 - i*7)))
   }));
 
-  // Summary chips
+  // Summary chips — show all effective items (selected + auto-detected)
   const chips = document.getElementById('chips');
-  const subj = SUBJECTS.find(x => x.id === state.subject);
   chips.innerHTML = '';
-  if(subj) chips.innerHTML += `<span class="chip">${subj.icon} ${subj.name}</span>`;
-  state.types.forEach(t => {
+
+  // Subjects
+  const effSubjs = [...new Set([...state.subjects, ...state.auto.subjects])];
+  effSubjs.forEach(id => {
+    const s = SUBJECTS.find(x => x.id === id);
+    if(s) chips.innerHTML += `<span class="chip">${s.icon} ${s.name}</span>`;
+  });
+
+  // Source types
+  const effTypes = [...new Set([...state.types, ...state.auto.types])];
+  effTypes.forEach(t => {
     const st = SOURCE_TYPES.find(x => x.id === t);
     if(st) chips.innerHTML += `<span class="chip">${st.icon} ${st.name}</span>`;
   });
-  const lv = LEVELS.find(x => x.id === state.level);
-  if(lv && lv.id !== 'any') chips.innerHTML += `<span class="chip">${lv.icon} ${lv.name}</span>`;
-  Object.entries(state.needs).forEach(([k,v]) => {
-    if(v){ const n = NEEDS.find(x => x.id === k); if(n) chips.innerHTML += `<span class="chip">${n.icon} ${n.txt.replace('I need ','').replace('I prefer ','').replace("I specifically need ","").replace("I want ","")} </span>`; }
+
+  // Ranked levels (with ordinal numbers)
+  const rankNums = ['① ','② ','③ '];
+  const effRanking = state.levelRanking.length > 0 ? state.levelRanking
+    : (state.auto.level ? [state.auto.level] : []);
+  effRanking.forEach((lvId, i) => {
+    const lv = LEVELS.find(x => x.id === lvId);
+    if(lv) chips.innerHTML += `<span class="chip">${rankNums[i]||''}${lv.icon} ${lv.name}</span>`;
+  });
+
+  // Special needs
+  const effNeedKeys = [...new Set([
+    ...Object.entries(state.needs).filter(([,v])=>v).map(([k])=>k),
+    ...state.auto.needKeys
+  ])];
+  effNeedKeys.forEach(k => {
+    const n = NEEDS.find(x => x.id === k);
+    if(n) chips.innerHTML += `<span class="chip">${n.icon} ${n.txt.replace(/^I (need|prefer|specifically need|want) /,'')}</span>`;
   });
 
   // Rank labels
